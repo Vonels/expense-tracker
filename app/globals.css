@@ -1,0 +1,26 @@
+:root {
+  --font-family: "Inter", sans-serif;
+}
+
+body {
+  background-color: black;
+  color: white;
+  font-family: "Inter", sans-serif;
+  margin: 0 auto;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+  margin: 0 auto;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+}
+
+ul,
+li {
+  list-style: none;
+}
