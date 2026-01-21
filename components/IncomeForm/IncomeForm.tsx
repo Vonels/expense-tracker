@@ -11,56 +11,66 @@ const IncomePage = () => {
         </p>
       </div>
       <div className={css.total}>
-        <div className={css.totalIncome}>
-          <svg></svg>
-          <ul>
-            <li>Total Income</li>
-            <li>$909.000</li>
-          </ul>
-        </div>
-        <div className={css.totalExpense}>
-          <svg></svg>
-          <ul>
-            <li>Total Expense</li>
-            <li>$259.000</li>
-          </ul>
-        </div>
+        <svg href="../../public/window.svg" width="20" height="20"></svg>
+        <ul className={css.totalIncome}>
+          <li className={css.totalExpenseItemText}>Total Income</li>
+          <li className={css.totalExpenseItemUnit}>$909.000</li>
+        </ul>
+        <svg href="../../public/window.svg" width="20" height="20"></svg>
+        <ul className={css.totalExpense}>
+          <li className={css.totalExpenseItemText}>Total Expense</li>
+          <li className={css.totalExpenseItemUnit}>$259.000</li>
+        </ul>
       </div>
       <div className={css.incomeForm}>
-        <form>
-          <input>Search for anything..</input>
-          <input>dd/mm/yyyy</input>
+        <form action="">
+          <label id="search">
+            <input
+              className={css.incomeFormInputSearch}
+              type="text"
+              id="search"
+              placeholder="Search for anything.."
+            ></input>
+          </label>
+          <label id="data">
+            <input
+              className={css.incomeFormInputData}
+              type="data"
+              id="data"
+              placeholder="dd/mm/yyyy"
+            ></input>
+          </label>
         </form>
         <div>
-          <ul>
-            <li>
-              Category<p>Salary</p>
+          <ul className={css.incomeFormList}>
+            <li className={css.incomeFormListItemCategory}>
+              Category <p className={css.incomeFormListItemText}>Salary</p>
             </li>
 
-            <li>
-              Comment<p>IT company</p>
+            <li className={css.incomeFormListItemComment}>
+              Comment<p className={css.incomeFormListItemText}>IT company</p>
             </li>
 
-            <li>
+            <li className={css.incomeFormListItemDate}>
               Date
-              <p>Sn, 3.03.2023</p>
+              <p className={css.incomeFormListItemText}>Sn, 3.03.2023</p>
             </li>
 
-            <li>
+            <li className={css.incomeFormListItemTime}>
               Time
-              <p>14:30</p>
+              <p className={css.incomeFormListItemText}>14:30</p>
             </li>
 
-            <li>
+            <li className={css.incomeFormListItemSum}>
               Sum
-              <p>35 000 / UAH</p>
+              <p className={css.incomeFormListItemText}>35 000 / UAH</p>
             </li>
 
-            <li>
+            <li className={css.incomeFormItem}>
               Actions
-              <div>
-                <button>Edit</button>
-                <button>Delete</button>
+              <div className={css.incomeFormBtn}>
+                <button className={css.incomeFormBtnEdit}>Edit</button>
+                <button className={css.incomeFormBtnDelete}>Delete</button>
               </div>
             </li>
           </ul>
