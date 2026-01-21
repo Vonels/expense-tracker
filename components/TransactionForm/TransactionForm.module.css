@@ -1,0 +1,134 @@
+.formContainer {
+  max-width: 440px;
+  padding: 40px;
+  background-color: #171719;
+  border-radius: 30px;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.radioInput {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #555;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+
+.radioInput:checked {
+  border-color: #00ff85;
+}
+
+.radioInput::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  background-color: #00ff85;
+}
+
+.radioInput:checked::before {
+  transform: scale(1);
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.label {
+  font-size: 14px;
+  color: #f3f3f3;
+}
+
+.input {
+  width: 100%;
+  background-color: transparent;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: #00ff85;
+}
+
+.input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(1);
+  opacity: 0.6;
+}
+
+.input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.textarea {
+  min-height: 90px;
+  resize: none;
+}
+.sumWrapper {
+  position: relative;
+}
+
+.currency {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+
+.submitBtn {
+  background-color: #00ff85;
+  color: #111;
+  padding: 14px 44px;
+  border-radius: 40px;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: opacity 0.2s;
+}
+
+.submitBtn:hover {
+  opacity: 0.9;
+}
+
+.error {
+  color: #eb5757;
+  font-size: 12px;
+  position: absolute;
+  bottom: -18px;
+}
