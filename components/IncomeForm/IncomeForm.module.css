@@ -1,14 +1,14 @@
-.incomeForm {
+.incomePage {
   background: #0c0d0d;
 }
-.textTitle {
+.titleText {
   font-family: "Inter", sans-serif;
   font-weight: 400;
   font-size: 38px;
   letter-spacing: -0.02em;
   color: #fafafa;
 }
-.textPage {
+.titleParagraf {
   font-family: "Inter", sans-serif;
   font-weight: 400;
   font-size: 16px;
