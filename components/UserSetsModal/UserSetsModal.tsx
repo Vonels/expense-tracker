@@ -102,13 +102,12 @@
 //     </div>
 //   );
 // };
-"use client";
-
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback } from "react"; 
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { userSettingsSchema } from "@/schemas/userSettingsSchema";
 import { AvatarField } from "./AvatarField";
+import { userService } from "@/lib/api/userService"; 
 import styles from "./UserSetsModal.module.css";
 
 export const UserSetsModal = () => {
@@ -117,7 +116,7 @@ export const UserSetsModal = () => {
   const initialData = {
     name: "Alex Rybachok",
     currency: "uah",
-    avatar: null, // Додаємо поле для файлу
+    avatar: null,
   };
 
   const handleClose = useCallback(() => {
@@ -147,7 +146,6 @@ export const UserSetsModal = () => {
           initialValues={initialData}
           validationSchema={userSettingsSchema}
           onSubmit={async (values, { setSubmitting }) => {
-            // Створюємо FormData для відправки файлів та тексту разом
             const formData = new FormData();
             formData.append("name", values.name);
             formData.append("currency", values.currency);
@@ -156,18 +154,20 @@ export const UserSetsModal = () => {
             }
 
             try {
-              console.log("Відправка на сервер через API...");
-              // Тут твій запит: await axios.patch('/api/user', formData);
+              await userService.updateProfile(formData);
+              console.log("Дані успішно збережено!");
+              handleClose();
             } catch (error) {
-              console.error(error);
+              console.error("Помилка при збереженні:", error);
             } finally {
               setSubmitting(false);
             }
           }}
         >
-          {({ isSubmitting, setFieldValue, values }) => (
+          {(
+            { isSubmitting, setFieldValue }, 
+          ) => (
             <Form className={styles.form}>
-              {/* Передаємо setFieldValue в AvatarField */}
               <AvatarField setFieldValue={setFieldValue} />
 
               <div className={styles.inputsRow}>
