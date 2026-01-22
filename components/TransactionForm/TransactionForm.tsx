@@ -158,6 +158,13 @@ const TransactionForm = ({
                 className={css.input}
                 value={selectedCategory?.name || selectedCategoryName || ""} // НОВЕ
                 // НОВЕ для onClick
+                onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
+                  e.target.blur(); // Прибираємо фокус, щоб не вилазила клавіатура на мобільних
+                  useTransactionStore
+                    .getState()
+                    .setTransactionType(values.type);
+                  onOpenCategories(values.type);
+                }}
                 onClick={() => {
                   useTransactionStore
                     .getState()
