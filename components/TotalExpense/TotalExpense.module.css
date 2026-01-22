@@ -1,0 +1,38 @@
+.card {
+  background: #1e1c1f;
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 272px;
+}
+
+.iconWrapperIncome,
+.iconWrapperExpense {
+  width: 48px;
+  height: 48px;
+  background: #0ef387;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  fill: #0c0d0d;
+}
+
+.label {
+  font-size: 14px;
+  color: rgba(250, 250, 250, 0.4);
+  margin-bottom: 4px;
+}
+
+.amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fafafa;
+}
