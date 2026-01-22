@@ -11,12 +11,19 @@ const IncomePage = () => {
         </p>
       </div>
       <div className={css.total}>
-        <svg href="../../public/window.svg" width="20" height="20"></svg>
+        <div className={css.totalSvg}>
+          <svg width="20" height="20">
+            <use href="/symbol-defs.svg#icon-arrow-up-right2"></use>
+          </svg>
+        </div>
+
         <ul className={css.totalIncome}>
           <li className={css.totalExpenseItemText}>Total Income</li>
           <li className={css.totalExpenseItemUnit}>$909.000</li>
         </ul>
-        <svg href="../../public/window.svg" width="20" height="20"></svg>
+        <svg className={css.totalSvg} width="20" height="20">
+          <use href="/symbol-defs.svg#icon-arrow-down-left2"></use>
+        </svg>
         <ul className={css.totalExpense}>
           <li className={css.totalExpenseItemText}>Total Expense</li>
           <li className={css.totalExpenseItemUnit}>$259.000</li>
@@ -25,6 +32,9 @@ const IncomePage = () => {
       <div className={css.incomeForm}>
         <form action="">
           <label id="search">
+            <svg className={css.incomeFormSvg} width="20" height="20">
+              <use href="/symbol-defs.svg#icon-search"></use>
+            </svg>
             <input
               className={css.incomeFormInputSearch}
               type="text"
@@ -33,6 +43,9 @@ const IncomePage = () => {
             ></input>
           </label>
           <label id="data">
+            <svg className={css.incomeFormSvg} width="20" height="20">
+              <use href="/symbol-defs.svg#icon-calendar"></use>
+            </svg>
             <input
               className={css.incomeFormInputData}
               type="data"

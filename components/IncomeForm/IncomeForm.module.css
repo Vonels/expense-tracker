@@ -25,10 +25,10 @@
   font-size: 16px;
   letter-spacing: -0.02em;
   color: rgba(250, 250, 250, 0.4);
-  min-width: 516px;
+  max-width: 516px;
 }
 .total {
-  min-width: 630px;
+  max-width: 630px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,4 +103,17 @@
 .incomeFormBtnDelete {
   border-radius: 40px;
   padding: 14px 30px;
+}
+.totalSvg {
+  border-radius: 13px;
+  width: 43px;
+  height: 43px;
+  background: #0ef387;
+  fill: #0c0d0d;
+  align-items: center;
+  justify-content: space-between;
+  background-size: 43px;
+}
+.incomeFormSvg {
+  fill: #0ef387;
 }
