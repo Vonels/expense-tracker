@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useAuthStore } from "@/lib/store/authStore";
 import css from "./Logo.module.css";
+import { Icon } from "../Icon/Icon";
 
 const Logo = () => {
   const { isLoggedIn } = useAuthStore();
@@ -10,9 +11,7 @@ const Logo = () => {
     : "/"; // WelcomePage
   return (
     <Link href={navigateTo} aria-label="Home" className={css.link}>
-      <svg className={css.logoSvg} width={27} height={16}>
-        <use href="../../public/symbol-defs.svg#icon-Logo" />
-      </svg>
+      <Icon id={"icon-Logo"} className={css.logoSvg} />
       Expensetracker
     </Link>
   );
