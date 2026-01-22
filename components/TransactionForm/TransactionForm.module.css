@@ -51,15 +51,15 @@
 .row {
   display: flex;
   gap: 16px;
-  margin-bottom: 16px;
 }
 
 .fieldGroup {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   position: relative;
+  width: 100%;
 }
 
 .label {
@@ -85,13 +85,27 @@
 }
 
 .input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
   cursor: pointer;
-  filter: invert(1);
-  opacity: 0.6;
+  z-index: 2;
 }
 
-.input::-webkit-calendar-picker-indicator:hover {
-  opacity: 1;
+.customIcon {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 1;
+  display: block;
+  stroke: #fafafa;
 }
 
 .textarea {
@@ -112,23 +126,20 @@
 }
 
 .submitBtn {
-  background-color: #00ff85;
+  background-color: #0ef387;
   color: #111;
   padding: 14px 44px;
   border-radius: 40px;
   font-weight: 600;
   font-size: 16px;
-  margin-top: 10px;
-  transition: opacity 0.2s;
+  transition: background-color 250ms linear;
 }
-
 .submitBtn:hover {
-  opacity: 0.9;
+  background-color: #0ebb69;
 }
-
 .error {
   color: #eb5757;
   font-size: 12px;
   position: absolute;
-  bottom: -18px;
+  bottom: -25px;
 }

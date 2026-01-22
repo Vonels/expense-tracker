@@ -1,11 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
-import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
+import React, { useState, useEffect } from "react";
+import {
+  Formik,
+  Form,
+  Field,
+  ErrorMessage,
+  FormikHelpers,
+  useFormikContext,
+} from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 import css from "./TransactionForm.module.css";
+import { AntdDatePicker } from "../AntdDatePicker/AntdDatePicker";
+import { AntdTimePicker } from "../AntdTimePicker/AntdTimePicker";
+
+const FormikSyncedFields = ({ categoryId }: { categoryId: string }) => {
+  const { setFieldValue } = useFormikContext();
+
+  useEffect(() => {
+    if (categoryId) {
+      setFieldValue("category", categoryId);
+    }
+  }, [categoryId, setFieldValue]);
+
+  return null;
+};
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -19,28 +40,30 @@ interface FormValues {
 interface TransactionFormProps {
   onOpenCategories: (type: "incomes" | "expenses") => void;
   selectedCategoryName: string;
+  selectedCategoryId: string;
 }
 
 const validationSchema = Yup.object().shape({
   type: Yup.string().oneOf(["incomes", "expenses"]).required(),
-  date: Yup.string().required("Обов’язкове поле"),
-  time: Yup.string().required("Обов’язкове поле"),
-  category: Yup.string().required("Оберіть категорію"),
+  date: Yup.string().required("Date is required"),
+  time: Yup.string().required("Time is required"),
+  category: Yup.string().required("Please select a category"),
   sum: Yup.number()
-    .typeError("Сума повинна бути числом")
-    .min(1, "Мінімум 1")
-    .max(1000000, "Максимум 1,000,000")
-    .required("Обов’язкове поле"),
+    .typeError("Sum must be a number")
+    .min(1, "Minimum amount is 1")
+    .max(1000000, "Maximum amount is 1,000,000")
+    .required("Sum is required"),
   comment: Yup.string()
-    .min(3, "Мінімум 3 символи")
-    .max(48, "Максимум 48 символів")
+    .min(3, "Minimum 3 characters")
+    .max(48, "Maximum 48 characters")
     .optional(),
 });
 
-const TransactionForm = ({
+const TransactionForm: React.FC<TransactionFormProps> = ({
   onOpenCategories,
   selectedCategoryName,
-}: TransactionFormProps) => {
+  selectedCategoryId,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const initialValues: FormValues = {
@@ -59,12 +82,12 @@ const TransactionForm = ({
     setIsLoading(true);
     try {
       await axios.post("/transactions", values);
-      toast.success("Транзакцію успішно додано!");
+      toast.success("Transaction added successfully!");
       resetForm();
     } catch (error: unknown) {
-      let errorMsg = "Помилка запиту";
+      let errorMsg = "Request failed";
       if (axios.isAxiosError(error)) {
-        errorMsg = error.response?.data?.message || "Помилка сервера";
+        errorMsg = error.response?.data?.message || "Server error";
       }
       toast.error(errorMsg);
     } finally {
@@ -79,9 +102,10 @@ const TransactionForm = ({
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ values }) => (
+        {({ values, setFieldValue }) => (
           <Form className={css.form}>
-            {/* Type */}
+            <FormikSyncedFields categoryId={selectedCategoryId} />
+
             <div className={css.radioGroup}>
               <label className={css.radioLabel}>
                 <Field
@@ -93,10 +117,15 @@ const TransactionForm = ({
                 Expense
               </label>
               <label className={css.radioLabel}>
-                <Field
+                <input
                   type="radio"
                   name="type"
                   value="incomes"
+                  checked={values.type === "incomes"}
+                  onChange={() => {
+                    setFieldValue("type", "incomes");
+                    setFieldValue("category", "");
+                  }}
                   className={css.radioInput}
                 />
                 Income
@@ -106,21 +135,30 @@ const TransactionForm = ({
             <div className={css.row}>
               <div className={css.fieldGroup}>
                 <label className={css.label}>Date</label>
-                <Field name="date" type="date" className={css.input} />
+                <div className={css.inputWrapper}>
+                  <AntdDatePicker name="date" />
+                  <svg className={css.customIcon} width="20" height="20">
+                    <use href="/symbol-defs.svg#icon-calendar"></use>
+                  </svg>
+                </div>
                 <ErrorMessage name="date" component="p" className={css.error} />
               </div>
+
               <div className={css.fieldGroup}>
                 <label className={css.label}>Time</label>
-                <Field name="time" type="time" className={css.input} />
+                <div className={css.inputWrapper}>
+                  <AntdTimePicker name="time" />
+                  <svg className={css.customIcon} width="20" height="20">
+                    <use href="/symbol-defs.svg#icon-clock"></use>
+                  </svg>
+                </div>
                 <ErrorMessage name="time" component="p" className={css.error} />
               </div>
             </div>
 
-            {/* Category */}
             <div className={css.fieldGroup}>
               <label className={css.label}>Category</label>
-              <Field
-                name="categoryDisplay"
+              <input
                 type="text"
                 readOnly
                 placeholder="Different"
@@ -128,7 +166,6 @@ const TransactionForm = ({
                 value={selectedCategoryName || ""}
                 onClick={() => onOpenCategories(values.type)}
               />
-              {/* Прихований Field для зберігання ID */}
               <Field type="hidden" name="category" />
               <ErrorMessage
                 name="category"
