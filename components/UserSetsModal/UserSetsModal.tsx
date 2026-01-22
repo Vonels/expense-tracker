@@ -6,15 +6,23 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { userSettingsSchema } from "@/schemas/userSettingsSchema";
 import { AvatarField } from "./AvatarField";
 import { userService } from "@/lib/api/userService";
+import { useUserStore } from "@/lib/store/userStore";
 import styles from "./UserSetsModal.module.css";
+import axios from "axios";
+
+interface UserResponse {
+  name: string;
+  currency: string;
+  avatarUrl?: string | null;
+}
 
 export const UserSetsModal = () => {
   const router = useRouter();
+  const { user, updateUser } = useUserStore();
 
   const initialData = {
-    name: "Alex Rybachok",
-    currency: "uah",
-    avatar: null,
+    name: user?.name || "",
+    currency: user?.currency || "uah",
   };
 
   const handleClose = useCallback(() => {
@@ -40,32 +48,38 @@ export const UserSetsModal = () => {
         </button>
         <h2 className={styles.title}>Profile settings</h2>
 
+        <AvatarField />
+
         <Formik
           initialValues={initialData}
           validationSchema={userSettingsSchema}
+          enableReinitialize
           onSubmit={async (values, { setSubmitting }) => {
-            const formData = new FormData();
-            formData.append("name", values.name);
-            formData.append("currency", values.currency);
-            if (values.avatar) {
-              formData.append("avatar", values.avatar);
-            }
-
             try {
-              await userService.updateProfile(formData);
-              console.log("Дані успішно збережено!");
-              handleClose();
-            } catch (error) {
-              console.error("Помилка при збереженні:", error);
+              const responseData: UserResponse =
+                await userService.updateProfile(values);
+
+              updateUser({
+                name: responseData.name,
+                currency: responseData.currency,
+              });
+
+              console.log("Успіх! Стор оновлено.");
+            } catch (error: unknown) {
+              if (axios.isAxiosError(error)) {
+                const errorMessage =
+                  error.response?.data?.message || "Something went wrong";
+                console.error("Помилка від сервера:", errorMessage);
+              } else {
+                console.error("Невідома помилка:", error);
+              }
             } finally {
               setSubmitting(false);
             }
           }}
         >
-          {({ isSubmitting, setFieldValue }) => (
+          {({ isSubmitting }) => (
             <Form className={styles.form}>
-              <AvatarField setFieldValue={setFieldValue} />
-
               <div className={styles.inputsRow}>
                 <div className={styles.currencyWrapper}>
                   <div className={styles.customSelect}>
@@ -102,7 +116,7 @@ export const UserSetsModal = () => {
                 disabled={isSubmitting}
                 className={styles.submitBtn}
               >
-                Save
+                {isSubmitting ? "Saving..." : "Save"}
               </button>
             </Form>
           )}
@@ -111,3 +125,21 @@ export const UserSetsModal = () => {
     </div>
   );
 };
+// onSubmit={async (values, { setSubmitting }) => {
+//   const formData = new FormData();
+//   formData.append("name", values.name);
+//   formData.append("currency", values.currency);
+//   if (values.avatar) {
+//     formData.append("avatar", values.avatar);
+//   }
+
+//   try {
+//     await userService.updateProfile(formData);
+//     console.log("Дані успішно збережено!");
+//     handleClose();
+//   } catch (error) {
+//     console.error("Помилка при збереженні:", error);
+//   } finally {
+//     setSubmitting(false);
+//   }
+// }}
