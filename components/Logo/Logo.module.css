@@ -1,0 +1,15 @@
+.link {
+    display: block;
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #fafafa;
+}
+
+.logoSvg {
+    background-color: #fafafa;
+    fill: black;
+    margin-right: 4px;
+}
