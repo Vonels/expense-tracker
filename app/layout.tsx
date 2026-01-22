@@ -3,6 +3,7 @@ import "./globals.css";
 
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
+import Header from "@/components/Header/Header";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
@@ -17,7 +18,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="uk">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <Header/>
+        {children}
+      </body>
     </html>
   );
 }
