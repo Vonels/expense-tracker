@@ -3,10 +3,10 @@ import { cookies } from "next/headers";
 import { checkSession } from "./lib/api/serverApi";
 
 // приватные страницы ExpenseTracker
-const privateRoutes = ["/dashboard", "/expenses", , "/profile"];
+const privateRoutes = ["/dashboard", "/expenses", "/incomes", "/profile"];
 
 // публичные только для неавторизованных
-const authRoutes = ["/sign-in", "/sign-up", "/incomes"];
+const authRoutes = ["/sign-in", "/sign-up"];
 
 export async function proxy(request: NextRequest) {
   const { nextUrl } = request;
@@ -80,12 +80,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/expenses/:path*",
-    "/incomes/:path*",
-    "/profile/:path*",
-    "/sign-in",
-    "/sign-up",
-  ],
+  matcher: ["/:path*"],
 };
