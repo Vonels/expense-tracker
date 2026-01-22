@@ -22,9 +22,10 @@ interface UserState {
     expenses: number;
   };
 
-  updateProfile: (
+  updateUser: (
     data: Partial<Pick<UserState, "name" | "avatarUrl" | "currency">>,
   ) => void;
+
   setCategories: (type: "incomes" | "expenses", categories: Category[]) => void;
   updateTotals: (totals: { incomes?: number; expenses?: number }) => void;
 }
@@ -32,43 +33,40 @@ interface UserState {
 export const useUserStore = create<UserState>()(
   devtools(
     (set) => ({
-      _id: "507f1f77bcf86cd799439011",
-      name: "Bob",
-      email: "user@example.com",
-      avatarUrl: "https://some.url.com/path/to/avatar.jpg",
-      currency: "usd",
+      _id: "",
+      name: null,
+      email: "",
+      avatarUrl: null,
+      currency: "uah",
       categories: {
-        incomes: [
-          {
-            _id: "6522bf1f9027bb7d55d6512b",
-            categoryName: "Salary",
-            type: "incomes",
-          },
-        ],
-        expenses: [
-          {
-            _id: "6522bf1f9027bb7d55c1973a",
-            categoryName: "Car",
-            type: "expenses",
-          },
-        ],
+        incomes: [],
+        expenses: [],
       },
       transactionsTotal: {
-        incomes: 700,
-        expenses: 700,
+        incomes: 0,
+        expenses: 0,
       },
 
-      updateProfile: (data) => set((state) => ({ ...state, ...data })),
+      updateUser: (data) =>
+        set((state) => ({ ...state, ...data }), false, "updateUser"),
 
       setCategories: (type, categories) =>
-        set((state) => ({
-          categories: { ...state.categories, [type]: categories },
-        })),
+        set(
+          (state) => ({
+            categories: { ...state.categories, [type]: categories },
+          }),
+          false,
+          "setCategories",
+        ),
 
       updateTotals: (newTotals) =>
-        set((state) => ({
-          transactionsTotal: { ...state.transactionsTotal, ...newTotals },
-        })),
+        set(
+          (state) => ({
+            transactionsTotal: { ...state.transactionsTotal, ...newTotals },
+          }),
+          false,
+          "updateTotals",
+        ),
     }),
     { name: "UserStore" },
   ),

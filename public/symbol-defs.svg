@@ -67,5 +67,11 @@
 <symbol id="icon-Icon" viewBox="0 0 72 32">
 <path fill="none" stroke="#fafafa" style="stroke: var(--color1, #fafafa)" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="6" d="M3 3h66M3 28.667h66"></path>
 </symbol>
+<symbol id="icon-listpump" viewBox="0 0 48 32">
+<path fill="#fff" style="fill: var(--color3, #fff)" d="M0 22.828l5.656 5.656 17.172-17.172 17.172 17.172 5.656-5.656-22.828-22.828-22.828 22.828z"></path>
+</symbol>
+<symbol id="icon-listdamp" viewBox="0 0 48 32">
+<path fill="#fff" style="fill: var(--color3, #fff)" d="M40 0l-17.172 17.172-17.172-17.172-5.656 5.656 22.828 22.828 22.828-22.828-5.656-5.656z"></path>
+</symbol>
 </defs>
 </svg>

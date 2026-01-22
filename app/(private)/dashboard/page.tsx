@@ -2,6 +2,7 @@ import { TotalIncome } from "@/components/TotalIncome/TotalIncome";
 import css from "./Dashboard.module.css";
 import { TotalExpense } from "@/components/TotalExpense/TotalExpense";
 import { ExpensesChart } from "@/components/ExpensesChart/ExpensesChart";
+import TransactionForm from "@/components/TransactionForm/TransactionForm";
 
 export default function DashboardPage() {
   return (
@@ -24,7 +25,9 @@ export default function DashboardPage() {
         </section>
       </div>
 
-      <aside className={css.formSection}>Form</aside>
+      <aside className={css.formSection}>
+        <TransactionForm />
+      </aside>
     </main>
   );
 }
