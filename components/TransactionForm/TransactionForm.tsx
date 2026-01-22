@@ -105,6 +105,8 @@ const TransactionForm = ({
     }
   };
 
+  const router = useRouter();
+
   return (
     <div className={css.formContainer}>
       <Formik
@@ -163,8 +165,8 @@ const TransactionForm = ({
                   useTransactionStore
                     .getState()
                     .setTransactionType(values.type);
-                  onOpenCategories(values.type);
-                }} // НОВЕ
+                  router.push("/categoriesModal");
+                }}
               />
               {/* Прихований Field для зберігання ID */}
               <Field type="hidden" name="category" />
