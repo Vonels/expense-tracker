@@ -25,10 +25,10 @@ interface FormValues {
   comment: string;
 }
 
-interface TransactionFormProps {
+type TransactionFormProps = {
   onOpenCategories: (type: "incomes" | "expenses") => void;
   selectedCategoryName: string;
-}
+};
 
 // НОВЕ:
 const FormikSync = () => {
