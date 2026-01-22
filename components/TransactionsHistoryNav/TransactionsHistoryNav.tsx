@@ -1,14 +1,34 @@
-import Link from 'next/link';
-import css from './TransactionsHistoryNav.module.css'
-// На сторінці TransactionsHistoryPage елемент навігації, який відповідає обраному типу транзакцій, що відображаються на даній сторінці, повинен мати стилі активного елементу, як зображено на макеті.
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import css from "./TransactionsHistoryNav.module.css";
+
 const TransactionsHistoryNav = () => {
-    return <ul className={css.list}>
-            <li>
-                <Link href='/' className={css.link}>All Income</Link>
-            </li>
-            <li>
-                <Link href='/' className={css.link}>All Expense</Link>
-            </li>
-        </ul>
+  const pathname = usePathname();
+
+  const isIncome = pathname.includes("income");
+  const isExpense = pathname.includes("expense");
+
+  return (
+    <ul className={css.list}>
+      <li>
+        <Link
+          href="/transactions/income"
+          className={`${css.link} ${isIncome ? css.active : ""}`}
+        >
+          All Income
+        </Link>
+      </li>
+      <li>
+        <Link
+          href="/transactions/expense"
+          className={`${css.link} ${isExpense ? css.active : ""}`}
+        >
+          All Expense
+        </Link>
+      </li>
+    </ul>
+  );
 };
 export default TransactionsHistoryNav;

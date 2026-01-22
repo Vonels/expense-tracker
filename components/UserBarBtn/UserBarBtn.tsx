@@ -1,11 +1,43 @@
-import css from './UserBarBtn.module.css'
-const UserBarBtn = () => {
-    return <button className={css.UserBarBtn}>UserBarBtn</button>
-}
-export default UserBarBtn;
+"use client";
 
-// "Компонент рендерить кнопку, яка складається з: 
-// -аватару юзера, а зайого відсутності з першої літери імені юзера в верхньому регістрі,
-// -імені юзера,
-// -та іконки, яка показує стрілку з напрмками вниз/вверх в залежності від того закрито чи відкрито компонент UserPanel
-// Клік по кнопці відкриває/закриває компонент UserPanel, який є випадаючим списком з кнопками."
+import { useState } from "react";
+import css from "./UserBarBtn.module.css";
+import Image from "next/image";
+import { Icon } from "../Icon/Icon";
+import { useAuthStore } from "@/lib/store/authStore";
+
+const UserBarBtn = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const user = useAuthStore((state) => state.user);
+
+  const togglePanel = () => {
+    setIsOpen((prev) => !prev);
+  };
+
+  if (!user) return null;
+
+  const { name, avatarUrl } = user;
+  const firstLetter = name.charAt(0).toUpperCase();
+
+  return (
+    <button type="button" className={css.UserBarBtn} onClick={togglePanel}>
+      {/* Avatar */}
+      {avatarUrl ? (
+        <Image src={avatarUrl} alt={name} className={css.avatar} />
+      ) : (
+        <div className={css.avatarFallback}>{firstLetter}</div>
+      )}
+
+      {/* User name */}
+      <span className={css.userName}>{name}</span>
+
+      {/* Arrow icon */}
+      {isOpen ? (
+        <Icon id={"icon-arrow-up-right2"} className={css.icon} />
+      ) : (
+        <Icon id={"icon-Pensil"} className={css.icon} />
+      )}
+    </button>
+  );
+};
+export default UserBarBtn;
