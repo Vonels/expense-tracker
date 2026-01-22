@@ -93,7 +93,7 @@ import { userService } from "@/lib/api/userService";
 import styles from "./UserSetsModal.module.css";
 
 export const AvatarField = () => {
-  const { user, updateUser } = useUserStore();
+  const { avatarUrl, name, updateUser } = useUserStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,35 +105,30 @@ export const AvatarField = () => {
 
     try {
       const response = await userService.updateAvatar(formData);
-
       updateUser({ avatarUrl: response.avatarUrl });
-
-      console.log("Аватар успішно оновлено!");
     } catch (error) {
-      console.error("Помилка завантаження аватара:", error);
-      // треба додати пуш-повідомлення з помилкою
+      console.error("Помилка завантаження аватара", error);
     }
   };
 
   const handleRemove = async () => {
     try {
       await userService.deleteAvatar();
-
       updateUser({ avatarUrl: null });
 
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
-      console.error("Помилка видалення аватара:", error);
+      console.error("Помилка видалення аватара", error);
     }
   };
 
   return (
     <div className={styles.avatarSection}>
       <div className={styles.avatarCircle}>
-        {user?.avatarUrl ? (
+        {avatarUrl ? (
           <Image
-            src={user.avatarUrl}
-            alt="Avatar"
+            src={avatarUrl}
+            alt="User Avatar"
             className={styles.avatarImg}
             width={100}
             height={100}
@@ -141,7 +136,7 @@ export const AvatarField = () => {
           />
         ) : (
           <span className={styles.avatarInitial}>
-            {user?.name?.charAt(0).toUpperCase() || "V"}
+            {name?.charAt(0).toUpperCase() || "V"}
           </span>
         )}
       </div>
@@ -154,7 +149,6 @@ export const AvatarField = () => {
           hidden
           accept="image/*"
         />
-
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
@@ -162,7 +156,6 @@ export const AvatarField = () => {
         >
           Upload new photo
         </button>
-
         <button
           type="button"
           className={styles.removeBtn}

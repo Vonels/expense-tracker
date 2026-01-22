@@ -13,16 +13,16 @@ import axios from "axios";
 interface UserResponse {
   name: string;
   currency: string;
-  avatarUrl?: string | null;
 }
 
 export const UserSetsModal = () => {
   const router = useRouter();
-  const { user, updateUser } = useUserStore();
+
+  const { name, currency, updateUser } = useUserStore();
 
   const initialData = {
-    name: user?.name || "",
-    currency: user?.currency || "uah",
+    name: name || "",
+    currency: currency || "uah",
   };
 
   const handleClose = useCallback(() => {
@@ -64,14 +64,12 @@ export const UserSetsModal = () => {
                 currency: responseData.currency,
               });
 
-              console.log("Успіх! Стор оновлено.");
+              console.log("Успіх! Профіль оновлено.");
             } catch (error: unknown) {
               if (axios.isAxiosError(error)) {
-                const errorMessage =
-                  error.response?.data?.message || "Something went wrong";
-                console.error("Помилка від сервера:", errorMessage);
-              } else {
-                console.error("Невідома помилка:", error);
+                const message =
+                  error.response?.data?.message || "Помилка збереження";
+                console.error(message);
               }
             } finally {
               setSubmitting(false);
@@ -125,21 +123,3 @@ export const UserSetsModal = () => {
     </div>
   );
 };
-// onSubmit={async (values, { setSubmitting }) => {
-//   const formData = new FormData();
-//   formData.append("name", values.name);
-//   formData.append("currency", values.currency);
-//   if (values.avatar) {
-//     formData.append("avatar", values.avatar);
-//   }
-
-//   try {
-//     await userService.updateProfile(formData);
-//     console.log("Дані успішно збережено!");
-//     handleClose();
-//   } catch (error) {
-//     console.error("Помилка при збереженні:", error);
-//   } finally {
-//     setSubmitting(false);
-//   }
-// }}
