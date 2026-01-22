@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Formik,
   Form,
@@ -14,7 +14,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import css from "./TransactionForm.module.css";
 import { useTransactionStore } from "@/lib/store/useTransactionStore"; // НОВЕ
-import { useRouter } from "next/navigation"; // НОВЕ
 
 interface FormValues {
   type: "incomes" | "expenses";
