@@ -9,8 +9,9 @@ import css from "./Header.module.css";
 const Header = () => {
   const { isLoggedIn } = useAuthStore();
   return (
-    <header className={css.header}>
-      {/* {isLoggedIn
+    <header className={css.container}>
+      <div className={css.header}>
+        {/* {isLoggedIn
             ? <>
                 <Logo />
                 <TransactionsHistoryNav />
@@ -20,6 +21,7 @@ const Header = () => {
       <Logo />
       <TransactionsHistoryNav />
       <UserBarBtn />
+      </div>
     </header>
   );
 };

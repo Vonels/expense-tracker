@@ -33,9 +33,9 @@ const UserBarBtn = () => {
 
       {/* Arrow icon */}
       {isOpen ? (
-        <Icon id={"icon-arrow-up-right2"} className={css.icon} />
+        <Icon id={"icon-listpump"} className={css.icon} />
       ) : (
-        <Icon id={"icon-Pensil"} className={css.icon} />
+        <Icon id={"icon-listdamp"} className={css.icon} />
       )}
     </button>
   );
