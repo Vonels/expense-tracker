@@ -205,7 +205,7 @@ export default function CategoriesModal() {
 
   const categoriesToDisplay = useMemo(
     () => (data ? data[transactionType] : []),
-    [data, transactionType],
+    [data, transactionType]
   );
 
   const loadCategories = async () => {

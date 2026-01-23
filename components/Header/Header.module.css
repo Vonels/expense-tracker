@@ -10,3 +10,8 @@
   padding-left: 100px;
   padding-right: 100px;
 }
+
+.wrapper {
+  position: relative;
+  display: inline-block;
+}

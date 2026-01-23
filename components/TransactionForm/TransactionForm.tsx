@@ -34,7 +34,7 @@ type TransactionFormProps = {
 const FormikSync = () => {
   const { setFieldValue } = useFormikContext<FormValues>();
   const selectedCategory = useTransactionStore(
-    (state) => state.selectedCategory,
+    (state) => state.selectedCategory
   );
 
   useEffect(() => {
@@ -71,7 +71,7 @@ const TransactionForm = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const selectedCategory = useTransactionStore(
-    (state) => state.selectedCategory, // НОВЕ
+    (state) => state.selectedCategory // НОВЕ
   );
   const resetCategory = useTransactionStore((state) => state.resetCategory); // НОВЕ
 
@@ -86,7 +86,7 @@ const TransactionForm = ({
 
   const handleSubmit = async (
     values: FormValues,
-    { resetForm }: FormikHelpers<FormValues>,
+    { resetForm }: FormikHelpers<FormValues>
   ) => {
     setIsLoading(true);
     try {
