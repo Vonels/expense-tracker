@@ -6,6 +6,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
+  padding-top: 59px;
 }
 .title {
   margin-right: 94px;
@@ -32,45 +33,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 40px;
 }
-
-/* .totalIncome {
-} */
-
-.totalExpenseItemText {
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  color: rgba(250, 250, 250, 0.5);
-  margin-bottom: 7px;
-}
-.totalExpenseItemUnit {
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 24px;
-  color: #fafafa;
-}
-/* .totalExpense {
-} */
 
 .incomeForm {
   border-radius: 30px;
   min-width: 1240px;
+  max-height: 439px;
+  background: #171719;
+  padding-top: 20px;
+  margin-top: 40px;
+  margin-bottom: 50px;
+}
+.icon {
+  width: 20px;
+  height: 20px;
+  fill: #0ef387;
 }
 .incomeFormInputSearch {
   border-radius: 30px;
   padding: 15px 30px;
   margin-right: 13px;
+  background-color: #0c0d0d;
 }
 .incomeFormInputData {
   border: 1px solid rgba(250, 250, 250, 0.2);
   border-radius: 30px;
   padding: 15px 30px;
+  background-color: #0c0d0d;
+}
+.incomeFormListCategoris {
 }
 .incomeFormList {
   display: flex;
   flex-direction: row;
+  padding-top: 20px;
+  padding-right: 66px;
+  padding-bottom: 20px;
+  padding-left: 40px;
 }
 .incomeFormListItemCategory {
   padding-right: 86px;

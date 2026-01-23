@@ -2,9 +2,9 @@ import IncomePage from "@/components/IncomeForm/IncomeForm";
 
 const Page = () => {
   return (
-    <div>
+    <section>
       <IncomePage />
-    </div>
+    </section>
   );
 };
 

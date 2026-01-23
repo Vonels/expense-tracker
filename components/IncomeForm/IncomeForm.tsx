@@ -1,3 +1,6 @@
+import { Icon } from "../Icon/Icon";
+import { TotalExpense } from "../TotalExpense/TotalExpense";
+import { TotalIncome } from "../TotalIncome/TotalIncome";
 import css from "./IncomeForm.module.css";
 
 const IncomePage = () => {
@@ -11,30 +14,16 @@ const IncomePage = () => {
         </p>
       </div>
       <div className={css.total}>
-        <div className={css.totalSvg}>
-          <svg width="20" height="20">
-            <use href="/symbol-defs.svg#icon-arrow-up-right2"></use>
-          </svg>
-        </div>
-
-        <ul className={css.totalIncome}>
-          <li className={css.totalExpenseItemText}>Total Income</li>
-          <li className={css.totalExpenseItemUnit}>$909.000</li>
-        </ul>
-        <svg className={css.totalSvg} width="20" height="20">
-          <use href="/symbol-defs.svg#icon-arrow-down-left2"></use>
-        </svg>
-        <ul className={css.totalExpense}>
-          <li className={css.totalExpenseItemText}>Total Expense</li>
-          <li className={css.totalExpenseItemUnit}>$259.000</li>
-        </ul>
+        <TotalIncome />
+        <TotalExpense />
       </div>
       <div className={css.incomeForm}>
         <form action="">
           <label id="search">
-            <svg className={css.incomeFormSvg} width="20" height="20">
-              <use href="/symbol-defs.svg#icon-search"></use>
-            </svg>
+            <Icon id="icon-search" className={css.icon} />
+            {/* <svg className={css.incomeFormSvg} width="20" height="20">
+                <use href="/symbol-defs.svg#icon-search"></use>
+              </svg> */}
             <input
               className={css.incomeFormInputSearch}
               type="text"
@@ -43,9 +32,10 @@ const IncomePage = () => {
             ></input>
           </label>
           <label id="data">
-            <svg className={css.incomeFormSvg} width="20" height="20">
-              <use href="/symbol-defs.svg#icon-calendar"></use>
-            </svg>
+            <Icon id="icon-search" className={css.icon} />
+            {/* <svg className={css.incomeFormSvg} width="20" height="20">
+                <use href="/symbol-defs.svg#icon-calendar"></use>
+              </svg> */}
             <input
               className={css.incomeFormInputData}
               type="data"
@@ -54,7 +44,7 @@ const IncomePage = () => {
             ></input>
           </label>
         </form>
-        <div>
+        <div className={css.incomeFormListCategoris}>
           <ul className={css.incomeFormList}>
             <li className={css.incomeFormListItemCategory}>
               Category <p className={css.incomeFormListItemText}>Salary</p>
