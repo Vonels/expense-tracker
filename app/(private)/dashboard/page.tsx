@@ -8,7 +8,7 @@ import TransactionForm from "@/components/TransactionForm/TransactionForm";
 
 export default function DashboardPage() {
   const handleOpenCategories = (type: "incomes" | "expenses") => {
-    console.log(type);
+    
   };
 
   return (

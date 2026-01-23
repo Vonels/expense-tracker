@@ -13,8 +13,11 @@ import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 import css from "./TransactionForm.module.css";
+
 import { useTransactionStore } from "@/lib/store/useTransactionStore"; // НОВЕ
 import { useRouter } from "next/navigation"; // НОВЕ
+import { AntdDatePicker } from "../AntdDatePicker/AntdDatePicker";
+import { AntdTimePicker } from "../AntdTimePicker/AntdTimePicker";
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -28,13 +31,13 @@ interface FormValues {
 type TransactionFormProps = {
   onOpenCategories: (type: "incomes" | "expenses") => void;
   selectedCategoryName: string;
+  selectedCategoryId: string;
 };
 
-// НОВЕ:
 const FormikSync = () => {
   const { setFieldValue } = useFormikContext<FormValues>();
   const selectedCategory = useTransactionStore(
-    (state) => state.selectedCategory,
+    (state) => state.selectedCategory
   );
 
   useEffect(() => {
@@ -46,34 +49,32 @@ const FormikSync = () => {
   return null;
 };
 
-// НОВЕ end
-
 const validationSchema = Yup.object().shape({
   type: Yup.string().oneOf(["incomes", "expenses"]).required(),
-  date: Yup.string().required("Обов’язкове поле"),
-  time: Yup.string().required("Обов’язкове поле"),
-  category: Yup.string().required("Оберіть категорію"),
+  date: Yup.string().required("Date is required"),
+  time: Yup.string().required("Time is required"),
+  category: Yup.string().required("Please select a category"),
   sum: Yup.number()
-    .typeError("Сума повинна бути числом")
-    .min(1, "Мінімум 1")
-    .max(1000000, "Максимум 1,000,000")
-    .required("Обов’язкове поле"),
+    .typeError("Sum must be a number")
+    .min(1, "Minimum amount is 1")
+    .max(1000000, "Maximum amount is 1,000,000")
+    .required("Sum is required"),
   comment: Yup.string()
-    .min(3, "Мінімум 3 символи")
-    .max(48, "Максимум 48 символів")
+    .min(3, "Minimum 3 characters")
+    .max(48, "Maximum 48 characters")
     .optional(),
 });
 
-const TransactionForm = ({
-  onOpenCategories,
+const TransactionForm: React.FC<TransactionFormProps> = ({
   selectedCategoryName,
-}: TransactionFormProps) => {
+}) => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const selectedCategory = useTransactionStore(
-    (state) => state.selectedCategory, // НОВЕ
+    (state) => state.selectedCategory
   );
-  const resetCategory = useTransactionStore((state) => state.resetCategory); // НОВЕ
+  const resetCategory = useTransactionStore((state) => state.resetCategory);
 
   const initialValues: FormValues = {
     type: "expenses",
@@ -86,26 +87,24 @@ const TransactionForm = ({
 
   const handleSubmit = async (
     values: FormValues,
-    { resetForm }: FormikHelpers<FormValues>,
+    { resetForm }: FormikHelpers<FormValues>
   ) => {
     setIsLoading(true);
     try {
       await axios.post("/transactions", values);
-      toast.success("Транзакцію успішно додано!");
+      toast.success("Transaction added successfully!");
       resetForm();
-      resetCategory(); // НОВЕ
+      resetCategory();
     } catch (error: unknown) {
-      let errorMsg = "Помилка запиту";
+      let errorMsg = "Request failed";
       if (axios.isAxiosError(error)) {
-        errorMsg = error.response?.data?.message || "Помилка сервера";
+        errorMsg = error.response?.data?.message || "Server error";
       }
       toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }
   };
-
-  const router = useRouter();
 
   return (
     <div className={css.formContainer}>
@@ -114,10 +113,10 @@ const TransactionForm = ({
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ values }) => (
+        {({ values, setFieldValue }) => (
           <Form className={css.form}>
-            <FormikSync /> {/* НОВЕ */}
-            {/* Type */}
+            <FormikSync />
+
             <div className={css.radioGroup}>
               <label className={css.radioLabel}>
                 <Field
@@ -125,36 +124,47 @@ const TransactionForm = ({
                   name="type"
                   value="expenses"
                   className={css.radioInput}
+                  onChange={() => {
+                    setFieldValue("type", "expenses");
+                    setFieldValue("category", "");
+                    resetCategory();
+                  }}
                 />
                 Expense
               </label>
               <label className={css.radioLabel}>
-                <Field
+                <input
                   type="radio"
                   name="type"
                   value="incomes"
+                  onChange={() => {
+                    setFieldValue("type", "incomes");
+                    setFieldValue("category", "");
+                    resetCategory();
+                  }}
                   className={css.radioInput}
                 />
                 Income
               </label>
             </div>
+
             <div className={css.row}>
               <div className={css.fieldGroup}>
                 <label className={css.label}>Date</label>
-                <Field name="date" type="date" className={css.input} />
+                <AntdDatePicker name="date" />
                 <ErrorMessage name="date" component="p" className={css.error} />
               </div>
+
               <div className={css.fieldGroup}>
                 <label className={css.label}>Time</label>
-                <Field name="time" type="time" className={css.input} />
+                <AntdTimePicker name="time" />
                 <ErrorMessage name="time" component="p" className={css.error} />
               </div>
             </div>
-            {/* Category */}
+
             <div className={css.fieldGroup}>
               <label className={css.label}>Category</label>
-              <Field
-                name="categoryDisplay"
+              <input
                 type="text"
                 readOnly
                 placeholder="Different"
@@ -168,7 +178,6 @@ const TransactionForm = ({
                   router.push("/categoriesModal");
                 }}
               />
-              {/* Прихований Field для зберігання ID */}
               <Field type="hidden" name="category" />
               <ErrorMessage
                 name="category"
@@ -176,6 +185,7 @@ const TransactionForm = ({
                 className={css.error}
               />
             </div>
+
             <div className={css.fieldGroup}>
               <label className={css.label}>Sum</label>
               <div className={css.sumWrapper}>
@@ -185,10 +195,12 @@ const TransactionForm = ({
                   placeholder="0.00"
                   className={css.input}
                 />
+                {/* //заглушка */}
                 <span className={css.currency}>UAH</span>
               </div>
               <ErrorMessage name="sum" component="p" className={css.error} />
             </div>
+
             <div className={css.fieldGroup}>
               <label className={css.label}>Comment</label>
               <Field
