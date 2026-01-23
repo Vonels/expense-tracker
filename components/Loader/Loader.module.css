@@ -1,0 +1,207 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.wheelAndHamster {
+  --dur: 1s;
+  position: relative;
+  width: 12em;
+  height: 12em;
+  font-size: 14px;
+}
+
+.wheel,
+.spoke,
+.hamster,
+.hamster div {
+  position: absolute;
+}
+
+.wheel {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.1em inset var(--primary-color, #f4ad42); /* Можна змінити колір під бренд */
+  z-index: 2;
+}
+
+.spoke {
+  top: 0;
+  left: 5.95em;
+  width: 0.1em;
+  height: 100%;
+  background: radial-gradient(
+    rgba(244, 173, 66, 0.1) 50%,
+    rgba(244, 173, 66, 1) 0
+  );
+  z-index: 1;
+  animation: rotate var(--dur) linear infinite;
+}
+
+.hamster {
+  top: 50%;
+  left: calc(50% - 3.5em);
+  width: 7em;
+  height: 3.75em;
+  transform: rotate(4deg) translate(-0.8em, 1.85em);
+  transform-origin: 50% 0;
+  z-index: 1;
+  animation: hamster var(--dur) ease-in-out infinite;
+}
+
+.hamster__body {
+  top: 0;
+  left: 0;
+  width: 4.5em;
+  height: 3em;
+  background: #ffb149;
+  border-radius: 50% 30% 50% 30% / 55% 60% 40% 45%;
+  box-shadow: 0 0.1em 0.3em rgba(0, 0, 0, 0.2) inset;
+}
+
+.hamster__head {
+  top: 0.2em;
+  left: 3em;
+  width: 2.3em;
+  height: 2.5em;
+  background: #ffc06e;
+  border-radius: 40% 50% 50% 35%;
+}
+
+.hamster__ear {
+  top: -0.2em;
+  left: 0.8em;
+  width: 0.75em;
+  height: 0.75em;
+  background: #ffdb8c;
+  border-radius: 50%;
+}
+
+.hamster__eye {
+  top: 0.9em;
+  left: 1.25em;
+  width: 0.5em;
+  height: 0.5em;
+  background: #000;
+  border-radius: 50%;
+}
+
+.hamster__nose {
+  top: 1.2em;
+  left: 1.8em;
+  width: 0.2em;
+  height: 0.25em;
+  background: #ff8a8a;
+  border-radius: 35% 65% 85% 15% / 70% 50% 50% 30%;
+}
+
+.hamster__limb {
+  width: 1.5em;
+  height: 2em;
+  background: linear-gradient(#ffc06e 80%, #ff8a8a 80%);
+  border-radius: 0.75em 0.75em 0 0;
+}
+
+.hamster__limbFr {
+  top: 2em;
+  left: 3.3em;
+  animation: limbFr var(--dur) linear infinite;
+}
+
+.hamster__limbFl {
+  top: 2em;
+  left: 3.3em;
+  animation: limbFl var(--dur) linear infinite;
+}
+
+.hamster__limbBr {
+  top: 2em;
+  left: 0.5em;
+  animation: limbBr var(--dur) linear infinite;
+}
+
+.hamster__limbBl {
+  top: 2em;
+  left: 0.5em;
+  animation: limbBl var(--dur) linear infinite;
+}
+
+.hamster__tail {
+  top: 1.5em;
+  right: -0.5em;
+  width: 1em;
+  height: 0.5em;
+  background: #ffdb8c;
+  border-radius: 0.25em 50% 50% 0.25em;
+}
+
+/* Анімації */
+@keyframes rotate {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes hamster {
+  from,
+  to {
+    transform: rotate(4deg) translate(-0.8em, 1.85em);
+  }
+  50% {
+    transform: rotate(-4deg) translate(-0.8em, 1.85em);
+  }
+}
+
+@keyframes limbFr {
+  from,
+  to {
+    transform: rotate(-30deg);
+  }
+  50% {
+    transform: rotate(30deg);
+  }
+}
+
+@keyframes limbFl {
+  from,
+  to {
+    transform: rotate(30deg);
+  }
+  50% {
+    transform: rotate(-30deg);
+  }
+}
+
+@keyframes limbBr {
+  from,
+  to {
+    transform: rotate(-40deg);
+  }
+  50% {
+    transform: rotate(40deg);
+  }
+}
+
+@keyframes limbBl {
+  from,
+  to {
+    transform: rotate(40deg);
+  }
+  50% {
+    transform: rotate(-40deg);
+  }
+}
