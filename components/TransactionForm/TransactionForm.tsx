@@ -71,7 +71,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   const router = useRouter();
 
   const selectedCategory = useTransactionStore(
-    (state) => state.selectedCategory
+    (state) => state.selectedCategory // НОВЕ
   );
   const resetCategory = useTransactionStore((state) => state.resetCategory);
 
