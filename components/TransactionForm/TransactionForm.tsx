@@ -27,11 +27,12 @@ interface FormValues {
   comment: string;
 }
 
-interface TransactionFormProps {
+type TransactionFormProps = {
   onOpenCategories: (type: "incomes" | "expenses") => void;
   selectedCategoryName: string;
   selectedCategoryId: string;
 }
+};
 
 const FormikSync = () => {
   const { setFieldValue } = useFormikContext<FormValues>();
@@ -105,6 +106,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     }
   };
 
+  const router = useRouter();
+
   return (
     <div className={css.formContainer}>
       <Formik
@@ -169,6 +172,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 placeholder="Different"
                 className={css.input}
                 value={selectedCategory?.name || selectedCategoryName || ""}
+                value={selectedCategory?.name || selectedCategoryName || ""} // НОВЕ
+                // НОВЕ для onClick/Полина для тебя
                 onClick={() => {
                   useTransactionStore
                     .getState()
