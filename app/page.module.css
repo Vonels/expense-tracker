@@ -1,0 +1,196 @@
+.backgroundphoto {
+  background-image: url(../public/HomeImage.webp);
+  border-radius: 20px;
+  width: 611px;
+  height: 568px;
+  margin-right: 54px;
+  position: relative;
+  overflow: hidden;
+}
+
+.wrapper {
+  display: flex;
+}
+
+@keyframes moveX {
+  from {
+    left: 0;
+  }
+  to {
+    left: 308px;
+  }
+}
+
+/* Розрахунок: 568px (фото) - висота_прямокутника (припустимо 80px) = 488px */
+@keyframes moveY {
+  from {
+    top: 0;
+  }
+  to {
+    top: 447px;
+  }
+}
+
+.rectangle {
+  background: #fafafa;
+  border-radius: 20px;
+  padding: 0 23px 0 23px;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-around;
+  width: 303px;
+  animation:
+    moveX 10s linear infinite alternate,
+    moveY 7.3s linear infinite alternate;
+}
+
+.rectangle:hover {
+  animation-play-state: paused;
+  cursor: pointer; /* щоб користувач розумів, що на об'єкт можна навести */
+}
+.rectangle_text1 {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  color: rgba(17, 16, 28, 0.5);
+  padding-top: 32px;
+}
+
+.rectangle_text2 {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 24px;
+  color: #11101c;
+  padding-bottom: 34px;
+  margin-right: 23px;
+}
+
+.svg {
+  border-radius: 13px;
+  width: 43px;
+  height: 43px;
+  padding: 13px 18px 17px 13px;
+  background: #0ef387;
+  margin-right: 22px;
+}
+
+.icon {
+  width: 17px;
+  height: 20px;
+}
+
+.rectangle_block2 {
+  border-radius: 13px;
+  background: rgba(2, 177, 90, 0.15);
+}
+
+.rectangle_text3 {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 12px;
+  color: #02b15a;
+  padding: 4px 9px 3px 8px;
+}
+
+.form_text1 {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(250, 250, 250, 0.4);
+  margin-bottom: 10px;
+}
+
+.form_block1 {
+  margin-bottom: 40px;
+  width: 575px;
+}
+
+.form_text2 {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 56px;
+  letter-spacing: -0.02em;
+  color: #fafafa;
+  margin-bottom: 20px;
+}
+.span {
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
+  color: #0ef387;
+}
+.form_text3 {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  color: rgba(250, 250, 250, 0.4);
+  width: 533px;
+}
+
+.form_block2 {
+  width: 575px;
+  display: flex;
+  margin-bottom: 140px;
+}
+
+.button_signup {
+  padding: 14px 44px;
+  border-radius: 40px;
+  background: #0ef387;
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  color: #0c0d0d;
+  margin-right: 20px;
+}
+
+.button_signup:hover {
+  background: #0ebb69;
+}
+
+.button_signin {
+  border: 1px solid rgba(250, 250, 250, 0.4);
+  border-radius: 40px;
+  padding: 14px 44px;
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  color: #fafafa;
+  background-color: transparent;
+}
+
+.button_signin:hover {
+  border: 1px solid #0ef387;
+}
+
+.form_text4 {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: #fafafa;
+  margin-bottom: 12px;
+}
+
+.form_text5 {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  color: rgba(250, 250, 250, 0.4);
+  width: 210px;
+}
+
+.form_block3 {
+  display: flex;
+}
+.image {
+  margin-right: 32px;
+}
