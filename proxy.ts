@@ -43,12 +43,12 @@
 
 //   const isPrivateRoute = privateRoutes.some(
 //     (route) =>
-//       nextUrl.pathname === route || nextUrl.pathname.startsWith(route + "/"),
+//       nextUrl.pathname === route || nextUrl.pathname.startsWith(route + "/")
 //   );
 
 //   const isAuthRoute = authRoutes.some(
 //     (route) =>
-//       nextUrl.pathname === route || nextUrl.pathname.startsWith(route + "/"),
+//       nextUrl.pathname === route || nextUrl.pathname.startsWith(route + "/")
 //   );
 
 //   // если только что обновили токены — надо записать set-cookie в браузер
