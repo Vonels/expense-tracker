@@ -170,12 +170,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import iziToast from "izitoast";
-import { AxiosError } from "axios";
 
 import { Modal } from "@/components/Modal/Modal";
 import { useTransactionStore } from "@/lib/store/useTransactionStore";
 import { api } from "@/lib/api/api";
+import iziToast from "izitoast";
+import { AxiosError } from "axios";
 import css from "@/components/Modal/Modal.module.css";
 
 interface ICategory {
