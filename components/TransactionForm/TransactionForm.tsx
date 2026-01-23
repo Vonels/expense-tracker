@@ -13,10 +13,11 @@ import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 import css from "./TransactionForm.module.css";
-import { AntdDatePicker } from "../AntdDatePicker/AntdDatePicker";
-import { AntdTimePicker } from "../AntdTimePicker/AntdTimePicker";
+
 import { useTransactionStore } from "@/lib/store/useTransactionStore"; // НОВЕ
 import { useRouter } from "next/navigation"; // НОВЕ
+import { AntdDatePicker } from "../AntdDatePicker/AntdDatePicker";
+import { AntdTimePicker } from "../AntdTimePicker/AntdTimePicker";
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -71,7 +72,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   const router = useRouter();
 
   const selectedCategory = useTransactionStore(
-    (state) => state.selectedCategory // НОВЕ
+    (state) => state.selectedCategory
   );
   const resetCategory = useTransactionStore((state) => state.resetCategory);
 
