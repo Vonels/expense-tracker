@@ -97,3 +97,12 @@
   ) {
   display: none;
 }
+
+.antdPicker :global(.ant-picker-suffix) {
+  width: 20px;
+  height: 20px;
+  stroke: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

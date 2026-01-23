@@ -6,7 +6,7 @@ import { Modal } from "@/components/Modal/Modal";
 import { useTransactionStore } from "@/lib/store/useTransactionStore";
 import { api } from "@/lib/api/api";
 import iziToast from "izitoast";
-import css from "./Modal.module.css";
+import css from "@/components/Modal/Modal.module.css";
 import { AxiosError } from "axios";
 
 interface ICategory {

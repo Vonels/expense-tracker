@@ -4,6 +4,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { FormikValues, useFormikContext } from "formik";
 import { useCallback, useMemo } from "react";
 import css from "./AntdTimePicker.module.css";
+import { Icon } from "../Icon/Icon";
 
 interface Props {
   name: string;
@@ -57,17 +58,12 @@ export const AntdTimePicker = ({ name, placeholder }: Props) => {
       <TimePicker
         className={css.antdPicker}
         classNames={{ popup: css.timePopup }}
-        styles={{
-          suffix: {
-            color: "red",
-          },
-        }}
+        suffixIcon={<Icon id="icon-clock" />}
         format="HH:mm:ss"
         value={timeValue}
         onChange={handleTimeChange}
         placeholder={placeholder || "enter time"}
         showNow={false}
-        suffixIcon={null}
         allowClear={false}
         getPopupContainer={getContainer}
       />

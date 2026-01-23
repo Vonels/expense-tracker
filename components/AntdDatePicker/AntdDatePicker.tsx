@@ -4,6 +4,7 @@ import updateLocale from "dayjs/plugin/updateLocale";
 import { FormikValues, useFormikContext } from "formik";
 import css from "./AntdDatePicker.module.css";
 import { ReactNode, useCallback, useMemo } from "react";
+import { Icon } from "../Icon/Icon";
 
 interface Props {
   name: string;
@@ -69,11 +70,11 @@ export const AntdDatePicker = ({ name, placeholder }: Props) => {
         classNames={{
           popup: css.calendarPopup,
         }}
+        suffixIcon={<Icon id="icon-calendar" />}
         format="MM/DD/YYYY"
         value={dateValue?.isValid() ? dateValue : null}
         onChange={handleDateChange}
         placeholder={placeholder || dayjs().format("MM/DD/YYYY")}
-        suffixIcon={null}
         allowClear={false}
         showNow={false}
         superNextIcon={null}
