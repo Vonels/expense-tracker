@@ -26,7 +26,7 @@ export async function GET(): Promise<NextResponse> {
 
     return NextResponse.json(
       { message: err.response?.data.message ?? "Failed to load categories" },
-      { status: err.response?.status ?? 500 },
+      { status: err.response?.status ?? 500 }
     );
   }
 }
@@ -55,7 +55,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 
     return NextResponse.json(
       { message: err.response?.data.message ?? "Failed to create category" },
-      { status: err.response?.status ?? 500 },
+      { status: err.response?.status ?? 500 }
     );
   }
 }

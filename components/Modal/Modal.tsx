@@ -40,6 +40,6 @@ export const Modal = ({ children }: ModalProps) => {
         {children}
       </div>
     </div>,
-    document.body,
+    document.body
   );
 };
