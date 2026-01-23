@@ -1,10 +1,11 @@
 .chartContainer {
-  background: #1e1c1f;
+  background: #171719;
   border-radius: 30px;
   padding: 40px;
 }
 
 .title {
+  font-weight: 400;
   font-size: 16px;
   color: rgba(250, 250, 250, 0.5);
   margin-bottom: 20px;
@@ -18,8 +19,8 @@
 
 .chartWrapper {
   position: relative;
-  width: 200px;
-  height: 100px;
+  width: 285px;
+  height: 200px;
 }
 
 .chartLabel {
@@ -35,9 +36,30 @@
 .legend {
   list-style: none;
   padding: 0;
+  max-height: 120px;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-right: 22px;
+}
+
+.legend::-webkit-scrollbar {
+  width: 6px;
+}
+
+.legend::-webkit-scrollbar-track {
+  background: #0c0d0d;
+  border-radius: 12px;
+}
+
+.legend::-webkit-scrollbar-thumb {
+  background: #444446;
+  border-radius: 12px;
+}
+
+.legend::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .legendItem {
@@ -45,14 +67,15 @@
   justify-content: space-between;
   align-items: center;
   width: 180px;
+  font-weight: 400;
+  font-size: 16px;
+  color: rgba(250, 250, 250, 0.5);
 }
 
 .legendName {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  color: #fafafa;
 }
 
 .dot {
@@ -62,7 +85,7 @@
 }
 
 .percentage {
-  font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 16px;
   color: #fafafa;
 }

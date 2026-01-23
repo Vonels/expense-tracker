@@ -4,6 +4,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
 import Header from "@/components/Header/Header";
+
 // import AuthProvider from "@/components/AuthProvider/AuthProvider";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
@@ -27,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Header />
-        {children}
+        <main>{children}</main>
         {modal}
       </body>
     </html>

@@ -160,7 +160,7 @@ const TransactionForm = ({
                 placeholder="Different"
                 className={css.input}
                 value={selectedCategory?.name || selectedCategoryName || ""} // НОВЕ
-                // НОВЕ для onClick
+                // НОВЕ для onClick/Полина для тебя
                 onClick={() => {
                   useTransactionStore
                     .getState()
