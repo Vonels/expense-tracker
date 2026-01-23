@@ -1,11 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
-import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
+import React, { useState, useEffect } from "react";
+import {
+  Formik,
+  Form,
+  Field,
+  ErrorMessage,
+  FormikHelpers,
+  useFormikContext, // НОВЕ
+} from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 import css from "./TransactionForm.module.css";
+import { useTransactionStore } from "@/lib/store/useTransactionStore"; // НОВЕ
+import { useRouter } from "next/navigation"; // НОВЕ
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -16,10 +25,28 @@ interface FormValues {
   comment: string;
 }
 
-interface TransactionFormProps {
+type TransactionFormProps = {
   onOpenCategories: (type: "incomes" | "expenses") => void;
   selectedCategoryName: string;
-}
+};
+
+// НОВЕ:
+const FormikSync = () => {
+  const { setFieldValue } = useFormikContext<FormValues>();
+  const selectedCategory = useTransactionStore(
+    (state) => state.selectedCategory,
+  );
+
+  useEffect(() => {
+    if (selectedCategory) {
+      setFieldValue("category", selectedCategory.id);
+    }
+  }, [selectedCategory, setFieldValue]);
+
+  return null;
+};
+
+// НОВЕ end
 
 const validationSchema = Yup.object().shape({
   type: Yup.string().oneOf(["incomes", "expenses"]).required(),
@@ -43,6 +70,11 @@ const TransactionForm = ({
 }: TransactionFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
+  const selectedCategory = useTransactionStore(
+    (state) => state.selectedCategory, // НОВЕ
+  );
+  const resetCategory = useTransactionStore((state) => state.resetCategory); // НОВЕ
+
   const initialValues: FormValues = {
     type: "expenses",
     date: new Date().toISOString().split("T")[0],
@@ -61,6 +93,7 @@ const TransactionForm = ({
       await axios.post("/transactions", values);
       toast.success("Транзакцію успішно додано!");
       resetForm();
+      resetCategory(); // НОВЕ
     } catch (error: unknown) {
       let errorMsg = "Помилка запиту";
       if (axios.isAxiosError(error)) {
@@ -72,6 +105,8 @@ const TransactionForm = ({
     }
   };
 
+  const router = useRouter();
+
   return (
     <div className={css.formContainer}>
       <Formik
@@ -81,6 +116,7 @@ const TransactionForm = ({
       >
         {({ values }) => (
           <Form className={css.form}>
+            <FormikSync /> {/* НОВЕ */}
             {/* Type */}
             <div className={css.radioGroup}>
               <label className={css.radioLabel}>
@@ -102,7 +138,6 @@ const TransactionForm = ({
                 Income
               </label>
             </div>
-
             <div className={css.row}>
               <div className={css.fieldGroup}>
                 <label className={css.label}>Date</label>
@@ -115,7 +150,6 @@ const TransactionForm = ({
                 <ErrorMessage name="time" component="p" className={css.error} />
               </div>
             </div>
-
             {/* Category */}
             <div className={css.fieldGroup}>
               <label className={css.label}>Category</label>
@@ -125,8 +159,14 @@ const TransactionForm = ({
                 readOnly
                 placeholder="Different"
                 className={css.input}
-                value={selectedCategoryName || ""}
-                onClick={() => onOpenCategories(values.type)}
+                value={selectedCategory?.name || selectedCategoryName || ""} // НОВЕ
+                // НОВЕ для onClick
+                onClick={() => {
+                  useTransactionStore
+                    .getState()
+                    .setTransactionType(values.type);
+                  router.push("/categoriesModal");
+                }}
               />
               {/* Прихований Field для зберігання ID */}
               <Field type="hidden" name="category" />
@@ -136,7 +176,6 @@ const TransactionForm = ({
                 className={css.error}
               />
             </div>
-
             <div className={css.fieldGroup}>
               <label className={css.label}>Sum</label>
               <div className={css.sumWrapper}>
@@ -150,7 +189,6 @@ const TransactionForm = ({
               </div>
               <ErrorMessage name="sum" component="p" className={css.error} />
             </div>
-
             <div className={css.fieldGroup}>
               <label className={css.label}>Comment</label>
               <Field
@@ -165,7 +203,6 @@ const TransactionForm = ({
                 className={css.error}
               />
             </div>
-
             <button
               type="submit"
               className={css.submitBtn}

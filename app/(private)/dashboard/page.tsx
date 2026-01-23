@@ -1,9 +1,16 @@
+"use client";
+
 import { TotalIncome } from "@/components/TotalIncome/TotalIncome";
 import css from "./Dashboard.module.css";
 import { TotalExpense } from "@/components/TotalExpense/TotalExpense";
 import { ExpensesChart } from "@/components/ExpensesChart/ExpensesChart";
+import TransactionForm from "@/components/TransactionForm/TransactionForm";
 
 export default function DashboardPage() {
+  const handleOpenCategories = (type: "incomes" | "expenses") => {
+    console.log(type);
+  };
+
   return (
     <main className={css.container}>
       <div className={css.info}>
@@ -24,7 +31,12 @@ export default function DashboardPage() {
         </section>
       </div>
 
-      <aside className={css.formSection}>Form</aside>
+      <aside className={css.formSection}>
+        <TransactionForm
+          onOpenCategories={handleOpenCategories}
+          selectedCategoryName="Category"
+        />
+      </aside>
     </main>
   );
 }
