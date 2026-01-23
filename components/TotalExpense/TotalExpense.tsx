@@ -12,7 +12,7 @@ const currencySymbols: Record<string, string> = {
 
 export const TotalExpense = () => {
   const totalExpenses = useUserStore(
-    (state) => state.transactionsTotal.expenses,
+    (state) => state.transactionsTotal.expenses
   );
   const currency = useUserStore((state) => state.currency);
 

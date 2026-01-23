@@ -32,17 +32,14 @@ export const Modal = ({ children }: ModalProps) => {
       onClick={(e) => e.target === e.currentTarget && router.back()}
     >
       <div className={css.modal}>
-        <button
-          className={css.closeBtnCategoriesModal}
-          onClick={() => router.back()}
-        >
-          <svg width="12" height="12">
+        <button className={css.closeBtnCategoriesModal} onClick={onClose}>
+          <svg width="24" height="24">
             <use href="/symbol-defs.svg#icon-Close"></use>
           </svg>
         </button>
         {children}
       </div>
     </div>,
-    document.body,
+    document.body
   );
 };
