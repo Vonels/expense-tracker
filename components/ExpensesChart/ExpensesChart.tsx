@@ -4,16 +4,21 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import css from "./ExpensesChart.module.css";
 import { useUserStore } from "@/lib/store/userStore";
 
-const COLORS = ["#0ef387", "#202020", "#ffffff", "#4e4e4e"];
+const COLORS = ["#0ef387", "#0ebb69", "#fafafa", " rgba(250, 250, 250, 0.2)"];
 
 export const ExpensesChart = () => {
   const categoriesData = useUserStore((state) => state.categories.expenses);
 
-  const chartData = categoriesData.map((cat, index) => ({
-    name: cat.categoryName,
-    value: 25,
-    color: COLORS[index % COLORS.length],
-  }));
+  const chartData = categoriesData.map((cat, index) => {
+    const percentage =
+      categoriesData.length > 0 ? Math.round(100 / categoriesData.length) : 0;
+
+    return {
+      name: cat.categoryName,
+      value: percentage,
+      color: COLORS[index % COLORS.length],
+    };
+  });
 
   return (
     <div className={css.chartContainer}>
@@ -25,10 +30,11 @@ export const ExpensesChart = () => {
               <Pie
                 data={chartData}
                 innerRadius={60}
-                outerRadius={80}
+                outerRadius={90}
                 startAngle={180}
                 endAngle={0}
-                paddingAngle={5}
+                cornerRadius={6}
+                paddingAngle={-20}
                 dataKey="value"
                 stroke="none"
               >
@@ -51,7 +57,7 @@ export const ExpensesChart = () => {
                 />
                 {cat.name}
               </div>
-              <span className={css.percentage}>25%</span>
+              <span className={css.percentage}>{cat.value}%</span>
             </li>
           ))}
         </ul>
