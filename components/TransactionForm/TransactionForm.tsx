@@ -7,7 +7,7 @@ import {
   Field,
   ErrorMessage,
   FormikHelpers,
-  useFormikContext,
+  useFormikContext, // НОВЕ
 } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -15,18 +15,8 @@ import { toast } from "react-toastify";
 import css from "./TransactionForm.module.css";
 import { AntdDatePicker } from "../AntdDatePicker/AntdDatePicker";
 import { AntdTimePicker } from "../AntdTimePicker/AntdTimePicker";
-
-const FormikSyncedFields = ({ categoryId }: { categoryId: string }) => {
-  const { setFieldValue } = useFormikContext();
-
-  useEffect(() => {
-    if (categoryId) {
-      setFieldValue("category", categoryId);
-    }
-  }, [categoryId, setFieldValue]);
-
-  return null;
-};
+import { useTransactionStore } from "@/lib/store/useTransactionStore"; // НОВЕ
+import { useRouter } from "next/navigation"; // НОВЕ
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -42,6 +32,21 @@ interface TransactionFormProps {
   selectedCategoryName: string;
   selectedCategoryId: string;
 }
+
+const FormikSync = () => {
+  const { setFieldValue } = useFormikContext<FormValues>();
+  const selectedCategory = useTransactionStore(
+    (state) => state.selectedCategory,
+  );
+
+  useEffect(() => {
+    if (selectedCategory) {
+      setFieldValue("category", selectedCategory.id);
+    }
+  }, [selectedCategory, setFieldValue]);
+
+  return null;
+};
 
 const validationSchema = Yup.object().shape({
   type: Yup.string().oneOf(["incomes", "expenses"]).required(),
@@ -60,11 +65,15 @@ const validationSchema = Yup.object().shape({
 });
 
 const TransactionForm: React.FC<TransactionFormProps> = ({
-  onOpenCategories,
   selectedCategoryName,
-  selectedCategoryId,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const selectedCategory = useTransactionStore(
+    (state) => state.selectedCategory,
+  );
+  const resetCategory = useTransactionStore((state) => state.resetCategory);
 
   const initialValues: FormValues = {
     type: "expenses",
@@ -84,6 +93,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       await axios.post("/transactions", values);
       toast.success("Transaction added successfully!");
       resetForm();
+      resetCategory();
     } catch (error: unknown) {
       let errorMsg = "Request failed";
       if (axios.isAxiosError(error)) {
@@ -104,7 +114,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       >
         {({ values, setFieldValue }) => (
           <Form className={css.form}>
-            <FormikSyncedFields categoryId={selectedCategoryId} />
+            <FormikSync />
 
             <div className={css.radioGroup}>
               <label className={css.radioLabel}>
@@ -113,6 +123,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   name="type"
                   value="expenses"
                   className={css.radioInput}
+                  onChange={() => {
+                    setFieldValue("type", "expenses");
+                    setFieldValue("category", "");
+                    resetCategory();
+                  }}
                 />
                 Expense
               </label>
@@ -121,10 +136,10 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   type="radio"
                   name="type"
                   value="incomes"
-                  checked={values.type === "incomes"}
                   onChange={() => {
                     setFieldValue("type", "incomes");
                     setFieldValue("category", "");
+                    resetCategory();
                   }}
                   className={css.radioInput}
                 />
@@ -135,23 +150,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             <div className={css.row}>
               <div className={css.fieldGroup}>
                 <label className={css.label}>Date</label>
-                <div className={css.inputWrapper}>
-                  <AntdDatePicker name="date" />
-                  <svg className={css.customIcon} width="20" height="20">
-                    <use href="/symbol-defs.svg#icon-calendar"></use>
-                  </svg>
-                </div>
+                <AntdDatePicker name="date" />
                 <ErrorMessage name="date" component="p" className={css.error} />
               </div>
 
               <div className={css.fieldGroup}>
                 <label className={css.label}>Time</label>
-                <div className={css.inputWrapper}>
-                  <AntdTimePicker name="time" />
-                  <svg className={css.customIcon} width="20" height="20">
-                    <use href="/symbol-defs.svg#icon-clock"></use>
-                  </svg>
-                </div>
+                <AntdTimePicker name="time" />
                 <ErrorMessage name="time" component="p" className={css.error} />
               </div>
             </div>
@@ -163,8 +168,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 readOnly
                 placeholder="Different"
                 className={css.input}
-                value={selectedCategoryName || ""}
-                onClick={() => onOpenCategories(values.type)}
+                value={selectedCategory?.name || selectedCategoryName || ""}
+                onClick={() => {
+                  useTransactionStore
+                    .getState()
+                    .setTransactionType(values.type);
+                  router.push("/categoriesModal");
+                }}
               />
               <Field type="hidden" name="category" />
               <ErrorMessage
@@ -183,6 +193,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   placeholder="0.00"
                   className={css.input}
                 />
+                {/* //заглушка */}
                 <span className={css.currency}>UAH</span>
               </div>
               <ErrorMessage name="sum" component="p" className={css.error} />
@@ -202,7 +213,6 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 className={css.error}
               />
             </div>
-
             <button
               type="submit"
               className={css.submitBtn}
