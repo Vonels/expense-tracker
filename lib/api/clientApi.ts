@@ -32,14 +32,14 @@ export const getMe = async (): Promise<User> => {
 
 // Расходи
 export const fetchExpenses = async (
-  params?: ExpensesQuery,
+  params?: ExpensesQuery
 ): Promise<ListResponse<Expense>> => {
   const res = await api.get<ListResponse<Expense>>("/expenses", { params });
   return res.data;
 };
 
 export const createExpense = async (
-  values: Omit<Expense, "id" | "createdAt" | "updatedAt">,
+  values: Omit<Expense, "id" | "createdAt" | "updatedAt">
 ): Promise<Expense> => {
   const res = await api.post<Expense>("/expenses", values);
   return res.data;
@@ -47,14 +47,14 @@ export const createExpense = async (
 
 // Доходи
 export const fetchIncomes = async (
-  params?: IncomesQuery,
+  params?: IncomesQuery
 ): Promise<ListResponse<Income>> => {
   const res = await api.get<ListResponse<Income>>("/incomes", { params });
   return res.data;
 };
 
 export const createIncome = async (
-  values: Omit<Income, "id" | "createdAt" | "updatedAt">,
+  values: Omit<Income, "id" | "createdAt" | "updatedAt">
 ): Promise<Income> => {
   const res = await api.post<Income>("/incomes", values);
   return res.data;

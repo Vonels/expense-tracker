@@ -1,5 +1,42 @@
-// "Компонент, що  випадаючим списком, в якому розміщено кнопки:
-// -Profile settings - клік по даній кнопці відкриває модалку UserSetsModal, в якій юзер може змінити особисті дані
-// -Log out - клік по даній кнопці виконує логаут юзера. В результаті якого юзер переадресовуються на сторінку WelcomePage, а також обнуляє всі дані поточного юзера, які зберігаються в глобальному стейті.
+"use client";
+import { useAuthStore } from "@/lib/store/authStore";
+import { useRouter } from "next/navigation";
+import css from "./UserPanel.module.css";
+import { Icon } from "../Icon/Icon";
 
-// Після відкриття модалки UserSetsModal або виконання логауту юзера, даний випадаючий список повинен бути закритим."
+type Props = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+const UserPanel = ({ isOpen, onClose }: Props) => {
+  const router = useRouter();
+  const logout = useAuthStore((state) => state.logout);
+  const handleProfileSettings = () => {
+    //відкриття модалки
+    onClose();
+  };
+  const handleLogout = () => {
+    logout();
+    router.push("./welcome");
+    onClose();
+  };
+
+  return (
+    <div className={`${css.panel} ${isOpen ? css.open : ""}`}>
+      <button
+        type="button"
+        onClick={handleProfileSettings}
+        className={css.button}
+      >
+        <Icon id={"icon-user"} className={css.icon} />
+        Profile settings
+      </button>
+      <button type="button" onClick={handleLogout} className={css.button}>
+        <Icon id={"icon-log-out"} className={css.icon} />
+        Log out
+      </button>
+    </div>
+  );
+};
+export default UserPanel;

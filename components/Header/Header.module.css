@@ -1,5 +1,17 @@
 .header {
   display: flex;
+  justify-content: space-between;
   height: 91px;
   align-items: center;
+}
+
+.container {
+  max-width: 1440px;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.wrapper {
+  position: relative;
+  display: inline-block;
 }
