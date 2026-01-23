@@ -4,6 +4,22 @@ import type { AuthCredentials } from "@/types/auth";
 import type { Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
 import type { ListResponse, SessionResponse } from "@/types/expense";
+import { Category } from "@/types/category";
+
+export interface CreateCategoryPayload {
+  name: string;
+  type: "income" | "expense";
+}
+
+export const categoriesApi = {
+  getAll() {
+    return api.get<Category[]>("/categories");
+  },
+
+  create(payload: CreateCategoryPayload) {
+    return api.post<Category>("/categories", payload);
+  },
+};
 
 // Все что связано с User
 export const register = async (values: AuthCredentials): Promise<User> => {

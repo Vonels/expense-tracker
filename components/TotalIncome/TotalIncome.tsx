@@ -1,12 +1,20 @@
 "use client";
 
 import { useUserStore } from "@/lib/store/userStore";
-import { Icon } from "../Icon/Icon";
 import css from "./TotalIncome.module.css";
+import { Icon } from "../Icon/Icon";
+
+const currencySymbols: Record<string, string> = {
+  usd: "$",
+  uah: "₴",
+  eur: "€",
+};
 
 export const TotalIncome = () => {
   const totalIncomes = useUserStore((state) => state.transactionsTotal.incomes);
   const currency = useUserStore((state) => state.currency);
+
+  const symbol = currencySymbols[currency.toLowerCase()] || currency;
 
   return (
     <div className={css.card}>
@@ -16,8 +24,11 @@ export const TotalIncome = () => {
       <div>
         <p className={css.label}>Total Income</p>
         <p className={css.amount}>
-          {currency}
-          {totalIncomes}
+          {symbol}
+          {totalIncomes.toLocaleString("en-US", {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3,
+          })}
         </p>
       </div>
     </div>

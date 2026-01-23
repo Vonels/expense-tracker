@@ -4,33 +4,47 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import css from "./ExpensesChart.module.css";
 import { useUserStore } from "@/lib/store/userStore";
 
-const COLORS = ["#0ef387", "#202020", "#ffffff", "#4e4e4e"];
+const generateColors = (count: number) => {
+  return Array.from({ length: count }, (_, i) => {
+    const hue = (145 + i * (360 / count)) % 360;
+    return `hsl(${hue}, 70%, 50%)`;
+  });
+};
 
 export const ExpensesChart = () => {
   const categoriesData = useUserStore((state) => state.categories.expenses);
 
-  const chartData = categoriesData.map((cat, index) => ({
-    name: cat.categoryName,
-    value: 25,
-    color: COLORS[index % COLORS.length],
-  }));
+  const chartColors = generateColors(categoriesData.length);
+
+  const chartData = categoriesData.map((cat, index) => {
+    const percentage =
+      categoriesData.length > 0 ? Math.round(100 / categoriesData.length) : 0;
+
+    return {
+      name: cat.categoryName,
+      value: percentage,
+      color: chartColors[index],
+    };
+  });
 
   return (
     <div className={css.chartContainer}>
       <h3 className={css.title}>Expenses categories</h3>
       <div className={css.content}>
         <div className={css.chartWrapper}>
-          <ResponsiveContainer width="100%" height={200}>
+          <ResponsiveContainer width="100%" height={285}>
             <PieChart>
               <Pie
                 data={chartData}
-                innerRadius={60}
-                outerRadius={80}
+                innerRadius={100}
+                outerRadius={140}
                 startAngle={180}
                 endAngle={0}
-                paddingAngle={5}
+                cornerRadius={8}
+                paddingAngle={2}
                 dataKey="value"
                 stroke="none"
+                cy="65%"
               >
                 {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
@@ -51,7 +65,7 @@ export const ExpensesChart = () => {
                 />
                 {cat.name}
               </div>
-              <span className={css.percentage}>25%</span>
+              <span className={css.percentage}>{cat.value}%</span>
             </li>
           ))}
         </ul>

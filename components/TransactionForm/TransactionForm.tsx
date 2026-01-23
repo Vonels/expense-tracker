@@ -25,10 +25,10 @@ interface FormValues {
   comment: string;
 }
 
-interface TransactionFormProps {
+type TransactionFormProps = {
   onOpenCategories: (type: "incomes" | "expenses") => void;
   selectedCategoryName: string;
-}
+};
 
 // НОВЕ:
 const FormikSync = () => {
@@ -105,6 +105,8 @@ const TransactionForm = ({
     }
   };
 
+  const router = useRouter();
+
   return (
     <div className={css.formContainer}>
       <Formik
@@ -158,13 +160,13 @@ const TransactionForm = ({
                 placeholder="Different"
                 className={css.input}
                 value={selectedCategory?.name || selectedCategoryName || ""} // НОВЕ
-                // НОВЕ для onClick
+                // НОВЕ для onClick/Полина для тебя
                 onClick={() => {
                   useTransactionStore
                     .getState()
                     .setTransactionType(values.type);
-                  onOpenCategories(values.type);
-                }} // НОВЕ
+                  router.push("/categoriesModal");
+                }}
               />
               {/* Прихований Field для зберігання ID */}
               <Field type="hidden" name="category" />
