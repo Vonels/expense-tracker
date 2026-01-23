@@ -20,7 +20,7 @@ export async function GET() {
           (error as ApiError).response?.data?.error ??
           (error as ApiError).message,
       },
-      { status: (error as ApiError).status },
+      { status: (error as ApiError).status }
     );
   }
 }
