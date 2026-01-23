@@ -6,8 +6,11 @@ import { useUserStore } from "@/lib/store/userStore";
 
 const generateColors = (count: number) => {
   return Array.from({ length: count }, (_, i) => {
-    const hue = (145 + i * (360 / count)) % 360;
-    return `hsl(${hue}, 70%, 50%)`;
+    const hue = (145 + i * 8) % 360;
+    const lightness = Math.max(20, 60 - i * 12);
+    const saturation = 75 - i * 5;
+
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   });
 };
 
@@ -41,7 +44,7 @@ export const ExpensesChart = () => {
                 startAngle={180}
                 endAngle={0}
                 cornerRadius={8}
-                paddingAngle={2}
+                paddingAngle={-5}
                 dataKey="value"
                 stroke="none"
                 cy="65%"
