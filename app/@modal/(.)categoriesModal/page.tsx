@@ -213,7 +213,7 @@ export default function CategoriesModal() {
 
   const categoriesToDisplay = useMemo(
     () => (data ? data[transactionType] : []),
-    [data, transactionType],
+    [data, transactionType]
   );
 
   const loadCategories = async () => {
@@ -344,7 +344,7 @@ export default function CategoriesModal() {
                 </button>
 
                 <button onClick={() => handleDelete(cat._id)}>
-                  <svg width="16" height="16">
+                  <svg width="16" height="14">
                     <use href="/symbol-defs.svg#icon-trash-2"></use>
                   </svg>
                 </button>

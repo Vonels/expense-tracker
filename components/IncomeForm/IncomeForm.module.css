@@ -1,17 +1,117 @@
-.incomeForm {
+.incomePage {
+  max-width: 1440px;
+  max-height: 800px;
   background: #0c0d0d;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 59px;
 }
-.textTitle {
+.title {
+  margin-right: 94px;
+  align-items: center;
+}
+.titleText {
   font-family: "Inter", sans-serif;
   font-weight: 400;
   font-size: 38px;
   letter-spacing: -0.02em;
   color: #fafafa;
+  margin-bottom: 13px;
 }
-.textPage {
+.titleParagraf {
   font-family: "Inter", sans-serif;
   font-weight: 400;
   font-size: 16px;
   letter-spacing: -0.02em;
   color: rgba(250, 250, 250, 0.4);
+  max-width: 516px;
+}
+.total {
+  max-width: 630px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.incomeForm {
+  border-radius: 30px;
+  min-width: 1240px;
+  max-height: 439px;
+  background: #171719;
+  padding-top: 20px;
+  margin-top: 40px;
+  margin-bottom: 50px;
+}
+.icon {
+  width: 20px;
+  height: 20px;
+  fill: #0ef387;
+}
+.incomeFormInputSearch {
+  border-radius: 30px;
+  padding: 15px 30px;
+  margin-right: 13px;
+  background-color: #0c0d0d;
+}
+.incomeFormInputData {
+  border: 1px solid rgba(250, 250, 250, 0.2);
+  border-radius: 30px;
+  padding: 15px 30px;
+  background-color: #0c0d0d;
+}
+
+.incomeFormList {
+  display: flex;
+  flex-direction: row;
+  padding-top: 20px;
+  padding-right: 66px;
+  padding-bottom: 20px;
+  padding-left: 40px;
+}
+.incomeFormListItemCategory {
+  padding-right: 86px;
+}
+.incomeFormListItemComment {
+  padding-right: 120px;
+}
+.incomeFormListItemDate {
+  padding-right: 162px;
+}
+.incomeFormListItemTime {
+  padding-right: 98px;
+}
+.incomeFormListItemSum {
+  padding-right: 154px;
+}
+.incomeFormListItemText {
+  padding-top: 52px;
+}
+.incomeFormBtn {
+  display: flex;
+  gap: 8px;
+  padding-top: 52px;
+}
+.incomeFormBtnEdit {
+  border-radius: 40px;
+  padding: 14px 32px;
+  background: #0ef387;
+}
+.incomeFormBtnDelete {
+  border-radius: 40px;
+  padding: 14px 30px;
+}
+.totalSvg {
+  border-radius: 13px;
+  width: 43px;
+  height: 43px;
+  background: #0ef387;
+  fill: #0c0d0d;
+  align-items: center;
+  justify-content: space-between;
+  background-size: 43px;
+}
+.incomeFormSvg {
+  fill: #0ef387;
 }

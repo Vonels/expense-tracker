@@ -1,24 +1,63 @@
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 60px 0;
+  min-height: 100vh;
+}
+
+.info {
+  margin-bottom: 40px;
+}
+
+.title {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 38px;
+  letter-spacing: -0.02em;
+  color: #fafafa;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  color: rgba(250, 250, 250, 0.4);
+  max-width: 500px;
+}
+
 .mainLayout {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 32px;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 40px;
   align-items: start;
 }
 
 .statsSection {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 40px;
 }
 
 .summaryCards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 24px;
 }
 
 .formSection {
-  background: #1e1c1f;
+  background: #171719;
   border-radius: 30px;
   padding: 40px;
+}
+
+@media (max-width: 1024px) {
+  .mainLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 32px;
+  }
 }
