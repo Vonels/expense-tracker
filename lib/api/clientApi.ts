@@ -4,6 +4,25 @@ import type { AuthCredentials } from "@/types/auth";
 import type { Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
 import type { ListResponse, SessionResponse } from "@/types/expense";
+import { useAuthStore } from "@/lib/store/authStore";
+
+// лоадер
+
+api.interceptors.request.use((config) => {
+  useAuthStore.getState().setLoading(true);
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => {
+    useAuthStore.getState().setLoading(false);
+    return response;
+  },
+  (error) => {
+    useAuthStore.getState().setLoading(false);
+    return Promise.reject(error);
+  }
+);
 
 // Все что связано с User
 export const register = async (values: AuthCredentials): Promise<User> => {
