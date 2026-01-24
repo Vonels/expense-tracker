@@ -5,6 +5,7 @@ interface Category {
   _id: string;
   categoryName: string;
   type: "incomes" | "expenses";
+  sum: number | null;
 }
 
 interface UserState {

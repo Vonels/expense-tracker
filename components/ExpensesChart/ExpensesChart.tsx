@@ -1,28 +1,75 @@
 "use client";
 
+import { useEffect } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import css from "./ExpensesChart.module.css";
 import { useUserStore } from "@/lib/store/userStore";
+import { CategoryStat } from "@/types/expense";
 
 const generateColors = (count: number) => {
   return Array.from({ length: count }, (_, i) => {
-    const hue = (145 + i * (360 / count)) % 360;
-    return `hsl(${hue}, 70%, 50%)`;
+    if (count <= 1) return `hsl(145, 80%, 60%)`;
+    const ratio = i / (count - 1);
+    const hue = 145;
+    const saturation = 80 - ratio * 80;
+    const lightness = 60 - ratio * 35;
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   });
 };
 
 export const ExpensesChart = () => {
   const categoriesData = useUserStore((state) => state.categories.expenses);
+  const totalExpenses = useUserStore(
+    (state) => state.transactionsTotal.expenses
+  );
+  const setCategories = useUserStore((state) => state.setCategories);
+  const updateTotals = useUserStore((state) => state.updateTotals);
 
-  const chartColors = generateColors(categoriesData.length);
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch("/api/stats/categories/current-month");
 
-  const chartData = categoriesData.map((cat, index) => {
+        const data = await response.json();
+
+        const formatted = data.map((item: CategoryStat) => ({
+          _id: item._id,
+          categoryName: item.category,
+          sum: item.totalAmount,
+          type: "expenses",
+        }));
+
+        const total = data.reduce(
+          (acc: number, curr: CategoryStat) => acc + curr.totalAmount,
+          0
+        );
+
+        setCategories("expenses", formatted);
+        updateTotals({ expenses: total });
+      } catch (error) {
+        console.error("Failed to load statistics:", error);
+      }
+    };
+
+    fetchStats();
+  }, [setCategories, updateTotals]);
+
+  const sortedData = [...categoriesData].sort(
+    (a, b) => (b.sum || 0) - (a.sum || 0)
+  );
+
+  const chartColors = generateColors(sortedData.length);
+
+  const chartData = sortedData.map((cat, index) => {
     const percentage =
-      categoriesData.length > 0 ? Math.round(100 / categoriesData.length) : 0;
+      totalExpenses > 0
+        ? Math.round(((cat.sum || 0) / totalExpenses) * 100)
+        : 0;
 
     return {
       name: cat.categoryName,
-      value: percentage,
+      value: cat.sum || 0,
+      percent: percentage,
       color: chartColors[index],
     };
   });
@@ -41,7 +88,7 @@ export const ExpensesChart = () => {
                 startAngle={180}
                 endAngle={0}
                 cornerRadius={8}
-                paddingAngle={2}
+                paddingAngle={-5}
                 dataKey="value"
                 stroke="none"
                 cy="65%"
@@ -65,7 +112,7 @@ export const ExpensesChart = () => {
                 />
                 {cat.name}
               </div>
-              <span className={css.percentage}>{cat.value}%</span>
+              <span className={css.percentage}>{cat.percent}%</span>
             </li>
           ))}
         </ul>
