@@ -6,7 +6,7 @@ export async function GET() {
   const cookieStore = cookies();
 
   try {
-    const { data } = await api.get("users/me", {
+    const { data } = await api.get("users/info", {
       headers: {
         Cookie: cookieStore.toString(),
       },
@@ -20,7 +20,7 @@ export async function GET() {
           (error as ApiError).response?.data?.error ??
           (error as ApiError).message,
       },
-      { status: (error as ApiError).status },
+      { status: (error as ApiError).status }
     );
   }
 }
