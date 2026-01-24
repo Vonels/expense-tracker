@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { FormikValues, useFormikContext } from "formik";
 import { useCallback, useMemo } from "react";
-import css from "./AntdTimePicker.module.css";
+import css from "./TimePicker.module.css";
 import { Icon } from "../Icon/Icon";
 
 interface Props {
@@ -27,12 +27,12 @@ export const AntdTimePicker = ({ name, placeholder }: Props) => {
     (time: Dayjs | null) => {
       setFieldValue(name, time ? time.format("HH:mm:ss") : "");
     },
-    [name, setFieldValue],
+    [name, setFieldValue]
   );
 
   const getContainer = useCallback(
     (trigger: HTMLElement) => trigger.parentElement!,
-    [],
+    []
   );
 
   return (
