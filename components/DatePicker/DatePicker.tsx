@@ -2,7 +2,7 @@ import { DatePicker, ConfigProvider, theme } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
 import { FormikValues, useFormikContext } from "formik";
-import css from "./AntdDatePicker.module.css";
+import css from "./DatePicker.module.css";
 import { ReactNode, useCallback, useMemo } from "react";
 import { Icon } from "../Icon/Icon";
 
@@ -29,7 +29,7 @@ export const AntdDatePicker = ({ name, placeholder }: Props) => {
     (date: Dayjs | null) => {
       setFieldValue(name, date ? date.format("MM/DD/YYYY") : "");
     },
-    [name, setFieldValue],
+    [name, setFieldValue]
   );
 
   const getContainer = useCallback((trigger: HTMLElement) => {
@@ -40,7 +40,7 @@ export const AntdDatePicker = ({ name, placeholder }: Props) => {
     (panelNode: ReactNode) => (
       <div className={css.autoHeightWrapper}>{panelNode}</div>
     ),
-    [],
+    []
   );
 
   return (
