@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
-import Header from "@/components/Header/Header";
 
-// import AuthProvider from "@/components/AuthProvider/AuthProvider";
+import Header from "@/components/Header/Header";
+import AuthProvider from "@/components/AuthProvider/AuthProvider";
+import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
@@ -21,14 +22,18 @@ export default function RootLayout({
   modal,
 }: {
   children: ReactNode;
-  modal: React.ReactNode;
+  modal: ReactNode;
 }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Header />
-        <main>{children}</main>
-        {modal}
+        <TanStackProvider>
+          <AuthProvider>
+            <Header />
+            <main>{children}</main>
+            {modal}
+          </AuthProvider>
+        </TanStackProvider>
       </body>
     </html>
   );
