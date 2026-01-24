@@ -56,9 +56,13 @@ export default function SignInPage() {
 
   return (
     <section className={styles.container}>
-      <h1 className={styles.title}>Sign in</h1>
-      <p className={styles.description}>Log in to your account</p>
-
+      <div className={styles.firstblock}>
+        <h1 className={styles.title}>Sign in</h1>
+        <p className={styles.description}>
+          Welcome back to effortless expense tracking! Your financial dashboard
+          awaits.
+        </p>
+      </div>
       <form
         className={styles.form}
         onSubmit={(e) => {
@@ -67,24 +71,34 @@ export default function SignInPage() {
         }}
       >
         <div className={styles.field}>
-          <input name="email" type="email" placeholder="Email" />
+          <input
+            className={styles.input}
+            name="email"
+            type="email"
+            placeholder="Email"
+          />
           {errors.email && <span className={styles.error}>{errors.email}</span>}
         </div>
 
         <div className={styles.field}>
-          <input name="password" type="password" placeholder="Password" />
+          <input
+            className={styles.input}
+            name="password"
+            type="password"
+            placeholder="Password"
+          />
           {errors.password && (
             <span className={styles.error}>{errors.password}</span>
           )}
         </div>
-
-        <button type="submit" disabled={loading}>
-          {loading ? "Loading..." : "Sign in"}
-        </button>
+        <div className={styles.thirdblock}>
+          <button className={styles.button} type="submit" disabled={loading}>
+            {loading ? "Loading..." : "Sign in"}
+          </button>
+        </div>
       </form>
-
       <p className={styles.linkText}>
-        Don’t have an account? <Link href="/sign-up">Sign up</Link>
+        Don’t have an account? <a href="/sign-up">Sign up</a>
       </p>
     </section>
   );

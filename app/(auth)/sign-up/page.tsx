@@ -58,42 +58,60 @@ export default function SignUpPage() {
   };
 
   return (
-    <section className={styles.container}>
-      <h1 className={styles.title}>Sign up</h1>
-      <p className={styles.description}>Create a new account</p>
-
-      <form
-        className={styles.form}
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit(new FormData(e.currentTarget));
-        }}
-      >
-        <div className={styles.field}>
-          <input name="name" placeholder="Name" />
-          {errors.name && <span className={styles.error}>{errors.name}</span>}
+    <div className={styles.page}>
+      <section className={styles.container}>
+        <div className={styles.firstblock}>
+          <h1 className={styles.title}>Sign up</h1>
+          <p className={styles.description}>
+            Step into a world of hassle-free expense management! Your journey
+            towards financial mastery begins here.
+          </p>
         </div>
+        <form
+          className={styles.form}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(new FormData(e.currentTarget));
+          }}
+        >
+          <div className={styles.field}>
+            <input className={styles.inputs} name="name" placeholder="Name" />
+            {errors.name && <span className={styles.error}>{errors.name}</span>}
+          </div>
 
-        <div className={styles.field}>
-          <input name="email" type="email" placeholder="Email" />
-          {errors.email && <span className={styles.error}>{errors.email}</span>}
-        </div>
+          <div className={styles.field}>
+            <input
+              className={styles.inputs}
+              name="email"
+              type="email"
+              placeholder="Email"
+            />
+            {errors.email && (
+              <span className={styles.error}>{errors.email}</span>
+            )}
+          </div>
 
-        <div className={styles.field}>
-          <input name="password" type="password" placeholder="Password" />
-          {errors.password && (
-            <span className={styles.error}>{errors.password}</span>
-          )}
-        </div>
-
-        <button type="submit" disabled={loading}>
-          {loading ? "Loading..." : "Sign up"}
-        </button>
-      </form>
-
-      <p className={styles.linkText}>
-        Already have an account? <Link href="/sign-in">Sign in</Link>
-      </p>
-    </section>
+          <div className={styles.field}>
+            <input
+              className={styles.inputs}
+              name="password"
+              type="password"
+              placeholder="Password"
+            />
+            {errors.password && (
+              <span className={styles.error}>{errors.password}</span>
+            )}
+          </div>
+          <div className={styles.thirdblock}>
+            <button className={styles.button} type="submit" disabled={loading}>
+              {loading ? "Loading..." : "Sign up"}
+            </button>
+          </div>
+        </form>
+        <p className={styles.linkText}>
+          Already have an account? <a href="/sign-in">Sign in</a>
+        </p>
+      </section>
+    </div>
   );
 }
