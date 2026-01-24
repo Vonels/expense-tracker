@@ -1,108 +1,154 @@
-.antdPicker {
-  width: 100%;
-  height: 44px;
+.input {
   background-color: transparent;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   color: #fff;
+  width: 100%;
+  padding: 11px 18px;
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: inherit;
+  transition: border-color 250ms linear;
 }
-.antdPicker:hover {
-  border-color: #0ef387;
-}
-.antdPicker:global(.ant-picker-focused),
-.antdPicker:focus-within {
+.input:hover,
+.input:focus,
+.input[data-variant="default"]:focus {
   border-color: #0ef387;
 }
 
-.calendarPopup :global(.ant-picker-header) {
+.icon {
+  width: 20px;
+  height: 20px;
+  stroke: #fff;
+}
+
+.dropdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0ef387;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 14px 13px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown .calendarHeader {
   position: relative;
+  display: flex;
+  align-items: center;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+}
+
+.dropdown
+  :global(
+    .mantine-UnstyledButton-root.mantine-DatePickerInput-calendarHeaderLevel
+  ) {
+  border-radius: 0;
+  color: #0c0d0d;
+  font-weight: 400;
   font-size: 16px;
 }
+.dropdown
+  :global(
+    .mantine-UnstyledButton-root.mantine-DatePickerInput-calendarHeaderLevel
+  ):hover {
+  background-color: transparent;
+}
 
-.calendarPopup :global(.ant-picker-header)::after {
+.dropdown .headerControl {
+  color: #0c0d0d;
+  opacity: 0.6;
+  border: none;
+  width: 15px;
+  height: 10px;
+
+  transition: opacity 250ms linear;
+}
+
+.dropdown .headerControl:hover {
+  opacity: 1;
+  background-color: transparent;
+}
+
+.dropdown .calendarHeader::after {
   content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 190px;
-  height: 1px;
+  width: 95%;
+  height: 1.6px;
   background-color: rgba(12, 13, 13, 0.5);
+  pointer-events: none;
 }
 
-.calendarPopup :global(.ant-picker-content th) {
+.dropdown .weekday {
+  color: rgba(12, 13, 13, 0.5);
   font-weight: 400;
   font-size: 14px;
-  color: rgba(12, 13, 13, 0.5);
 }
 
-.calendarPopup :global(.ant-picker-cell-inner) {
-  color: rgba(12, 13, 13, 0.2);
-  min-width: 24px;
-  height: 24px;
-  line-height: 24px;
-  margin: 0 auto;
-  display: block;
-}
-.calendarPopup :global(.ant-picker-cell-in-view .ant-picker-cell-inner) {
+.dropdown .monthsListControl,
+.dropdown .yearsListControl {
   color: #0c0d0d;
+  background-color: transparent;
   border-radius: 50%;
+
+  transition:
+    background-color 250ms linear,
+    color 250ms linear;
 }
-.calendarPopup :global(.ant-picker-cell:hover .ant-picker-cell-inner) {
+.dropdown .monthsListControl:hover,
+.dropdown .yearsListControl:hover {
+  background-color: rgba(12, 13, 13, 0.1);
+}
+
+.dropdown button.monthsListControl[data-selected],
+.dropdown button.yearsListControl[data-selected],
+.dropdown button.day[data-selected] {
+  color: #ffffff;
+  background-color: #0c0d0d;
+}
+.dropdown button.monthsListControl[data-selected]:hover,
+.dropdown button.yearsListControl[data-selected]:hover,
+.dropdown button.day[data-selected]:hover {
+  background-color: #0c0d0d;
+  color: #ffffff;
+}
+
+.dropdown .yearsListCell,
+.dropdown .monthsListCell {
+  background-color: transparent;
+}
+
+.dropdown .day {
+  color: #0c0d0d;
+  background-color: transparent;
+  font-size: 14px;
   border-radius: 50%;
+  border: none;
+  width: 22.5px;
+  max-height: 23.5px;
+  margin: 2;
+
+  transition: background-color 250ms linear;
 }
-.calendarPopup
-  :global(
-    .ant-picker-cell-in-view.ant-picker-cell-today
-      .ant-picker-cell-inner::before
-  ) {
-  border-radius: 50%;
+.dropdown .day:hover {
+  background-color: rgba(12, 13, 13, 0.1);
 }
-
-.calendarPopup :global(.ant-picker-header button) :global(span::before) {
-  border-color: rgba(12, 13, 13, 0.4);
-  border-width: 2.5px 0 0 2.5px;
-
-  width: 8px;
-  height: 8px;
-
-  transition: border-color 250ms linear;
+.dropdown .day:focus,
+.dropdown .day:focus-visible {
+  background-color: rgba(12, 13, 13, 0.1);
 }
 
-.calendarPopup :global(.ant-picker-header button:hover) :global(span::before) {
-  border-color: #0c0d0d;
+.dropdown .day[data-outside],
+.dropdown .day[data-outside] {
+  color: rgba(12, 13, 13, 0.3);
 }
 
-.calendarPopup :global(.ant-picker-date-panel),
-.calendarPopup :global(.ant-picker-time-panel),
-.calendarPopup :global(.ant-picker-month-panel) {
-  width: 222px;
-}
-
-.calendarPopup :global(.ant-picker-content) {
-  width: 100%;
-}
-
-.calendarPopup :global(.ant-picker-cell) {
-  padding: 5.5px 0;
-}
-
-.autoHeightWrapper :global(.ant-picker-content tbody tr:last-child) {
-  display: table-row;
-}
-
-.autoHeightWrapper
-  :global(
-    .ant-picker-content tbody tr:last-child:not(:has(.ant-picker-cell-in-view))
-  ) {
-  display: none;
-}
-
-.antdPicker :global(.ant-picker-suffix) {
-  width: 20px;
-  height: 20px;
-  stroke: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.input:focus-visible,
+.dropdown :global(*:focus-visible) {
+  outline: none;
 }

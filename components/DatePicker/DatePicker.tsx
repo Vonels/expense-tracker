@@ -1,87 +1,75 @@
-import { DatePicker, ConfigProvider, theme } from "antd";
-import dayjs, { Dayjs } from "dayjs";
+import { DatePickerInput, DateValue } from "@mantine/dates";
+import { useFormikContext, FormikValues } from "formik";
+import dayjs from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
-import { FormikValues, useFormikContext } from "formik";
-import css from "./DatePicker.module.css";
-import { ReactNode, useCallback, useMemo } from "react";
 import { Icon } from "../Icon/Icon";
+import css from "./DatePicker.module.css";
+import "@mantine/dates/styles.css";
+import { useCallback, useMemo } from "react";
+
+dayjs.extend(updateLocale);
+dayjs.updateLocale("en", {
+  weekStart: 1,
+});
+
+const DATE_FORMAT = "MM/DD/YYYY";
 
 interface Props {
   name: string;
   placeholder?: string;
 }
 
-dayjs.extend(updateLocale);
-
-dayjs.updateLocale("en", {
-  weekStart: 1,
-});
-
-export const AntdDatePicker = ({ name, placeholder }: Props) => {
+export const DatePicker = ({ name, placeholder }: Props) => {
   const { setFieldValue, values } = useFormikContext<FormikValues>();
 
-  const dateValue = useMemo(() => {
+  const value = useMemo(() => {
     const rawValue = values[name];
-    return rawValue ? dayjs(rawValue, "MM/DD/YYYY") : null;
+    if (!rawValue) return null;
+    const date = dayjs(rawValue, DATE_FORMAT);
+    return date.isValid() ? date.toDate() : null;
   }, [values, name]);
 
-  const handleDateChange = useCallback(
-    (date: Dayjs | null) => {
-      setFieldValue(name, date ? date.format("MM/DD/YYYY") : "");
+  const handleChange = useCallback(
+    (date: DateValue) => {
+      const formattedDate = date ? dayjs(date).format(DATE_FORMAT) : "";
+      setFieldValue(name, formattedDate);
     },
-    [name, setFieldValue]
-  );
-
-  const getContainer = useCallback((trigger: HTMLElement) => {
-    return trigger.parentElement!;
-  }, []);
-
-  const renderPanel = useCallback(
-    (panelNode: ReactNode) => (
-      <div className={css.autoHeightWrapper}>{panelNode}</div>
-    ),
-    []
+    [setFieldValue, name]
   );
 
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: theme.darkAlgorithm,
-        token: {
-          colorPrimary: "#0c0d0d",
-          colorTextPlaceholder: "#fff",
-        },
-        components: {
-          DatePicker: {
-            colorBgElevated: "#0ef387",
-            colorText: "#0c0d0d",
-            colorTextHeading: "#0c0d0d",
-            fontWeightStrong: 400,
-            controlItemBgActive: "#0c0d0d",
-            colorTextLightSolid: "#fff",
-            controlItemBgHover: "rgba(0, 0, 0, 0.4)",
-            fontFamily: "Inter, sans-serif",
-          },
+    <DatePickerInput
+      name={name}
+      value={value}
+      onChange={handleChange}
+      placeholder={placeholder || dayjs().format(DATE_FORMAT)}
+      valueFormat={DATE_FORMAT}
+      rightSection={<Icon id="icon-calendar" className={css.icon} />}
+      rightSectionProps={{ style: { pointerEvents: "none" } }}
+      allowDeselect={false}
+      nextIcon={<span className={css.arrow}>&#10095;</span>}
+      previousIcon={<span className={css.arrow}>&#x276E;</span>}
+      classNames={{
+        root: css.root,
+        input: css.input,
+        calendarHeader: css.calendarHeader,
+        calendarHeaderControl: css.headerControl,
+        weekday: css.weekday,
+        day: css.day,
+        monthsListControl: css.monthsListControl,
+        monthsListCell: css.monthsListCell,
+        month: css.month,
+        yearsListCell: css.yearsListCell,
+        yearsListControl: css.yearsListControl,
+      }}
+      popoverProps={{
+        position: "bottom-start",
+        offset: 5,
+        transitionProps: { transition: "pop", duration: 250 },
+        classNames: {
+          dropdown: css.dropdown,
         },
       }}
-    >
-      <DatePicker
-        className={css.antdPicker}
-        classNames={{
-          popup: css.calendarPopup,
-        }}
-        suffixIcon={<Icon id="icon-calendar" />}
-        format="MM/DD/YYYY"
-        value={dateValue?.isValid() ? dateValue : null}
-        onChange={handleDateChange}
-        placeholder={placeholder || dayjs().format("MM/DD/YYYY")}
-        allowClear={false}
-        showNow={false}
-        superNextIcon={null}
-        superPrevIcon={null}
-        getPopupContainer={getContainer}
-        panelRender={renderPanel}
-      />
-    </ConfigProvider>
+    />
   );
 };

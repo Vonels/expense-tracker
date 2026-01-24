@@ -170,15 +170,15 @@
 }
 
 .option {
-  background-color: #171719 !important;
-  color: #fafafa !important;
+  background-color: #171719;
+  color: #fafafa;
   padding: 12px;
 }
 
 .option:checked,
 .option:hover {
-  background-color: #0c0d0e !important;
-  color: #0ef387 !important;
+  background-color: #0c0d0e;
+  color: #0ef387;
 }
 
 /* .selectArrow {

@@ -16,7 +16,7 @@ import css from "./TransactionForm.module.css";
 import { AntdTimePicker } from "../TimePicker/TimePicker";
 import { useTransactionStore } from "@/lib/store/useTransactionStore";
 import { useRouter } from "next/navigation";
-import { AntdDatePicker } from "../DatePicker/DatePicker";
+import { DatePicker } from "../DatePicker/DatePicker";
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -206,7 +206,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             <div className={css.row}>
               <div className={css.fieldGroup}>
                 <label className={css.label}>Date</label>
-                <AntdDatePicker name="date" />
+                <DatePicker name="date" />
                 <ErrorMessage name="date" component="p" className={css.error} />
               </div>
 

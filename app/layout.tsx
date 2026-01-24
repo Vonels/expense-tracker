@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import "./globals.css";
+
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
 import Header from "@/components/Header/Header";
+import "@mantine/dates/styles.css";
+import "@mantine/core/styles.css";
+import "./globals.css";
+import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 
 // import AuthProvider from "@/components/AuthProvider/AuthProvider";
 
@@ -24,11 +28,16 @@ export default function RootLayout({
   modal: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <ColorSchemeScript />
+      </head>
       <body className={inter.className}>
-        <Header />
-        <main>{children}</main>
-        {modal}
+        <MantineProvider defaultColorScheme="dark">
+          <Header />
+          <main>{children}</main>
+          {modal}
+        </MantineProvider>
       </body>
     </html>
   );
