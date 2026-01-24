@@ -10,16 +10,15 @@ interface UserResponse {
   currency: string;
   avatarUrl: string | null;
 }
-
 export const userService = {
   updateProfile: async (values: UpdateProfileData): Promise<UserResponse> => {
-    const { data } = await api.patch<UserResponse>("/user/info", values);
+    const { data } = await api.patch<UserResponse>("user/info", values);
     return data;
   },
 
   updateAvatar: async (formData: FormData): Promise<{ avatarUrl: string }> => {
     const { data } = await api.patch<{ avatarUrl: string }>(
-      "/user/avatar",
+      "user/avatar",
       formData,
       {
         headers: {
@@ -31,6 +30,6 @@ export const userService = {
   },
 
   deleteAvatar: async (): Promise<void> => {
-    await api.delete("/user/avatar");
+    await api.delete("user/avatar");
   },
 };
