@@ -1,7 +1,7 @@
 import { api } from "./api";
 import type { User } from "@/types/user";
 import type { AuthCredentials } from "@/types/auth";
-import type { Expense, ExpensesQuery } from "@/types/expense";
+import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
 import type { ListResponse, SessionResponse } from "@/types/expense";
 import { useAuthStore } from "@/lib/store/authStore";
@@ -76,5 +76,10 @@ export const createIncome = async (
   values: Omit<Income, "id" | "createdAt" | "updatedAt">
 ): Promise<Income> => {
   const res = await api.post<Income>("/incomes", values);
+  return res.data;
+};
+
+export const fetchCurrentMonthStats = async (): Promise<CategoryStat[]> => {
+  const res = await api.get<CategoryStat[]>("/stats/categories/current-month");
   return res.data;
 };
