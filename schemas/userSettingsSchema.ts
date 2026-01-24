@@ -24,13 +24,13 @@ export const userSettingsSchema = Yup.object().shape({
     .test(
       "fileSize",
       "Файл занадто великий (макс. 2MB)",
-      (value) => !value || (value instanceof File && value.size <= FILE_SIZE),
+      (value) => !value || (value instanceof File && value.size <= FILE_SIZE)
     )
     .test(
       "fileFormat",
       "Ніпідтримуваний формат файлу",
       (value) =>
         !value ||
-        (value instanceof File && SUPPORTED_FORMATS.includes(value.type)),
+        (value instanceof File && SUPPORTED_FORMATS.includes(value.type))
     ),
 });
