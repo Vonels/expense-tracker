@@ -16,16 +16,26 @@ const generateColors = (count: number) => {
 
 export const ExpensesChart = () => {
   const categoriesData = useUserStore((state) => state.categories.expenses);
+  const totalExpenses = useUserStore(
+    (state) => state.transactionsTotal.expenses
+  );
 
-  const chartColors = generateColors(categoriesData.length);
+  const sortedData = [...categoriesData].sort(
+    (a, b) => (b.sum || 0) - (a.sum || 0)
+  );
 
-  const chartData = categoriesData.map((cat, index) => {
+  const chartColors = generateColors(sortedData.length);
+
+  const chartData = sortedData.map((cat, index) => {
     const percentage =
-      categoriesData.length > 0 ? Math.round(100 / categoriesData.length) : 0;
+      totalExpenses > 0
+        ? Math.round(((cat.sum || 0) / totalExpenses) * 100)
+        : 0;
 
     return {
       name: cat.categoryName,
-      value: percentage,
+      value: cat.sum || 0,
+      percent: percentage,
       color: chartColors[index],
     };
   });
@@ -68,7 +78,7 @@ export const ExpensesChart = () => {
                 />
                 {cat.name}
               </div>
-              <span className={css.percentage}>{cat.value}%</span>
+              <span className={css.percentage}>{cat.percent}%</span>
             </li>
           ))}
         </ul>
