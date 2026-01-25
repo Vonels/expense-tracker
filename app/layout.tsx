@@ -9,7 +9,9 @@ import "./globals.css";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import { ToastProvider } from "@/components/ToastProvider/ToastProvider";
 
-// import AuthProvider from "@/components/AuthProvider/AuthProvider";
+import Header from "@/components/Header/Header";
+import AuthProvider from "@/components/AuthProvider/AuthProvider";
+import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
@@ -26,7 +28,7 @@ export default function RootLayout({
   modal,
 }: {
   children: ReactNode;
-  modal: React.ReactNode;
+  modal: ReactNode;
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -34,12 +36,21 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body className={inter.className}>
-        <MantineProvider defaultColorScheme="dark">
+        <TanStackProvider>
+          <AuthProvider>
+            <MantineProvider defaultColorScheme="dark">
+
           <Header />
+
           <main>{children}</main>
+
           {modal}
+
           <ToastProvider />
+
         </MantineProvider>
+          </AuthProvider>
+        </TanStackProvider>
       </body>
     </html>
   );

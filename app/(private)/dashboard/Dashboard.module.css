@@ -1,5 +1,8 @@
 .container {
   padding: 66px 20px 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .mainLayout {
@@ -44,6 +47,8 @@
   order: 3;
   background: #171719;
   border-radius: 30px;
+  display: flex;
+  justify-content: center;
 }
 
 .statsSection > :last-child {
@@ -51,10 +56,6 @@
 }
 
 @media (min-width: 768px) {
-  .mainLayout {
-    max-height: 100vh;
-  }
-
   .container {
     padding: 60px 32px;
   }

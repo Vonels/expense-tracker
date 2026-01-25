@@ -1,20 +1,22 @@
 import { NextResponse } from "next/server";
-import { api } from "../../api";
-import { cookies } from "next/headers";
 
-export async function POST() {
-  const cookieStore = cookies();
+export async function POST(req: Request) {
+  const backendRes = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL_BACKEND}/auth/logout`,
+    {
+      method: "POST",
+      headers: {
+        cookie: req.headers.get("cookie") || "",
+      },
+    }
+  );
 
-  await api.post("auth/logout", null, {
-    headers: {
-      Cookie: cookieStore.toString(),
-    },
-  });
+  const res = NextResponse.json(
+    { success: true },
+    { status: backendRes.status }
+  );
 
-  const res = NextResponse.json({ message: "Logged out successfully" });
-
-  res.cookies.set("accessToken", "", { path: "/", maxAge: 0 });
-  res.cookies.set("refreshToken", "", { path: "/", maxAge: 0 });
+  res.headers.set("set-cookie", "accessToken=; Path=/; Max-Age=0");
 
   return res;
 }
