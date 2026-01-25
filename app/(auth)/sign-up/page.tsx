@@ -2,50 +2,24 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-
-import { register } from "@/lib/api/clientApi";
-import { useAuthStore } from "@/lib/store/authStore";
-
+import Link from "next/link";
 import styles from "./SignUpPage.module.css";
-
-type RegisterCredentials = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-type RegisterErrorResponse = {
-  error?: string;
-};
 
 export default function SignUpPage() {
   const router = useRouter();
-  const setLoadingStore = useAuthStore((state) => state.setLoading);
 
-  const [showPassword, setShowPassword] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{
     name?: string;
     email?: string;
     password?: string;
   }>({});
 
-  const mutation = useMutation({
-    mutationFn: register,
-    onMutate: () => setLoadingStore(true),
-    onSuccess: () => router.push("/main-transactions"),
-    onError: (err: AxiosError<RegisterErrorResponse>) => {
-      alert(err.response?.data?.error ?? "Registration failed");
-    },
-    onSettled: () => setLoadingStore(false),
-  });
-
-  const handleSubmit = (formData: FormData) => {
+  const handleSubmit = async (formData: FormData) => {
     setErrors({});
+    setLoading(true);
 
-    const body: RegisterCredentials = {
+    const body = {
       name: String(formData.get("name")),
       email: String(formData.get("email")),
       password: String(formData.get("password")),
@@ -56,8 +30,9 @@ export default function SignUpPage() {
     if (!body.email) newErrors.email = "Email is required";
     if (!body.password) newErrors.password = "Password is required";
 
-    if (Object.keys(newErrors).length) {
+    if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setLoading(false);
       return;
     }
 
@@ -74,7 +49,7 @@ export default function SignUpPage() {
         return;
       }
 
-      router.push("/dashboard");
+      router.push("/main-transactions");
     } catch {
       alert("Unexpected error");
     } finally {
@@ -92,7 +67,6 @@ export default function SignUpPage() {
             towards financial mastery begins here.
           </p>
         </div>
-
         <form
           className={styles.form}
           onSubmit={(e) => {
@@ -118,39 +92,22 @@ export default function SignUpPage() {
           </div>
 
           <div className={styles.field}>
-            <div className={styles.passwordWrapper}>
-              <input
-                className={styles.inputs}
-                name="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-              />
-
-              <button
-                type="button"
-                className={styles.eyeButton}
-                onClick={() => setShowPassword((p) => !p)}
-              >
-                <img src="/eye-off.svg" alt="Toggle password visibility" />
-              </button>
-            </div>
-
+            <input
+              className={styles.inputs}
+              name="password"
+              type="password"
+              placeholder="Password"
+            />
             {errors.password && (
               <span className={styles.error}>{errors.password}</span>
             )}
           </div>
-
           <div className={styles.thirdblock}>
-            <button
-              className={styles.button}
-              type="submit"
-              disabled={mutation.isPending}
-            >
-              {mutation.isPending ? "Loading..." : "Sign up"}
+            <button className={styles.button} type="submit" disabled={loading}>
+              {loading ? "Loading..." : "Sign up"}
             </button>
           </div>
         </form>
-
         <p className={styles.linkText}>
           Already have an account? <a href="/sign-in">Sign in</a>
         </p>
