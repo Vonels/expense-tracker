@@ -3,7 +3,7 @@ import type { User } from "@/types/user";
 import type { AuthCredentials } from "@/types/auth";
 import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
-import type { ListResponse, SessionResponse } from "@/types/expense";
+import type { ListResponse } from "@/types/expense";
 import { useAuthStore } from "@/lib/store/authStore";
 
 // лоадер
@@ -39,9 +39,17 @@ export const logout = async (): Promise<void> => {
   await api.post("/auth/logout");
 };
 
-export const checkSession = async (): Promise<SessionResponse> => {
-  const res = await api.get<SessionResponse>("/auth/session");
-  return res.data;
+export const checkSession = async () => {
+  const res = await fetch("/api/auth/session", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    return { success: false };
+  }
+
+  return res.json();
 };
 
 export const getMe = async (): Promise<User> => {
@@ -77,6 +85,10 @@ export const createIncome = async (
 ): Promise<Income> => {
   const res = await api.post<Income>("/incomes", values);
   return res.data;
+};
+
+export const deleteIncome = async (id: string): Promise<void> => {
+  await api.delete(`/incomes/${id}`);
 };
 
 export const fetchCurrentMonthStats = async (): Promise<CategoryStat[]> => {
