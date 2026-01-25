@@ -8,16 +8,18 @@ import {
   ErrorMessage,
   FormikHelpers,
   useFormikContext,
+  FieldProps,
 } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import css from "./TransactionForm.module.css";
 
 import { useTransactionStore } from "@/lib/store/useTransactionStore";
 import { useRouter } from "next/navigation";
 import { DatePicker } from "../DatePicker/DatePicker";
 import { CustomTimePicker } from "../TimePicker/TimePicker";
+import { TransactionData } from "@/types/transactions";
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -28,26 +30,13 @@ interface FormValues {
   comment: string;
 }
 
-interface TransactionData {
-  _id: string;
-  type: "incomes" | "expenses";
-  date: string;
-  time: string;
-  category: {
-    _id: string;
-    categoryName: string;
-  };
-  sum: number;
-  comment: string;
-}
-
-type TransactionFormProps = {
-  onOpenCategories: (type: "incomes" | "expenses") => void;
-  selectedCategoryName: string;
+interface TransactionFormProps {
+  onOpenCategories?: (type: "incomes" | "expenses") => void;
+  selectedCategoryName?: string;
   currentTransaction?: TransactionData | null;
   isEditing?: boolean;
   onClose?: () => void;
-};
+}
 
 const FormikSync = () => {
   const { setFieldValue } = useFormikContext<FormValues>();
@@ -168,11 +157,15 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         onSubmit={handleSubmit}
         enableReinitialize
       >
-        {({ values, setFieldValue }) => (
+        {({ values, setFieldValue, errors, touched }) => (
           <Form className={css.form}>
             <FormikSync />
 
-            <div className={css.radioGroup}>
+            <div
+              className={css.radioGroup}
+              role="radiogroup"
+              aria-label="Transaction type"
+            >
               <label className={css.radioLabel}>
                 <Field
                   type="radio"
@@ -206,25 +199,36 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
             <div className={css.row}>
               <div className={css.fieldGroup}>
-                <label className={css.label}>Date</label>
-                <DatePicker name="date" />
+                <label htmlFor="date-picker" className={css.label}>
+                  Date
+                </label>
+                <DatePicker id="date-picker" name="date" />
                 <ErrorMessage name="date" component="p" className={css.error} />
               </div>
 
               <div className={css.fieldGroup}>
-                <label className={css.label}>Time</label>
-                <CustomTimePicker name="time" />
+                <label htmlFor="time-picker" className={css.label}>
+                  Time
+                </label>
+                <CustomTimePicker id="time-picker" name="time" />
                 <ErrorMessage name="time" component="p" className={css.error} />
               </div>
             </div>
 
             <div className={css.fieldGroup}>
-              <label className={css.label}>Category</label>
+              <label htmlFor="category-select" className={css.label}>
+                Category
+              </label>
               <input
+                id="category-select"
                 type="text"
+                role="button"
+                aria-haspopup="dialog"
                 readOnly
                 placeholder="Different"
-                className={css.input}
+                className={`${css.input} ${
+                  touched.category && errors.category ? css.inputError : ""
+                }`}
                 value={selectedCategory?.name || ""}
                 onClick={() => {
                   useTransactionStore
@@ -242,26 +246,49 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             </div>
 
             <div className={css.fieldGroup}>
-              <label className={css.label}>Sum</label>
+              <label htmlFor="sum-input" className={css.label}>
+                Sum
+              </label>
               <div className={css.sumWrapper}>
-                <Field
-                  name="sum"
-                  type="number"
-                  placeholder="0.00"
-                  className={css.input}
-                />
+                <Field name="sum">
+                  {({ field, meta }: FieldProps<FormValues["sum"]>) => (
+                    <input
+                      {...field}
+                      id="sum-input"
+                      type="number"
+                      placeholder="0.00"
+                      aria-invalid={meta.touched && !!meta.error}
+                      aria-errormessage="sum-error"
+                      className={`${css.input} ${
+                        meta.touched && meta.error ? css.inputError : ""
+                      }`}
+                    />
+                  )}
+                </Field>
                 <span className={css.currency}>UAH</span>
               </div>
-              <ErrorMessage name="sum" component="p" className={css.error} />
+              <ErrorMessage name="sum">
+                {(msg) => (
+                  <p id="sum-error" role="alert" className={css.error}>
+                    {msg}
+                  </p>
+                )}
+              </ErrorMessage>
             </div>
 
             <div className={css.fieldGroup}>
-              <label className={css.label}>Comment</label>
+              <label htmlFor="comment" className={css.label}>
+                Comment
+              </label>
               <Field
                 as="textarea"
+                id="comment"
                 name="comment"
                 placeholder="Enter text"
-                className={`${css.input} ${css.textarea}`}
+                maxLength={48}
+                className={`${css.input} ${css.textarea} ${
+                  touched.comment && errors.comment ? css.inputError : ""
+                }`}
               />
               <ErrorMessage
                 name="comment"

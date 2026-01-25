@@ -10,9 +10,10 @@ import "@mantine/dates/styles.css";
 
 interface Props {
   name: string;
+  id: string;
 }
 
-export const CustomTimePicker = ({ name }: Props) => {
+export const CustomTimePicker = ({ name, id }: Props) => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export const CustomTimePicker = ({ name }: Props) => {
 
   return (
     <MantineTimePicker
+      id={id}
       name={name}
       value={value}
       onChange={handleChange}

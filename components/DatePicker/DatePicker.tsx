@@ -17,9 +17,10 @@ const DATE_FORMAT = "MM/DD/YYYY";
 interface Props {
   name: string;
   placeholder?: string;
+  id?: string;
 }
 
-export const DatePicker = ({ name, placeholder }: Props) => {
+export const DatePicker = ({ name, id, placeholder }: Props) => {
   const { setFieldValue, values } = useFormikContext<FormikValues>();
 
   const value = useMemo(() => {
@@ -39,6 +40,7 @@ export const DatePicker = ({ name, placeholder }: Props) => {
 
   return (
     <DatePickerInput
+      id={id}
       name={name}
       value={value}
       onChange={handleChange}

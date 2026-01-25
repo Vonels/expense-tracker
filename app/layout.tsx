@@ -7,6 +7,7 @@ import "@mantine/dates/styles.css";
 import "@mantine/core/styles.css";
 import "./globals.css";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { ToastProvider } from "@/components/ToastProvider/ToastProvider";
 
 // import AuthProvider from "@/components/AuthProvider/AuthProvider";
 
@@ -37,6 +38,7 @@ export default function RootLayout({
           <Header />
           <main>{children}</main>
           {modal}
+          <ToastProvider />
         </MantineProvider>
       </body>
     </html>
