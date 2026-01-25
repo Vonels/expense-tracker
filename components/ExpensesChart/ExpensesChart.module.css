@@ -3,6 +3,7 @@
   border-radius: 30px;
   padding: 40px;
   max-height: 302px;
+  overflow: hidden;
 }
 
 .title {
