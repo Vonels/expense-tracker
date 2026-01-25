@@ -5,6 +5,7 @@ interface Category {
   _id: string;
   categoryName: string;
   type: "incomes" | "expenses";
+  sum: number | null;
 }
 
 interface UserState {
@@ -23,7 +24,7 @@ interface UserState {
   };
 
   updateUser: (
-    data: Partial<Pick<UserState, "name" | "avatarUrl" | "currency">>,
+    data: Partial<Pick<UserState, "name" | "avatarUrl" | "currency">>
   ) => void;
 
   setCategories: (type: "incomes" | "expenses", categories: Category[]) => void;
@@ -56,7 +57,7 @@ export const useUserStore = create<UserState>()(
             categories: { ...state.categories, [type]: categories },
           }),
           false,
-          "setCategories",
+          "setCategories"
         ),
 
       updateTotals: (newTotals) =>
@@ -65,9 +66,9 @@ export const useUserStore = create<UserState>()(
             transactionsTotal: { ...state.transactionsTotal, ...newTotals },
           }),
           false,
-          "updateTotals",
+          "updateTotals"
         ),
     }),
-    { name: "UserStore" },
-  ),
+    { name: "UserStore" }
+  )
 );

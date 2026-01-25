@@ -1,25 +1,28 @@
 import { api } from "./api";
 import type { User } from "@/types/user";
 import type { AuthCredentials } from "@/types/auth";
-import type { Expense, ExpensesQuery } from "@/types/expense";
+import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
 import type { ListResponse, SessionResponse } from "@/types/expense";
-import { Category } from "@/types/category";
+import { useAuthStore } from "@/lib/store/authStore";
 
-export interface CreateCategoryPayload {
-  name: string;
-  type: "income" | "expense";
-}
+// лоадер
 
-export const categoriesApi = {
-  getAll() {
-    return api.get<Category[]>("/categories");
+api.interceptors.request.use((config) => {
+  useAuthStore.getState().setLoading(true);
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => {
+    useAuthStore.getState().setLoading(false);
+    return response;
   },
-
-  create(payload: CreateCategoryPayload) {
-    return api.post<Category>("/categories", payload);
-  },
-};
+  (error) => {
+    useAuthStore.getState().setLoading(false);
+    return Promise.reject(error);
+  }
+);
 
 // Все что связано с User
 export const register = async (values: AuthCredentials): Promise<User> => {
@@ -48,14 +51,14 @@ export const getMe = async (): Promise<User> => {
 
 // Расходи
 export const fetchExpenses = async (
-  params?: ExpensesQuery,
+  params?: ExpensesQuery
 ): Promise<ListResponse<Expense>> => {
   const res = await api.get<ListResponse<Expense>>("/expenses", { params });
   return res.data;
 };
 
 export const createExpense = async (
-  values: Omit<Expense, "id" | "createdAt" | "updatedAt">,
+  values: Omit<Expense, "id" | "createdAt" | "updatedAt">
 ): Promise<Expense> => {
   const res = await api.post<Expense>("/expenses", values);
   return res.data;
@@ -63,19 +66,25 @@ export const createExpense = async (
 
 // Доходи
 export const fetchIncomes = async (
-  params?: IncomesQuery,
+  params?: IncomesQuery
 ): Promise<ListResponse<Income>> => {
   const res = await api.get<ListResponse<Income>>("/incomes", { params });
   return res.data;
 };
 
 export const createIncome = async (
-  values: Omit<Income, "id" | "createdAt" | "updatedAt">,
+  values: Omit<Income, "id" | "createdAt" | "updatedAt">
 ): Promise<Income> => {
   const res = await api.post<Income>("/incomes", values);
   return res.data;
 };
 
+<<<<<<< HEAD
 export const deleteIncome = async (id: string): Promise<void> => {
   await api.delete(`/incomes/${id}`);
+=======
+export const fetchCurrentMonthStats = async (): Promise<CategoryStat[]> => {
+  const res = await api.get<CategoryStat[]>("/stats/categories/current-month");
+  return res.data;
+>>>>>>> main
 };

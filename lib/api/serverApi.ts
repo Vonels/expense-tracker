@@ -28,7 +28,7 @@ export const getMe = async (): Promise<User> => {
 
 // Расходи
 export const fetchExpenses = async (
-  params?: Record<string, string | number>,
+  params?: Record<string, string | number>
 ): Promise<ListResponse<Expense>> => {
   const res = await api.get<ListResponse<Expense>>("/expenses", {
     ...getAuthHeaders(),
@@ -39,7 +39,7 @@ export const fetchExpenses = async (
 
 // Доходи
 export const fetchIncomes = async (
-  params?: Record<string, string | number>,
+  params?: Record<string, string | number>
 ): Promise<ListResponse<Income>> => {
   const res = await api.get<ListResponse<Income>>("/incomes", {
     ...getAuthHeaders(),

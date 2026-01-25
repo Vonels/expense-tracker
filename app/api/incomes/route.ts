@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
 
-    const { data } = await api.get("incomes", {
+    const { data } = await api.get("/incomes", {
       params: Object.fromEntries(searchParams),
       headers: {
         Cookie: cookieStore.toString(),
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
           (error as ApiError).response?.data?.error ??
           (error as ApiError).message,
       },
-      { status: (error as ApiError).status },
+      { status: (error as ApiError).status }
     );
   }
 }
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   const cookieStore = cookies();
 
   try {
-    const { data } = await api.post("incomes", body, {
+    const { data } = await api.post("/incomes", body, {
       headers: {
         Cookie: cookieStore.toString(),
       },
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
           (error as ApiError).response?.data?.error ??
           (error as ApiError).message,
       },
-      { status: (error as ApiError).status },
+      { status: (error as ApiError).status }
     );
   }
 }

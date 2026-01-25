@@ -5,23 +5,23 @@ import { fetchIncomes, deleteIncome } from "@/lib/api/clientApi";
 import { Icon } from "../Icon/Icon";
 import { TotalExpense } from "../TotalExpense/TotalExpense";
 import { TotalIncome } from "../TotalIncome/TotalIncome";
-import { Modal } from "../Modal/Modal";
-import TransactionForm from "../TransactionForm/TransactionForm";
+// import { Modal } from "../Modal/Modal";
+// import TransactionForm from "../TransactionForm/TransactionForm";
 import css from "./IncomePage.module.css";
 import { toast } from "react-toastify";
 
 const IncomePage = () => {
   const [search, setSearch] = useState("");
   const [date, setDate] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedIncome, setSelectedIncome] = useState<any>(null);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [selectedIncome, setSelectedIncome] = useState<any>(null);
 
   const queryClient = useQueryClient();
 
-  const handleOpenModal = (income?: any) => {
-    setSelectedIncome(income || null);
-    setIsModalOpen(true);
-  };
+  // const handleOpenModal = (income?: any) => {
+  //   setSelectedIncome(income || null);
+  //   setIsModalOpen(true);
+  // };
 
   const { data: incomesData, isLoading } = useQuery({
     queryKey: ["incomes", search, date],
@@ -49,10 +49,10 @@ const IncomePage = () => {
     }
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedIncome(null);
-  };
+  // const handleCloseModal = () => {
+  //   setIsModalOpen(false);
+  //   setSelectedIncome(null);
+  // };
 
   const incomFormList = incomesData?.items || [];
 
@@ -129,7 +129,7 @@ const IncomePage = () => {
                   <li className={css.incomeFormBtn}>
                     <button
                       className={css.incomeFormBtnEdit}
-                      onClick={() => handleOpenModal(income)}
+                      // onClick={() => handleOpenModal(income)}
                     >
                       Edit
                     </button>

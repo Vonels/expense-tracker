@@ -1,49 +1,57 @@
 import { NextRequest, NextResponse } from "next/server";
 import { api, ApiError } from "../../api";
 import { parse } from "cookie";
+import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-
   try {
-    const apiRes = await api.post("auth/register", body);
+    const body = await req.json();
+    const apiRes = await api.post("/auth/register", body);
 
     const setCookie = apiRes.headers["set-cookie"];
+    const res = NextResponse.json(apiRes.data, { status: 201 });
 
-    if (!setCookie) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (setCookie) {
+      const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
 
-    const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
+      for (const cookieStr of cookieArray) {
+        const parsed = parse(cookieStr);
+        const entries = Object.entries(parsed);
 
-    const res = NextResponse.json(apiRes.data);
+        if (entries.length === 0) continue;
 
-    for (const cookieStr of cookieArray) {
-      const parsed = parse(cookieStr);
+        const [cookieName, cookieValue] = entries[0];
 
-      const options = {
-        expires: parsed.Expires ? new Date(parsed.Expires) : undefined,
-        path: parsed.Path ?? "/",
-        maxAge: parsed["Max-Age"] ? Number(parsed["Max-Age"]) : undefined,
-      };
+        const options: Partial<ResponseCookie> = {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: parsed.Path ?? "/",
+        };
 
-      if (parsed.accessToken) {
-        res.cookies.set("accessToken", parsed.accessToken, options);
-      }
-      if (parsed.refreshToken) {
-        res.cookies.set("refreshToken", parsed.refreshToken, options);
+        if (parsed.Expires) options.expires = new Date(parsed.Expires);
+        if (parsed["Max-Age"]) options.maxAge = Number(parsed["Max-Age"]);
+
+        if (
+          (cookieName === "accessToken" || cookieName === "refreshToken") &&
+          cookieValue
+        ) {
+          res.cookies.set(cookieName, cookieValue, options);
+        }
       }
     }
 
     return res;
   } catch (error) {
+    const apiError = error as ApiError;
+    const errorMessage =
+      apiError.response?.data?.error ||
+      apiError.message ||
+      "Registration failed";
+
     return NextResponse.json(
-      {
-        error:
-          (error as ApiError).response?.data?.error ??
-          (error as ApiError).message,
-      },
-      { status: (error as ApiError).status },
+      { error: errorMessage },
+      { status: apiError.status || 500 }
     );
   }
 }

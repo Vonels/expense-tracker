@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { api, ApiError } from "../../api";
 import { cookies } from "next/headers";
+import { api, ApiError } from "@/app/api/api";
 
 export async function GET() {
   const cookieStore = cookies();
 
   try {
-    const { data } = await api.get("users/info", {
+    const { data } = await api.get("/stats/categories/current-month", {
       headers: {
         Cookie: cookieStore.toString(),
       },
@@ -14,13 +14,18 @@ export async function GET() {
 
     return NextResponse.json(data);
   } catch (error) {
+    const apiError = error as ApiError;
+
     return NextResponse.json(
       {
         error:
-          (error as ApiError).response?.data?.error ??
-          (error as ApiError).message,
+          apiError.response?.data?.error ??
+          apiError.message ??
+          "Failed to fetch category statistics",
       },
-      { status: (error as ApiError).status }
+      {
+        status: apiError.response?.status ?? 500,
+      }
     );
   }
 }
