@@ -9,18 +9,20 @@ import { TotalIncome } from "../TotalIncome/TotalIncome";
 import { Modal } from "../Modal/Modal";
 import TransactionForm from "../TransactionForm/TransactionForm";
 import css from "./IncomePage.module.css";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
+import { Income } from "@/types/income";
+import { DatePicker } from "antd";
 
 const IncomePage = () => {
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 400);
   const [date, setDate] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedIncome, setSelectedIncome] = useState<any>(null);
+  const [selectedIncome, setSelectedIncome] = useState<Income | null>(null);
 
   const queryClient = useQueryClient();
 
-  const handleOpenModal = (income?: any) => {
+  const handleOpenModal = (income?: Income) => {
     setSelectedIncome(income || null);
     setIsModalOpen(true);
   };
@@ -60,7 +62,7 @@ const IncomePage = () => {
   const incomFormList = incomesData?.items || [];
 
   return (
-    <div className="container">
+    <div className="">
       <div className={css.incomePage}>
         <div className={css.title}>
           <h3 className={css.titleText}>All Income</h3>
@@ -86,20 +88,10 @@ const IncomePage = () => {
                 placeholder="Search for anything.."
               ></input>
             </label>
-            <label id="date">
-              <Icon id="icon-search" className={css.icon} />
-              <input
-                className={css.incomeFormInputData}
-                type="date"
-                id="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                placeholder="dd/mm/yyyy"
-              ></input>
-            </label>
+            <DatePicker />
           </form>
           <div className={css.incomeFormListCategoris}>
-            <ul>
+            <ul className={css.incomeFormList}>
               <li className={css.incomeFormListItemCategory}>Category</li>
               <li className={css.incomeFormListItemComment}>Comment</li>
               <li className={css.incomeFormListItemDate}>Date</li>
@@ -150,11 +142,12 @@ const IncomePage = () => {
         </div>
       </div>
       {isModalOpen && (
-        <Modal onClose={handleCloseModal}>
+        <Modal>
           <div className={css.modalContent}>
             <TransactionForm
-              onOpenCategories={() => {}}
-              selectedCategoryName={selectedIncome?.source || ""}
+              isEditing={true}
+              currentTransaction={selectedTransaction}
+              onClose={() => setModalIsOpen(false)}
             />
           </div>
         </Modal>
