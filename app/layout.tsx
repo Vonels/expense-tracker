@@ -27,6 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+<<<<<<< HEAD
+          <Header />
+          {children}
+          {modal}
+=======
         <TanStackProvider>
           <AuthProvider>
             <Header />
@@ -34,6 +39,7 @@ export default function RootLayout({
             {modal}
           </AuthProvider>
         </TanStackProvider>
+>>>>>>> main
       </body>
     </html>
   );
