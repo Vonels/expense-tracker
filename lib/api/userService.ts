@@ -12,7 +12,7 @@ interface UserResponse {
 }
 export const userService = {
   updateProfile: async (values: UpdateProfileData): Promise<UserResponse> => {
-    const { data } = await api.patch<UserResponse>("user/info", values);
+    const { data } = await api.patch<UserResponse>("user/me", values);
     return data;
   },
 
