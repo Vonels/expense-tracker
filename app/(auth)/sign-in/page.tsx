@@ -46,7 +46,7 @@ export default function SignInPage() {
         throw new Error(data.error || "Login failed");
       }
 
-      router.push("/main-transactions");
+      router.push("/dashboard");
     } catch (error) {
       alert((error as Error).message);
     } finally {

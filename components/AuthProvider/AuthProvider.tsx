@@ -4,20 +4,26 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { checkSession } from "@/lib/api/clientApi";
 
-type Props = { children: ReactNode };
+type Props = {
+  children: ReactNode;
+};
 
 const PRIVATE_PREFIXES = ["/dashboard", "/expenses", "/incomes", "/profile"];
 const PUBLIC_ONLY_PREFIXES = ["/sign-in", "/sign-up"];
 
 function startsWithAny(path: string, prefixes: string[]) {
-  return prefixes.some((p) => path === p || path.startsWith(p + "/"));
+  return prefixes.some(
+    (prefix) => path === prefix || path.startsWith(prefix + "/")
+  );
 }
 
 export default function AuthProvider({ children }: Props) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [isReady, setIsReady] = useState(false);
+  const [status, setStatus] = useState<"loading" | "authed" | "guest">(
+    "loading"
+  );
 
   const isPrivateRoute = useMemo(
     () => startsWithAny(pathname, PRIVATE_PREFIXES),
@@ -29,36 +35,47 @@ export default function AuthProvider({ children }: Props) {
     [pathname]
   );
 
+  // 🔐 проверяем сессию ТОЛЬКО при первом монтировании
   useEffect(() => {
-    let alive = true;
+    let active = true;
 
     (async () => {
       try {
         const session = await checkSession();
-        if (!alive) return;
 
-        const authed = session.success;
+        if (!active) return;
 
-        if (!authed && isPrivateRoute) {
-          router.replace("/sign-in");
-          return;
+        if (session?.success) {
+          setStatus("authed");
+        } else {
+          setStatus("guest");
         }
-
-        if (authed && isPublicOnlyRoute) {
-          router.replace("/dashboard");
-          return;
-        }
-      } finally {
-        if (alive) setIsReady(true);
+      } catch {
+        if (active) setStatus("guest");
       }
     })();
 
     return () => {
-      alive = false;
+      active = false;
     };
-  }, [isPrivateRoute, isPublicOnlyRoute, router]);
+  }, []);
 
-  if (!isReady) return null;
+  // 🔁 редиректы — отдельно и предсказуемо
+  useEffect(() => {
+    if (status === "loading") return;
+
+    if (status === "guest" && isPrivateRoute) {
+      router.replace("/sign-in");
+      return;
+    }
+
+    if (status === "authed" && isPublicOnlyRoute) {
+      router.replace("/dashboard");
+      return;
+    }
+  }, [status, isPrivateRoute, isPublicOnlyRoute, router]);
+
+  if (status === "loading") return null;
 
   return <>{children}</>;
 }
