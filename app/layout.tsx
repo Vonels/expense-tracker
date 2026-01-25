@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
-import "./globals.css";
+
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
-
 import Header from "@/components/Header/Header";
+import "@mantine/dates/styles.css";
+import "@mantine/core/styles.css";
+import "./globals.css";
+import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { ToastProvider } from "@/components/ToastProvider/ToastProvider";
+
 import AuthProvider from "@/components/AuthProvider/AuthProvider";
 import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
 
@@ -25,13 +30,22 @@ export default function RootLayout({
   modal: ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <ColorSchemeScript />
+      </head>
       <body className={inter.className}>
         <TanStackProvider>
           <AuthProvider>
-            <Header />
-            <main>{children}</main>
-            {modal}
+            <MantineProvider defaultColorScheme="dark">
+              <Header />
+
+              <main>{children}</main>
+
+              {modal}
+
+              <ToastProvider />
+            </MantineProvider>
           </AuthProvider>
         </TanStackProvider>
       </body>

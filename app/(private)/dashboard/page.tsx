@@ -47,8 +47,8 @@ export default function DashboardPage() {
 
         <aside className={css.formSection}>
           <TransactionForm
-            onOpenCategories={handleOpenCategories}
-            selectedCategoryName="Category"
+          // onOpenCategories={handleOpenCategories}
+          // selectedCategoryName="Category"
           />
         </aside>
       </div>

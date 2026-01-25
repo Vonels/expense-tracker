@@ -1,5 +1,5 @@
 .formContainer {
-  max-width: 440px;
+  width: 100%;
   padding: 40px;
   background-color: #171719;
   border-radius: 30px;
@@ -7,7 +7,7 @@
 
 .radioGroup {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   margin-bottom: 20px;
 }
 
@@ -21,8 +21,8 @@
 
 .radioInput {
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   border: 2px solid #555;
   border-radius: 50%;
   display: grid;
@@ -36,8 +36,8 @@
 
 .radioInput::before {
   content: "";
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   transform: scale(0);
   transition: 120ms transform ease-in-out;
@@ -50,7 +50,7 @@
 
 .row {
   display: flex;
-  gap: 16px;
+  gap: 20px;
 }
 
 .fieldGroup {
@@ -78,22 +78,14 @@
   font-size: 14px;
   outline: none;
   box-sizing: border-box;
+
+  transition: border-color 250ms linear;
 }
 
-.input:focus {
+.input:hover,
+.input:focus,
+.input:focus-within {
   border-color: #00ff85;
-}
-
-.input::-webkit-calendar-picker-indicator {
-  position: absolute;
-  right: 12px;
-  width: 24px;
-  height: 24px;
-  margin: 0;
-  padding: 0;
-  opacity: 0;
-  cursor: pointer;
-  z-index: 2;
 }
 
 .customIcon {
@@ -141,7 +133,11 @@
   color: #eb5757;
   font-size: 12px;
   position: absolute;
-  bottom: -25px;
+  bottom: -25%;
+}
+
+.inputError {
+  border-color: #e74a3b;
 }
 
 .input::-webkit-outer-spin-button,

@@ -1,57 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
-import { api, ApiError } from "../../api";
+import { api, logErrorResponse } from "../../api";
+import { cookies } from "next/headers";
 import { parse } from "cookie";
-import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { isAxiosError } from "axios";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+
     const apiRes = await api.post("/auth/register", body);
 
+    const cookieStore = await cookies();
     const setCookie = apiRes.headers["set-cookie"];
-    const res = NextResponse.json(apiRes.data, { status: 201 });
 
     if (setCookie) {
       const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
-
       for (const cookieStr of cookieArray) {
         const parsed = parse(cookieStr);
-        const entries = Object.entries(parsed);
 
-        if (entries.length === 0) continue;
-
-        const [cookieName, cookieValue] = entries[0];
-
-        const options: Partial<ResponseCookie> = {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          path: parsed.Path ?? "/",
+        const options = {
+          expires: parsed.Expires ? new Date(parsed.Expires) : undefined,
+          path: parsed.Path,
+          maxAge: Number(parsed["Max-Age"]),
         };
-
-        if (parsed.Expires) options.expires = new Date(parsed.Expires);
-        if (parsed["Max-Age"]) options.maxAge = Number(parsed["Max-Age"]);
-
-        if (
-          (cookieName === "accessToken" || cookieName === "refreshToken") &&
-          cookieValue
-        ) {
-          res.cookies.set(cookieName, cookieValue, options);
-        }
+        if (parsed.accessToken)
+          cookieStore.set("accessToken", parsed.accessToken, options);
+        if (parsed.refreshToken)
+          cookieStore.set("refreshToken", parsed.refreshToken, options);
       }
+      return NextResponse.json(apiRes.data, { status: apiRes.status });
     }
 
-    return res;
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   } catch (error) {
-    const apiError = error as ApiError;
-    const errorMessage =
-      apiError.response?.data?.error ||
-      apiError.message ||
-      "Registration failed";
-
+    if (isAxiosError(error)) {
+      logErrorResponse(error.response?.data);
+      return NextResponse.json(
+        { error: error.message, response: error.response?.data },
+        { status: error.status }
+      );
+    }
+    logErrorResponse({ message: (error as Error).message });
     return NextResponse.json(
-      { error: errorMessage },
-      { status: apiError.status || 500 }
+      { error: "Internal Server Error" },
+      { status: 500 }
     );
   }
 }
