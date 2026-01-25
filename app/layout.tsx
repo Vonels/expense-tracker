@@ -9,7 +9,6 @@ import "./globals.css";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import { ToastProvider } from "@/components/ToastProvider/ToastProvider";
 
-import Header from "@/components/Header/Header";
 import AuthProvider from "@/components/AuthProvider/AuthProvider";
 import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
 
@@ -39,16 +38,14 @@ export default function RootLayout({
         <TanStackProvider>
           <AuthProvider>
             <MantineProvider defaultColorScheme="dark">
+              <Header />
 
-          <Header />
+              <main>{children}</main>
 
-          <main>{children}</main>
+              {modal}
 
-          {modal}
-
-          <ToastProvider />
-
-        </MantineProvider>
+              <ToastProvider />
+            </MantineProvider>
           </AuthProvider>
         </TanStackProvider>
       </body>
