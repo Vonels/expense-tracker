@@ -7,17 +7,16 @@ import {
   Field,
   ErrorMessage,
   FormikHelpers,
-  useFormikContext, // НОВЕ
+  useFormikContext,
 } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 import css from "./TransactionForm.module.css";
-
-import { useTransactionStore } from "@/lib/store/useTransactionStore"; // НОВЕ
-import { useRouter } from "next/navigation"; // НОВЕ
-import { AntdDatePicker } from "../AntdDatePicker/AntdDatePicker";
-import { AntdTimePicker } from "../AntdTimePicker/AntdTimePicker";
+import { AntdTimePicker } from "../TimePicker/TimePicker";
+import { useTransactionStore } from "@/lib/store/useTransactionStore";
+import { useRouter } from "next/navigation";
+import { AntdDatePicker } from "../DatePicker/DatePicker";
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -28,10 +27,25 @@ interface FormValues {
   comment: string;
 }
 
+interface TransactionData {
+  _id: string;
+  type: "incomes" | "expenses";
+  date: string;
+  time: string;
+  category: {
+    _id: string;
+    categoryName: string;
+  };
+  sum: number;
+  comment: string;
+}
+
 type TransactionFormProps = {
   onOpenCategories: (type: "incomes" | "expenses") => void;
   selectedCategoryName: string;
-  selectedCategoryId: string;
+  currentTransaction?: TransactionData | null;
+  isEditing?: boolean;
+  onClose?: () => void;
 };
 
 const FormikSync = () => {
@@ -66,7 +80,9 @@ const validationSchema = Yup.object().shape({
 });
 
 const TransactionForm: React.FC<TransactionFormProps> = ({
-  selectedCategoryName,
+  currentTransaction,
+  isEditing = false,
+  onClose,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -75,14 +91,30 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     (state) => state.selectedCategory
   );
   const resetCategory = useTransactionStore((state) => state.resetCategory);
+  const setCategory = useTransactionStore((state) => state.setCategory);
+
+  useEffect(() => {
+    if (isEditing && currentTransaction?.category) {
+      setCategory(
+        currentTransaction.category._id,
+        currentTransaction.category.categoryName
+      );
+      useTransactionStore
+        .getState()
+        .setTransactionType(currentTransaction.type);
+    }
+    return () => {
+      resetCategory();
+    };
+  }, [isEditing, currentTransaction, setCategory, resetCategory]);
 
   const initialValues: FormValues = {
-    type: "expenses",
-    date: new Date().toISOString().split("T")[0],
-    time: new Date().toTimeString().slice(0, 5),
-    category: "",
-    sum: "",
-    comment: "",
+    type: currentTransaction?.type || "expenses",
+    date: currentTransaction?.date || new Date().toISOString().split("T")[0],
+    time: currentTransaction?.time || new Date().toTimeString().slice(0, 5),
+    category: currentTransaction?.category._id || "",
+    sum: currentTransaction?.sum || "",
+    comment: currentTransaction?.comment || "",
   };
 
   const handleSubmit = async (
@@ -91,10 +123,28 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   ) => {
     setIsLoading(true);
     try {
-      await axios.post("/transactions", values);
-      toast.success("Transaction added successfully!");
-      resetForm();
-      resetCategory();
+      if (isEditing && currentTransaction?._id) {
+        await axios.patch(
+          `/transactions/${values.type}/${currentTransaction._id}`,
+          {
+            date: values.date,
+            time: values.time,
+            category: values.category,
+            sum: values.sum,
+            comment: values.comment,
+          }
+        );
+        toast.success("Transaction updated successfully!");
+      } else {
+        await axios.post("/transactions", values);
+        toast.success("Transaction added successfully!");
+        resetForm();
+        resetCategory();
+      }
+      router.refresh();
+      if (onClose) {
+        onClose();
+      }
     } catch (error: unknown) {
       let errorMsg = "Request failed";
       if (axios.isAxiosError(error)) {
@@ -106,12 +156,16 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     }
   };
 
+  const buttonText = isEditing ? "Save" : "Add";
+  const loadingText = isEditing ? "Saving..." : "Sending...";
+
   return (
     <div className={css.formContainer}>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
+        enableReinitialize
       >
         {({ values, setFieldValue }) => (
           <Form className={css.form}>
@@ -142,6 +196,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                     setFieldValue("category", "");
                     resetCategory();
                   }}
+                  checked={values.type === "incomes"}
                   className={css.radioInput}
                 />
                 Income
@@ -169,8 +224,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 readOnly
                 placeholder="Different"
                 className={css.input}
-                value={selectedCategory?.name || selectedCategoryName || ""} // НОВЕ
-                // НОВЕ для onClick/Полина для тебя
+                value={selectedCategory?.name || ""}
                 onClick={() => {
                   useTransactionStore
                     .getState()
@@ -195,7 +249,6 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   placeholder="0.00"
                   className={css.input}
                 />
-                {/* //заглушка */}
                 <span className={css.currency}>UAH</span>
               </div>
               <ErrorMessage name="sum" component="p" className={css.error} />
@@ -220,7 +273,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
               className={css.submitBtn}
               disabled={isLoading}
             >
-              {isLoading ? "Sending..." : "Add"}
+              {isLoading ? loadingText : buttonText}
             </button>
           </Form>
         )}
@@ -230,3 +283,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 };
 
 export default TransactionForm;
+
+{
+  /* <TransactionForm
+  isEditing={true}
+  currentTransaction={selectedTransaction}
+  onClose={() => setModalIsOpen(false)}
+/>; */
+}
