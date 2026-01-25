@@ -49,7 +49,7 @@ export default function SignUpPage() {
         return;
       }
 
-      router.push("/main-transactions");
+      router.push("/dashboard");
     } catch {
       alert("Unexpected error");
     } finally {

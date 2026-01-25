@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { api, ApiError } from "../../api";
 import { parse } from "cookie";
-import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
 export async function POST(req: NextRequest) {
   try {

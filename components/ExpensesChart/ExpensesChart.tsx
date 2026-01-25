@@ -92,19 +92,19 @@ export const ExpensesChart = () => {
       <h3 className={css.title}>Expenses categories</h3>
       <div className={css.content}>
         <div className={css.chartWrapper}>
-          <ResponsiveContainer width="100%" height={285}>
+          <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
                 data={finalChartData}
-                innerRadius={100}
-                outerRadius={140}
+                innerRadius={80}
+                outerRadius={125}
                 startAngle={180}
                 endAngle={0}
-                cornerRadius={8}
+                cornerRadius={6}
                 paddingAngle={isPlaceholder ? 0 : -5}
                 dataKey="value"
                 stroke="none"
-                cy="65%"
+                cy="80%"
               >
                 {finalChartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
