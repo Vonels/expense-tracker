@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { api, ApiError } from "@/app/api/api";
 
 export async function GET() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
   try {
     const { data } = await api.get("/stats/categories/current-month", {
@@ -16,16 +16,13 @@ export async function GET() {
   } catch (error) {
     const apiError = error as ApiError;
 
+    if (apiError.response?.status === 404) {
+      return NextResponse.json([]);
+    }
+
     return NextResponse.json(
-      {
-        error:
-          apiError.response?.data?.error ??
-          apiError.message ??
-          "Failed to fetch category statistics",
-      },
-      {
-        status: apiError.response?.status ?? 500,
-      }
+      { error: apiError.message },
+      { status: apiError.response?.status || 500 }
     );
   }
 }
