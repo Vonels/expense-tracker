@@ -26,9 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Header />
-        {children}
-        {modal}
+          <Header />
+          {children}
+          {modal}
       </body>
     </html>
   );

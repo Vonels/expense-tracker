@@ -75,3 +75,7 @@ export const createIncome = async (
   const res = await api.post<Income>("/incomes", values);
   return res.data;
 };
+
+export const deleteIncome = async (id: string): Promise<void> => {
+  await api.delete(`/incomes/${id}`);
+};
