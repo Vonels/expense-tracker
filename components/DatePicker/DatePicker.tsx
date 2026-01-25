@@ -54,6 +54,7 @@ export const DatePicker = ({ name, placeholder }: Props) => {
         input: css.input,
         calendarHeader: css.calendarHeader,
         calendarHeaderControl: css.headerControl,
+        calendarHeaderLevel: css.calendarHeaderLevel,
         weekday: css.weekday,
         day: css.day,
         monthsListControl: css.monthsListControl,

@@ -1,72 +1,77 @@
-import { TimePicker, ConfigProvider, theme } from "antd";
-import dayjs, { Dayjs } from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import { FormikValues, useFormikContext } from "formik";
-import { useCallback, useMemo } from "react";
-import css from "./TimePicker.module.css";
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { TimePicker as MantineTimePicker } from "@mantine/dates";
+import { useFormikContext, FormikValues } from "formik";
+import dayjs from "dayjs";
 import { Icon } from "../Icon/Icon";
+import css from "./TimePicker.module.css";
+import "@mantine/dates/styles.css";
 
 interface Props {
   name: string;
-  placeholder?: string;
 }
 
-dayjs.extend(customParseFormat);
+export const CustomTimePicker = ({ name }: Props) => {
+  const [isClient, setIsClient] = useState(false);
 
-export const AntdTimePicker = ({ name, placeholder }: Props) => {
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setIsClient(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   const { setFieldValue, values } = useFormikContext<FormikValues>();
-  const value = values[name];
 
-  const timeValue = useMemo(() => {
-    return value && dayjs(value, "HH:mm:ss").isValid()
-      ? dayjs(value, "HH:mm:ss")
-      : null;
-  }, [value]);
+  const value = useMemo(() => {
+    return values[name] || undefined;
+  }, [values, name]);
 
-  const handleTimeChange = useCallback(
-    (time: Dayjs | null) => {
-      setFieldValue(name, time ? time.format("HH:mm:ss") : "");
+  const handleChange = useCallback(
+    (timeString: string) => {
+      setFieldValue(name, timeString);
     },
-    [name, setFieldValue]
+    [setFieldValue, name]
   );
 
-  const getContainer = useCallback(
-    (trigger: HTMLElement) => trigger.parentElement!,
-    []
-  );
+  const placeholders = useMemo(() => {
+    if (!isClient) return { hr: "--", min: "--", sec: "--" };
+    const now = dayjs();
+    return {
+      hours: now.format("HH"),
+      minutes: now.format("mm"),
+      seconds: now.format("ss"),
+    };
+  }, [isClient]);
 
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: theme.darkAlgorithm,
-        token: {
-          colorPrimary: "#0c0d0d",
-          borderRadius: 8,
-        },
-        components: {
-          DatePicker: {
-            colorBgElevated: "#0ef387",
-            colorText: "#0c0d0d",
-            controlItemBgActive: "#0c0d0d",
-            colorTextLightSolid: "#fff",
-            controlItemBgHover: "rgba(0, 0, 0, 0.1)",
-            colorSplit: "rgba(12, 13, 13, 0.1)",
-          },
+    <MantineTimePicker
+      name={name}
+      value={value}
+      onChange={handleChange}
+      withSeconds
+      withDropdown
+      hoursPlaceholder={placeholders.hours}
+      minutesPlaceholder={placeholders.minutes}
+      secondsPlaceholder={placeholders.seconds}
+      rightSection={<Icon id="icon-clock" className={css.icon} />}
+      rightSectionProps={{ style: { pointerEvents: "none" } }}
+      classNames={{
+        root: css.root,
+        input: css.input,
+        field: css.field,
+        dropdown: css.dropdown,
+        control: css.control,
+        controlsList: css.controlsList,
+        controlsListGroup: css.controlsListGroup,
+      }}
+      popoverProps={{
+        position: "bottom-start",
+        offset: 5,
+        transitionProps: { transition: "pop", duration: 250 },
+        classNames: {
+          dropdown: css.dropdown,
         },
       }}
-    >
-      <TimePicker
-        className={css.antdPicker}
-        classNames={{ popup: css.timePopup }}
-        suffixIcon={<Icon id="icon-clock" />}
-        format="HH:mm:ss"
-        value={timeValue}
-        onChange={handleTimeChange}
-        placeholder={placeholder || "enter time"}
-        showNow={false}
-        allowClear={false}
-        getPopupContainer={getContainer}
-      />
-    </ConfigProvider>
+    />
   );
 };

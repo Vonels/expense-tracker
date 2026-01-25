@@ -13,10 +13,11 @@ import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 import css from "./TransactionForm.module.css";
-import { AntdTimePicker } from "../TimePicker/TimePicker";
+
 import { useTransactionStore } from "@/lib/store/useTransactionStore";
 import { useRouter } from "next/navigation";
 import { DatePicker } from "../DatePicker/DatePicker";
+import { CustomTimePicker } from "../TimePicker/TimePicker";
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -212,7 +213,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
               <div className={css.fieldGroup}>
                 <label className={css.label}>Time</label>
-                <AntdTimePicker name="time" />
+                <CustomTimePicker name="time" />
                 <ErrorMessage name="time" component="p" className={css.error} />
               </div>
             </div>
