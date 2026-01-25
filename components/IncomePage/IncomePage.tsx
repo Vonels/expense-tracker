@@ -12,6 +12,8 @@ import css from "./IncomePage.module.css";
 import { toast } from "react-hot-toast";
 import { Income } from "@/types/income";
 import { DatePicker } from "antd";
+import { AntdDatePicker } from "../DatePicker/DatePicker";
+import { ErrorMessage } from "formik";
 
 const IncomePage = () => {
   const [search, setSearch] = useState("");
@@ -88,16 +90,17 @@ const IncomePage = () => {
                 placeholder="Search for anything.."
               ></input>
             </label>
-            <DatePicker />
+            <AntdDatePicker name="date" />
+            <ErrorMessage name="date" component="p" className={css.error} />
           </form>
           <div className={css.incomeFormListCategoris}>
-            <ul className={css.incomeFormList}>
-              <li className={css.incomeFormListItemCategory}>Category</li>
-              <li className={css.incomeFormListItemComment}>Comment</li>
-              <li className={css.incomeFormListItemDate}>Date</li>
-              <li className={css.incomeFormListItemTime}>Time</li>
-              <li className={css.incomeFormListItemSum}>Sum</li>
-              <li className={css.incomeFormItem}>Actions</li>
+            <ul className={css.incomeFormListStatic}>
+              <li className={css.incomeFormListItemStaticCategory}>Category</li>
+              <li className={css.incomeFormListItemStaticComment}>Comment</li>
+              <li className={css.incomeFormListItemStaticDate}>Date</li>
+              <li className={css.incomeFormListItemStaticTime}>Time</li>
+              <li className={css.incomeFormListItemStaticSum}>Sum</li>
+              <li className={css.incomeFormItemStaticActions}>Actions</li>
             </ul>
             {isLoading ? (
               <p className={css.loadingText}>Loading...</p>
@@ -105,20 +108,24 @@ const IncomePage = () => {
               <p className={css.noDataText}>No income records found.</p>
             ) : (
               incomFormList.map((income) => (
-                <ul key={income.id} className={css.incomeFormList}>
-                  <li className={css.incomeFormListItemText}>
+                <ul
+                  key={income.id}
+                  className={css.incomeFormListDinamicCategory}
+                >
+                  <li className={css.incomeFormListItemDinamicComment}>
                     {income.source}
+                    <p>test</p>
                   </li>
-                  <li className={css.incomeFormListItemText}>
+                  <li className={css.incomeFormListItemDinamicDate}>
                     {income.comment || "—"}
                   </li>
-                  <li className={css.incomeFormListItemText}>{income.date}</li>
-                  <li className={css.incomeFormListItemText}>
+                  <li className={css.incomeFormListItemDinamicTime}>
+                    {income.date}
+                  </li>
+                  <li className={css.incomeFormListItemDinamicSum}>
                     {income.date.includes("T")
                       ? income.date.split("T")[1].slice(0, 5)
                       : "—"}
-                  </li>
-                  <li className={css.incomeFormListItemText}>
                     {income.amount.toLocaleString()} / UAH
                   </li>
                   <li className={css.incomeFormBtn}>
