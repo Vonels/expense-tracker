@@ -2,35 +2,58 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+
+import { login } from "@/lib/api/clientApi";
+import { useAuthStore } from "@/lib/store/authStore";
+
 import styles from "./SignInPage.module.css";
+
+type LoginCredentials = {
+  email: string;
+  password: string;
+};
+
+type LoginErrorResponse = {
+  error?: string;
+};
 
 export default function SignInPage() {
   const router = useRouter();
+  const setLoadingStore = useAuthStore((state) => state.setLoading);
 
-  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   const [errors, setErrors] = useState<{
     email?: string;
     password?: string;
   }>({});
 
-  const handleSubmit = async (formData: FormData) => {
-    setErrors({});
-    setLoading(true);
+  const mutation = useMutation({
+    mutationFn: login,
+    onMutate: () => setLoadingStore(true),
+    onSuccess: () => router.push("/main-transactions"),
+    onError: (err: AxiosError<LoginErrorResponse>) => {
+      alert(err.response?.data?.error ?? "Login failed");
+    },
+    onSettled: () => setLoadingStore(false),
+  });
 
-    const body = {
+  const handleSubmit = (formData: FormData) => {
+    setErrors({});
+
+    const body: LoginCredentials = {
       email: String(formData.get("email")),
       password: String(formData.get("password")),
     };
 
-    const newErrors: { email?: string; password?: string } = {};
-
+    const newErrors: typeof errors = {};
     if (!body.email) newErrors.email = "Email is required";
     if (!body.password) newErrors.password = "Password is required";
 
-    if (Object.keys(newErrors).length > 0) {
+    if (Object.keys(newErrors).length) {
       setErrors(newErrors);
-      setLoading(false);
       return;
     }
 
@@ -63,6 +86,7 @@ export default function SignInPage() {
           awaits.
         </p>
       </div>
+
       <form
         className={styles.form}
         onSubmit={(e) => {
@@ -81,22 +105,39 @@ export default function SignInPage() {
         </div>
 
         <div className={styles.field}>
-          <input
-            className={styles.input}
-            name="password"
-            type="password"
-            placeholder="Password"
-          />
+          <div className={styles.passwordWrapper}>
+            <input
+              className={styles.input}
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+            />
+
+            <button
+              type="button"
+              className={styles.eyeButton}
+              onClick={() => setShowPassword((p) => !p)}
+            >
+              <img src="/eye-off.svg" alt="Toggle password visibility" />
+            </button>
+          </div>
+
           {errors.password && (
             <span className={styles.error}>{errors.password}</span>
           )}
         </div>
+
         <div className={styles.thirdblock}>
-          <button className={styles.button} type="submit" disabled={loading}>
-            {loading ? "Loading..." : "Sign in"}
+          <button
+            className={styles.button}
+            type="submit"
+            disabled={mutation.isPending}
+          >
+            {mutation.isPending ? "Loading..." : "Sign in"}
           </button>
         </div>
       </form>
+
       <p className={styles.linkText}>
         Don’t have an account? <a href="/sign-up">Sign up</a>
       </p>

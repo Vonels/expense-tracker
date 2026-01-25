@@ -54,175 +54,33 @@
   margin-top: 60px;
   margin-bottom: 20px;
 }
-
-.linkText {
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 150%;
-  color: rgba(250, 250, 250, 0.6);
-  margin-bottom: 169px;
+.passwordWrapper {
+  position: relative;
+  display: inline-block;
 }
 
-.page {
+.passwordWrapper input {
+  padding-right: 48px;
+}
+
+.eyeButton {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  background: none;
+  padding: 0;
+  cursor: pointer;
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin: auto;
 }
 
-.container {
-  margin: auto;
-  /* padding-left: 200px; */
+.eyeButton img {
+  width: 20px;
+  height: 20px;
+  opacity: 0.5;
 }
 
-@media (min-width: 768px) {
-  .title {
-    font-weight: 400;
-    font-size: 56px;
-    letter-spacing: -0.02em;
-    color: #fafafa;
-  }
-  .description {
-    font-weight: 400;
-    font-size: 16px;
-    letter-spacing: -0.02em;
-    color: rgba(250, 250, 250, 0.4);
-
-    width: 399px;
-    height: 38px;
-  }
-  .button {
-    border-radius: 40px;
-    padding: 14px 44px;
-    width: 146px;
-    height: 47px;
-    background: #0ef387;
-    font-weight: 400;
-    font-size: 16px;
-    letter-spacing: -0.02em;
-    color: #0c0d0d;
-    margin-top: 0;
-  }
-  .field {
-    margin-bottom: 24px;
-  }
-  .inputs {
-    border: 1px solid rgba(250, 250, 250, 0.2);
-    border-radius: 12px;
-    padding-left: 12px;
-    width: 399px;
-    height: 48px;
-    font-weight: 400;
-    line-height: 150%;
-    color: rgba(250, 250, 250, 0.4);
-    background-color: #0c0d0d;
-  }
-  .firstblock {
-    width: 533px;
-    height: 126px;
-    display: flex;
-    gap: 20px;
-    flex-direction: column;
-    margin-bottom: 37px;
-  }
-  .form {
-    gap: 24px;
-  }
-  .thirdblock {
-    margin-top: 60px;
-    margin-bottom: 20px;
-  }
-
-  .linkText {
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 150%;
-    color: rgba(250, 250, 250, 0.6);
-    margin-bottom: 0px;
-  }
-
-  .page {
-    display: flex;
-    justify-content: center;
-    padding-left: 184px;
-    padding-bottom: 262px;
-  }
-
-  .container {
-    margin: auto;
-    padding-left: 0px;
-  }
-}
-
-@media (min-width: 1440px) {
-  .title {
-    font-weight: 400;
-    font-size: 56px;
-    letter-spacing: -0.02em;
-    color: #fafafa;
-  }
-  .description {
-    font-weight: 400;
-    font-size: 16px;
-    letter-spacing: -0.02em;
-    color: rgba(250, 250, 250, 0.4);
-  }
-  .button {
-    border-radius: 40px;
-    padding: 14px 44px;
-    width: 146px;
-    height: 47px;
-    background: #0ef387;
-    font-weight: 400;
-    font-size: 16px;
-    letter-spacing: -0.02em;
-    color: #0c0d0d;
-  }
-  .field {
-    margin-bottom: 24px;
-  }
-  .inputs {
-    border: 1px solid rgba(250, 250, 250, 0.2);
-    border-radius: 12px;
-    padding-left: 12px;
-    width: 399px;
-    height: 48px;
-    font-weight: 400;
-    line-height: 150%;
-    color: rgba(250, 250, 250, 0.4);
-    background-color: #0c0d0d;
-  }
-  .firstblock {
-    width: 533px;
-    height: 126px;
-    display: flex;
-    gap: 20px;
-    flex-direction: column;
-    margin-bottom: 37px;
-  }
-  .form {
-    gap: 24px;
-  }
-  .thirdblock {
-    margin-top: 60px;
-    margin-bottom: 20px;
-  }
-
-  .linkText {
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 150%;
-    color: rgba(250, 250, 250, 0.6);
-    margin-bottom: 0px;
-  }
-
-  .page {
-    display: flex;
-    justify-content: center;
-  }
-
-  .container {
-    margin: auto;
-    padding-left: 0px;
-  }
+.eyeButton:hover img {
+  opacity: 1;
 }
