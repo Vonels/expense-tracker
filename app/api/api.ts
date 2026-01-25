@@ -19,10 +19,10 @@ export function logErrorResponse(errorObj: unknown): void {
   console.dir(errorObj, { depth: null, colors: true });
 }
 
-const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+const baseURL = process.env.NEXT_PUBLIC_API_URL_BACKEND;
 
 if (!baseURL) {
-  console.warn("NEXT_PUBLIC_BACKEND_API_URL is not set");
+  console.warn("NEXT_PUBLIC_API_URL_BACKEND is not set");
 }
 
 export const api = axios.create({
