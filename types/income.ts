@@ -13,4 +13,5 @@ export interface IncomesQuery {
   limit?: number;
   from?: string;
   to?: string;
+  search?: string;
 }
