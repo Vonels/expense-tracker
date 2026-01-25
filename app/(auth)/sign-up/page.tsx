@@ -61,7 +61,25 @@ export default function SignUpPage() {
       return;
     }
 
-    mutation.mutate(body);
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const data: { error?: string } = await res.json();
+        alert(data.error || "Registration failed");
+        return;
+      }
+
+      router.push("/dashboard");
+    } catch {
+      alert("Unexpected error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

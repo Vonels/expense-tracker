@@ -23,3 +23,9 @@ export interface ListResponse<T> {
 export interface SessionResponse {
   success: boolean;
 }
+
+export interface CategoryStat {
+  _id: string;
+  totalAmount: number;
+  category: string;
+}
