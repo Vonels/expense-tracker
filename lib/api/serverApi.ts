@@ -4,7 +4,7 @@ import { api } from "./api";
 import type { User } from "@/types/user";
 import type { Expense } from "@/types/expense";
 import type { Income } from "@/types/income";
-import type { ListResponse, SessionResponse } from "@/types/expense";
+import type { ListResponse } from "@/types/expense";
 
 const getAuthHeaders = () => ({
   headers: {

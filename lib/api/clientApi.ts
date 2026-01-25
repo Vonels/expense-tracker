@@ -3,7 +3,7 @@ import type { User } from "@/types/user";
 import type { AuthCredentials } from "@/types/auth";
 import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
-import type { ListResponse, SessionResponse } from "@/types/expense";
+import type { ListResponse } from "@/types/expense";
 import { useAuthStore } from "@/lib/store/authStore";
 
 // лоадер
@@ -25,10 +25,10 @@ api.interceptors.response.use(
 );
 
 // Все что связано с User
-// export const register = async (values: AuthCredentials): Promise<User> => {
-//   const res = await api.post<User>("/auth/register", values);
-//   return res.data;
-// };
+export const register = async (values: AuthCredentials): Promise<User> => {
+  const res = await api.post<User>("/auth/register", values);
+  return res.data;
+};
 
 export const login = async (values: AuthCredentials): Promise<User> => {
   const res = await api.post<User>("/auth/login", values);
