@@ -50,3 +50,33 @@
   margin-top: 60px;
   margin-bottom: 20px;
 }
+.passwordWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.passwordWrapper input {
+  padding-right: 48px;
+}
+
+.eyeButton {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.eyeButton img {
+  width: 20px;
+  height: 20px;
+  opacity: 0.5;
+}
+
+.eyeButton:hover img {
+  opacity: 1;
+}
