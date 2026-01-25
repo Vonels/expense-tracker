@@ -90,6 +90,7 @@ export const createIncome = async (
 export const deleteIncome = async (id: string): Promise<void> => {
   await api.delete(`/incomes/${id}`);
 };
+
 export const fetchCurrentMonthStats = async (): Promise<CategoryStat[]> => {
   const res = await api.get<CategoryStat[]>("/stats/categories/current-month");
   return res.data;
