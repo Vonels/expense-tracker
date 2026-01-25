@@ -25,10 +25,10 @@ api.interceptors.response.use(
 );
 
 // Все что связано с User
-export const register = async (values: AuthCredentials): Promise<User> => {
-  const res = await api.post<User>("/auth/register", values);
-  return res.data;
-};
+// export const register = async (values: AuthCredentials): Promise<User> => {
+//   const res = await api.post<User>("/auth/register", values);
+//   return res.data;
+// };
 
 export const login = async (values: AuthCredentials): Promise<User> => {
   const res = await api.post<User>("/auth/login", values);
@@ -39,9 +39,17 @@ export const logout = async (): Promise<void> => {
   await api.post("/auth/logout");
 };
 
-export const checkSession = async (): Promise<SessionResponse> => {
-  const res = await api.get<SessionResponse>("/auth/session");
-  return res.data;
+export const checkSession = async () => {
+  const res = await fetch("/api/auth/session", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    return { success: false };
+  }
+
+  return res.json();
 };
 
 export const getMe = async (): Promise<User> => {
