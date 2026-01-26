@@ -36,19 +36,14 @@
   font-size: 16px;
   letter-spacing: -0.02em;
   color: #0c0d0d;
+  margin-top: 142px;
+  margin-bottom: 20px;
 }
 .firstblock {
   display: flex;
   gap: 20px;
   flex-direction: column;
   margin-bottom: 37px;
-}
-.form {
-  display: flex;
-  gap: 24px;
-  flex-direction: column;
-}
-.thirdblock {
   margin-top: 132px;
   margin-bottom: 20px;
 }
@@ -58,6 +53,11 @@
 }
 .container {
   padding: 20px;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 @media (min-width: 768px) {
   .title {
@@ -98,6 +98,7 @@
     font-size: 16px;
     letter-spacing: -0.02em;
     color: #0c0d0d;
+    margin: 0;
   }
   .firstblock {
     display: flex;

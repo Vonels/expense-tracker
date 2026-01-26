@@ -43,11 +43,12 @@ export const AvatarField = () => {
       <div className={styles.avatarCircle}>
         {user?.avatarUrl ? (
           <Image
-            src={user.avatarUrl}
+            src={`${user.avatarUrl}?t=${new Date().getTime()}`}
             alt="User Avatar"
             className={styles.avatarImg}
             width={100}
             height={100}
+            unoptimized
           />
         ) : (
           <svg className={styles.defaultAvatarIcon}>

@@ -1,9 +1,14 @@
 import { api } from "./api";
 import type { User } from "@/types/user";
-import type { AuthCredentials } from "@/types/auth";
+import type { AuthCredentials, LoginCredentials } from "@/types/auth";
 import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
-import type { ListResponse } from "@/types/expense";
+import type { ListResponse, SessionResponse } from "@/types/expense";
+import {
+  ICategory,
+  CategoriesResponse,
+  CreateCategoryDto,
+} from "@/app/@modal/(.)categoriesModal/page";
 import { useAuthStore } from "@/lib/store/authStore";
 
 // лоадер
@@ -30,7 +35,7 @@ export const register = async (values: AuthCredentials): Promise<User> => {
   return res.data;
 };
 
-export const login = async (values: AuthCredentials): Promise<User> => {
+export const login = async (values: LoginCredentials): Promise<User> => {
   const res = await api.post<User>("/auth/login", values);
   return res.data;
 };
@@ -85,6 +90,32 @@ export const createIncome = async (
 ): Promise<Income> => {
   const res = await api.post<Income>("/incomes", values);
   return res.data;
+};
+
+export const getCategories = async (): Promise<CategoriesResponse> => {
+  const res = await api.get<CategoriesResponse>("/categories");
+  return res.data;
+};
+
+export const createCategory = async (
+  payload: CreateCategoryDto
+): Promise<ICategory> => {
+  const res = await api.post<ICategory>("/categories", payload);
+  return res.data;
+};
+
+export const updateCategory = async (
+  id: string,
+  name: string
+): Promise<ICategory> => {
+  const res = await api.patch<ICategory>(`/categories?id=${id}`, {
+    categoryName: name,
+  });
+  return res.data;
+};
+
+export const deleteCategory = async (id: string): Promise<void> => {
+  await api.delete(`/categories?id=${id}`);
 };
 
 export const deleteIncome = async (id: string): Promise<void> => {

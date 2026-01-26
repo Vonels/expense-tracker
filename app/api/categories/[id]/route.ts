@@ -1,12 +1,17 @@
 import { NextResponse } from "next/server";
-import { api, ApiError } from "../api";
+import { api, ApiError } from "../../api";
 import { cookies } from "next/headers";
 
-export async function GET() {
+type Params = {
+  params: { id: string };
+};
+
+export async function PATCH(req: Request, { params }: Params) {
   const cookieStore = await cookies();
+  const body = await req.json();
 
   try {
-    const { data } = await api.get("/categories", {
+    const { data } = await api.patch(`/categories/${params.id}`, body, {
       headers: {
         Cookie: cookieStore.toString(),
       },
@@ -25,12 +30,11 @@ export async function GET() {
   }
 }
 
-export async function POST(req: Request) {
+export async function DELETE(_: Request, { params }: Params) {
   const cookieStore = await cookies();
-  const body = await req.json();
 
   try {
-    const { data } = await api.post("/categories", body, {
+    const { data } = await api.delete(`/categories/${params.id}`, {
       headers: {
         Cookie: cookieStore.toString(),
       },
