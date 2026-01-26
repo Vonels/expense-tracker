@@ -7,17 +7,21 @@ import {
   Field,
   ErrorMessage,
   FormikHelpers,
-  useFormikContext, // НОВЕ
+  useFormikContext,
+  FieldProps,
 } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import css from "./TransactionForm.module.css";
 
-import { useTransactionStore } from "@/lib/store/useTransactionStore"; // НОВЕ
-import { useRouter } from "next/navigation"; // НОВЕ
-import { AntdDatePicker } from "../AntdDatePicker/AntdDatePicker";
-import { AntdTimePicker } from "../AntdTimePicker/AntdTimePicker";
+import { useTransactionStore } from "@/lib/store/useTransactionStore";
+import { useRouter } from "next/navigation";
+import { DatePicker } from "../DatePicker/DatePicker";
+import { CustomTimePicker } from "../TimePicker/TimePicker";
+import { TransactionData } from "@/types/transactions";
+import { useAuthStore } from "@/lib/store/authStore";
+import { Icon } from "../Icon/Icon";
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -28,11 +32,13 @@ interface FormValues {
   comment: string;
 }
 
-type TransactionFormProps = {
-  onOpenCategories: (type: "incomes" | "expenses") => void;
-  selectedCategoryName: string;
-  selectedCategoryId: string;
-};
+interface TransactionFormProps {
+  onOpenCategories?: (type: "incomes" | "expenses") => void;
+  selectedCategoryName?: string;
+  currentTransaction?: TransactionData | null;
+  isEditing?: boolean;
+  onClose?: () => void;
+}
 
 const FormikSync = () => {
   const { setFieldValue } = useFormikContext<FormValues>();
@@ -66,23 +72,44 @@ const validationSchema = Yup.object().shape({
 });
 
 const TransactionForm: React.FC<TransactionFormProps> = ({
-  selectedCategoryName,
+  currentTransaction,
+  isEditing = false,
+  onClose,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  const user = useAuthStore((state) => state.user);
+  const currentCurrency = user?.currency || "UAH";
 
   const selectedCategory = useTransactionStore(
     (state) => state.selectedCategory
   );
   const resetCategory = useTransactionStore((state) => state.resetCategory);
+  const setCategory = useTransactionStore((state) => state.setCategory);
+
+  useEffect(() => {
+    if (isEditing && currentTransaction?.category) {
+      setCategory(
+        currentTransaction.category._id,
+        currentTransaction.category.categoryName
+      );
+      useTransactionStore
+        .getState()
+        .setTransactionType(currentTransaction.type);
+    }
+    return () => {
+      resetCategory();
+    };
+  }, [isEditing, currentTransaction, setCategory, resetCategory]);
 
   const initialValues: FormValues = {
-    type: "expenses",
-    date: new Date().toISOString().split("T")[0],
-    time: new Date().toTimeString().slice(0, 5),
-    category: "",
-    sum: "",
-    comment: "",
+    type: currentTransaction?.type || "expenses",
+    date: currentTransaction?.date || new Date().toISOString().split("T")[0],
+    time: currentTransaction?.time || new Date().toTimeString().slice(0, 5),
+    category: currentTransaction?.category._id || "",
+    sum: currentTransaction?.sum || "",
+    comment: currentTransaction?.comment || "",
   };
 
   const handleSubmit = async (
@@ -91,10 +118,28 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   ) => {
     setIsLoading(true);
     try {
-      await axios.post("/transactions", values);
-      toast.success("Transaction added successfully!");
-      resetForm();
-      resetCategory();
+      if (isEditing && currentTransaction?._id) {
+        await axios.patch(
+          `/transactions/${values.type}/${currentTransaction._id}`,
+          {
+            date: values.date,
+            time: values.time,
+            category: values.category,
+            sum: values.sum,
+            comment: values.comment,
+          }
+        );
+        toast.success("Transaction updated successfully!");
+      } else {
+        await axios.post("/transactions", values);
+        toast.success("Transaction added successfully!");
+        resetForm();
+        resetCategory();
+      }
+      router.refresh();
+      if (onClose) {
+        onClose();
+      }
     } catch (error: unknown) {
       let errorMsg = "Request failed";
       if (axios.isAxiosError(error)) {
@@ -106,18 +151,37 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     }
   };
 
+  const buttonText = isEditing ? "Save" : "Add";
+  const loadingText = isEditing ? "Saving..." : "Sending...";
+
   return (
     <div className={css.formContainer}>
+      {onClose && (
+        <button
+          type="button"
+          className={css.closeBtn}
+          onClick={onClose}
+          aria-label="Close form"
+        >
+          <Icon id="icon-Close" className={css.closeBtnIcon} />
+        </button>
+      )}
+
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
+        enableReinitialize
       >
-        {({ values, setFieldValue }) => (
+        {({ values, setFieldValue, errors, touched }) => (
           <Form className={css.form}>
             <FormikSync />
 
-            <div className={css.radioGroup}>
+            <div
+              className={css.radioGroup}
+              role="radiogroup"
+              aria-label="Transaction type"
+            >
               <label className={css.radioLabel}>
                 <Field
                   type="radio"
@@ -142,6 +206,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                     setFieldValue("category", "");
                     resetCategory();
                   }}
+                  checked={values.type === "incomes"}
                   className={css.radioInput}
                 />
                 Income
@@ -150,27 +215,37 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
             <div className={css.row}>
               <div className={css.fieldGroup}>
-                <label className={css.label}>Date</label>
-                <AntdDatePicker name="date" />
+                <label htmlFor="date-picker" className={css.label}>
+                  Date
+                </label>
+                <DatePicker id="date-picker" name="date" />
                 <ErrorMessage name="date" component="p" className={css.error} />
               </div>
 
               <div className={css.fieldGroup}>
-                <label className={css.label}>Time</label>
-                <AntdTimePicker name="time" />
+                <label htmlFor="time-picker" className={css.label}>
+                  Time
+                </label>
+                <CustomTimePicker id="time-picker" name="time" />
                 <ErrorMessage name="time" component="p" className={css.error} />
               </div>
             </div>
 
             <div className={css.fieldGroup}>
-              <label className={css.label}>Category</label>
+              <label htmlFor="category-select" className={css.label}>
+                Category
+              </label>
               <input
+                id="category-select"
                 type="text"
+                role="button"
+                aria-haspopup="dialog"
                 readOnly
                 placeholder="Different"
-                className={css.input}
-                value={selectedCategory?.name || selectedCategoryName || ""} // НОВЕ
-                // НОВЕ для onClick/Полина для тебя
+                className={`${css.input} ${
+                  touched.category && errors.category ? css.inputError : ""
+                }`}
+                value={selectedCategory?.name || ""}
                 onClick={() => {
                   useTransactionStore
                     .getState()
@@ -187,27 +262,49 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             </div>
 
             <div className={css.fieldGroup}>
-              <label className={css.label}>Sum</label>
+              <label htmlFor="sum-input" className={css.label}>
+                Sum
+              </label>
               <div className={css.sumWrapper}>
-                <Field
-                  name="sum"
-                  type="number"
-                  placeholder="0.00"
-                  className={css.input}
-                />
-                {/* //заглушка */}
-                <span className={css.currency}>UAH</span>
+                <Field name="sum">
+                  {({ field, meta }: FieldProps<FormValues["sum"]>) => (
+                    <input
+                      {...field}
+                      id="sum-input"
+                      type="number"
+                      placeholder="0.00"
+                      aria-invalid={meta.touched && !!meta.error}
+                      aria-errormessage="sum-error"
+                      className={`${css.input} ${
+                        meta.touched && meta.error ? css.inputError : ""
+                      }`}
+                    />
+                  )}
+                </Field>
+                <span className={css.currency}>{currentCurrency}</span>
               </div>
-              <ErrorMessage name="sum" component="p" className={css.error} />
+              <ErrorMessage name="sum">
+                {(msg) => (
+                  <p id="sum-error" role="alert" className={css.error}>
+                    {msg}
+                  </p>
+                )}
+              </ErrorMessage>
             </div>
 
             <div className={css.fieldGroup}>
-              <label className={css.label}>Comment</label>
+              <label htmlFor="comment" className={css.label}>
+                Comment
+              </label>
               <Field
                 as="textarea"
+                id="comment"
                 name="comment"
                 placeholder="Enter text"
-                className={`${css.input} ${css.textarea}`}
+                maxLength={48}
+                className={`${css.input} ${css.textarea} ${
+                  touched.comment && errors.comment ? css.inputError : ""
+                }`}
               />
               <ErrorMessage
                 name="comment"
@@ -220,7 +317,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
               className={css.submitBtn}
               disabled={isLoading}
             >
-              {isLoading ? "Sending..." : "Add"}
+              {isLoading ? loadingText : buttonText}
             </button>
           </Form>
         )}
@@ -230,3 +327,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 };
 
 export default TransactionForm;
+
+{
+  /* <TransactionForm
+  isEditing={true}
+  currentTransaction={selectedTransaction}
+  onClose={() => setModalIsOpen(false)}
+/>; */
+}
