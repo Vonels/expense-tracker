@@ -8,7 +8,7 @@ import { TotalIncome } from "../TotalIncome/TotalIncome";
 // import { Modal } from "../Modal/Modal";
 // import TransactionForm from "../TransactionForm/TransactionForm";
 import css from "./IncomePage.module.css";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 const IncomePage = () => {
   const [search, setSearch] = useState("");

@@ -14,3 +14,9 @@ export interface TransactionData {
   sum: number;
   comment: string;
 }
+
+export interface TransactionsResponse {
+  type: TransactionType;
+  date?: string;
+  search?: string;
+}

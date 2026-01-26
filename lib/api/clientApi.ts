@@ -5,6 +5,7 @@ import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
 import type { ListResponse } from "@/types/expense";
 import { useAuthStore } from "@/lib/store/authStore";
+import { TransactionData, TransactionsResponse } from "@/types/transactions";
 
 // лоадер
 
@@ -94,4 +95,16 @@ export const deleteIncome = async (id: string): Promise<void> => {
 export const fetchCurrentMonthStats = async (): Promise<CategoryStat[]> => {
   const res = await api.get<CategoryStat[]>("/stats/categories/current-month");
   return res.data;
+};
+
+export const getTransactionCategories = async ({
+  type,
+  date,
+  search,
+}: TransactionsResponse): Promise<TransactionData[]> => {
+  const { data } = await api.get<TransactionData[]>(`/transactions/${type}`, {
+    params: { date, search },
+  });
+
+  return data;
 };
