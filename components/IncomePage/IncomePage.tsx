@@ -11,10 +11,8 @@ import TransactionForm from "../TransactionForm/TransactionForm";
 import css from "./IncomePage.module.css";
 import { toast } from "react-hot-toast";
 import { Income } from "@/types/income";
-import { DatePicker } from "antd";
-import { Field, Formik } from "formik";
-// import { AntdDatePicker } from "../DatePicker/DatePicker";
-// import { ErrorMessage } from "formik";
+import { TransactionData } from "@/types/transactions";
+import { DatePicker } from "@/components/DatePicker/DatePicker";
 
 const IncomePage = () => {
   const [search, setSearch] = useState("");
@@ -79,23 +77,20 @@ const IncomePage = () => {
           <TotalExpense />
         </div>
         <div className={css.incomeForm}>
-          <Formik onSubmit={(e) => e.preventDefault()}>
-            <Field id="search">
-              <Icon id="icon-search" className={css.icon} />
-              <input
-                className={css.incomeFormInputSearch}
-                type="text"
-                id="search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search for anything.."
-              ></input>
-            </Field>
-            <Field>
-              <AntdDatePicker name="date" />
-              <ErrorMessage name="date" component="p" className={css.error} />
-            </Field>
-          </Formik>
+          <div className={css.incomeFormInput}><label htmlFor="search">
+            <Icon id="icon-search" className={css.icon} />
+          </label>
+          <input
+            className={css.incomeFormInputSearch}
+            type="text"
+            id="search"
+            name="filter"
+            placeholder="Search for anything.."
+          /></div>
+          
+          <DatePicker/>
+          </div>
+
           <div className={css.incomeFormListCategoris}>
             <ul className={css.incomeFormListStatic}>
               <li className={css.incomeFormListItemStaticCategory}>Category</li>
@@ -116,18 +111,20 @@ const IncomePage = () => {
                   className={css.incomeFormListDinamicCategory}
                 >
                   <li className={css.incomeFormListItemDinamicComment}>
-                    {income.source}
-                  </li>
-                  <li className={css.incomeFormListItemDinamicDate}>
                     {income.comment || "—"}
                   </li>
-                  <li className={css.incomeFormListItemDinamicTime}>
+                  <li className={css.incomeFormListItemDinamicDate}>
                     {income.date}
                   </li>
-                  <li className={css.incomeFormListItemDinamicSum}>
+                  <li className={css.incomeFormListItemDinamicTime}>
                     {income.date.includes("T")
                       ? income.date.split("T")[1].slice(0, 5)
                       : "—"}
+                  </li>
+                  <li className={css.incomeFormListItemDinamicSum}>
+                    
+                  </li>
+                  <li className={css.incomeFormListItemDinamicSum}>
                     {income.amount.toLocaleString()} / UAH
                   </li>
                   <li className={css.incomeFormBtn}>
@@ -149,19 +146,35 @@ const IncomePage = () => {
             )}
           </div>
         </div>
+        {isModalOpen && (
+          <Modal>
+            <div className={css.modalContent}>
+              <TransactionForm
+                isEditing={!!selectedIncome}
+                currentTransaction={
+                  selectedIncome
+                    ? ({
+                        _id: selectedIncome.id,
+                        type: "incomes",
+                        date: selectedIncome.date.split("T")[0],
+                        time: selectedIncome.date.includes("T")
+                          ? selectedIncome.date.split("T")[1].slice(0, 5)
+                          : "00:00",
+                        category: {
+                          _id: selectedIncome.source,
+                          categoryName: selectedIncome.source,
+                        },
+                        sum: selectedIncome.amount,
+                        comment: selectedIncome.comment || "",
+                      } as TransactionData)
+                    : null
+                }
+                onClose={handleCloseModal}
+              />
+            </div>
+          </Modal>
+        )}
       </div>
-      {isModalOpen && (
-        <Modal>
-          <div className={css.modalContent}>
-            <TransactionForm
-              isEditing={true}
-              currentTransaction={selectedTransaction}
-              onClose={() => setModalIsOpen(false)}
-            />
-          </div>
-        </Modal>
-      )}
-    </div>
   );
 };
 

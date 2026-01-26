@@ -56,10 +56,13 @@ export const CustomTimePicker = ({ name, id }: Props) => {
       minutesPlaceholder={placeholders.minutes}
       secondsPlaceholder={placeholders.seconds}
       rightSection={<Icon id="icon-clock" className={css.icon} />}
-      rightSectionProps={{ style: { pointerEvents: "none" } }}
+      rightSectionProps={{
+        style: { pointerEvents: "none" },
+      }}
       classNames={{
         root: css.root,
         input: css.input,
+        section: css.section,
         field: css.field,
         dropdown: css.dropdown,
         control: css.control,

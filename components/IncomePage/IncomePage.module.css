@@ -44,16 +44,48 @@
   margin-top: 40px;
   margin-bottom: 50px;
 }
+.incomeFormInput {
+  position: relative;
+}
 .icon {
+  position: absolute;
+  top: 50%;
+  right: 30px;
+  transform: translate(-50%, -50%);
   width: 20px;
   height: 20px;
-  fill: #0ef387;
+  fill: #0c0d0d;
+  stroke: #0ef387;
+  cursor: text;
 }
 .incomeFormInputSearch {
-  border-radius: 30px;
-  padding: 15px 30px;
+  max-width: 261px;
   margin-right: 13px;
+  outline: none;
+  padding: 14px 50px 14px 30px;
+  border: 1px solid #0c0d0d;
+  border-radius: 30px;
   background-color: #0c0d0d;
+  transition: border 250ms linear;
+  color: #fafafa;
+  font-size: 16px;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  caret-color: #0ef387;
+
+  &::placeholder {
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    color: rgba(250, 250, 250, 0.4);
+  }
+
+  &:focus {
+    border: 1px solid #0ef387;
+  }
+
+  &:hover {
+    border: 1px solid #0ef387;
+  }
 }
 .incomeFormInputData {
   border: 1px solid rgba(250, 250, 250, 0.2);
