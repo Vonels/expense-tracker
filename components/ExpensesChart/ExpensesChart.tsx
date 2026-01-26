@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import css from "./ExpensesChart.module.css";
 import { useUserStore } from "@/lib/store/userStore";
 import { CategoryStat } from "@/types/expense";
+import { fetchCurrentMonthStats } from "@/lib/api/clientApi";
 
 const generateColors = (count: number) => {
   return Array.from({ length: count }, (_, i) => {
@@ -28,8 +29,7 @@ export const ExpensesChart = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch("/api/stats/categories/current-month");
-        const data = await response.json();
+        const data = await fetchCurrentMonthStats();
 
         const formatted = data.map((item: CategoryStat) => ({
           _id: item._id,
