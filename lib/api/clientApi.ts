@@ -92,20 +92,9 @@ export const createIncome = async (
   return res.data;
 };
 
-// export const getCategories = async (): Promise<CategoriesResponse> => {
-//   const res = await api.get<CategoriesResponse>("/categories");
-//   return res.data;
-// };
-
 export const getCategories = async (): Promise<CategoriesResponse> => {
-  const res = await api.get<ICategory[]>("/categories");
-  const allCategories = Array.isArray(res.data) ? res.data : [];
-
-  // ГАРАНТУЄМО наявність обох ключів
-  return {
-    incomes: allCategories.filter((cat) => cat.type === "incomes"),
-    expenses: allCategories.filter((cat) => cat.type === "expenses"),
-  };
+  const res = await api.get<CategoriesResponse>("/categories");
+  return res.data;
 };
 
 export const createCategory = async (

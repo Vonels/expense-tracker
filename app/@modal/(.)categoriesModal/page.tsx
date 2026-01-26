@@ -220,14 +220,8 @@ export default function CategoriesModal() {
   const [inputValue, setInputValue] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
 
-  // const categoriesToDisplay = useMemo(
-  //   () => (data ? data[transactionType] : []),
-  //   [data, transactionType]
-  // );
-
   const categoriesToDisplay = useMemo(
-    // Додаємо || [], щоб map ніколи не зустрів undefined
-    () => (data ? data[transactionType] || [] : []),
+    () => (data ? data[transactionType] : []),
     [data, transactionType]
   );
 
