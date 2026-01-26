@@ -34,7 +34,15 @@
 //     queryKey: ["categories"],
 //     queryFn: async () => {
 //       const res = await api.get("/categories");
-//       return res.data;
+//       const allCategories = res.data;
+//       return {
+//         incomes: allCategories.filter(
+//           (cat: ICategory) => cat.type === "incomes",
+//         ),
+//         expenses: allCategories.filter(
+//           (cat: ICategory) => cat.type === "expenses",
+//         ),
+//       };
 //     },
 //   });
 
@@ -170,12 +178,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import iziToast from "izitoast";
-import { AxiosError } from "axios";
 
 import { Modal } from "@/components/Modal/Modal";
 import { useTransactionStore } from "@/lib/store/useTransactionStore";
 import { api } from "@/lib/api/api";
+import iziToast from "izitoast";
+import { AxiosError } from "axios";
 import css from "@/components/Modal/Modal.module.css";
 
 interface ICategory {
@@ -205,14 +213,21 @@ export default function CategoriesModal() {
 
   const categoriesToDisplay = useMemo(
     () => (data ? data[transactionType] : []),
-    [data, transactionType],
+    [data, transactionType]
   );
 
   const loadCategories = async () => {
     setIsLoading(true);
     try {
-      const res = await api.get<CategoriesResponse>("/categories");
-      setData(res.data);
+      // NEW
+      const res = await api.get<ICategory[]>("/categories");
+      const allCategories = Array.isArray(res.data) ? res.data : [];
+      const organizedData: CategoriesResponse = {
+        incomes: allCategories.filter((cat) => cat.type === "incomes"),
+        expenses: allCategories.filter((cat) => cat.type === "expenses"),
+      };
+
+      setData(organizedData); // NEW
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
       iziToast.error({
@@ -223,10 +238,10 @@ export default function CategoriesModal() {
       setIsLoading(false);
     }
   };
-
+  //NEW
   useEffect(() => {
     loadCategories();
-  }, [transactionType]);
+  }, []); // NEW
 
   const handleSubmit = async () => {
     const name = inputValue.trim();
@@ -315,7 +330,7 @@ export default function CategoriesModal() {
 
               <div className={css.actionBtns}>
                 <button onClick={() => handleSelect(cat._id, cat.categoryName)}>
-                  <svg width="14" height="14">
+                  <svg width="16" height="16">
                     <use href="/symbol-defs.svg#icon-Vector"></use>
                   </svg>
                 </button>
@@ -323,13 +338,13 @@ export default function CategoriesModal() {
                 <button
                   onClick={() => handleEditInit(cat._id, cat.categoryName)}
                 >
-                  <svg width="14" height="14">
+                  <svg width="16" height="16">
                     <use href="/symbol-defs.svg#icon-Pensil"></use>
                   </svg>
                 </button>
 
                 <button onClick={() => handleDelete(cat._id)}>
-                  <svg width="14" height="14">
+                  <svg width="16" height="14">
                     <use href="/symbol-defs.svg#icon-trash-2"></use>
                   </svg>
                 </button>

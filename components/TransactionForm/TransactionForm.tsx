@@ -7,14 +7,19 @@ import {
   Field,
   ErrorMessage,
   FormikHelpers,
-  useFormikContext, // НОВЕ
+  useFormikContext,
+  FieldProps,
 } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import css from "./TransactionForm.module.css";
-import { useTransactionStore } from "@/lib/store/useTransactionStore"; // НОВЕ
-import { useRouter } from "next/navigation"; // НОВЕ
+
+import { useTransactionStore } from "@/lib/store/useTransactionStore";
+import { useRouter } from "next/navigation";
+import { DatePicker } from "../DatePicker/DatePicker";
+import { CustomTimePicker } from "../TimePicker/TimePicker";
+import { TransactionData } from "@/types/transactions";
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -25,16 +30,18 @@ interface FormValues {
   comment: string;
 }
 
-type TransactionFormProps = {
-  onOpenCategories: (type: "incomes" | "expenses") => void;
-  selectedCategoryName: string;
-};
+interface TransactionFormProps {
+  onOpenCategories?: (type: "incomes" | "expenses") => void;
+  selectedCategoryName?: string;
+  currentTransaction?: TransactionData | null;
+  isEditing?: boolean;
+  onClose?: () => void;
+}
 
-// НОВЕ:
 const FormikSync = () => {
   const { setFieldValue } = useFormikContext<FormValues>();
   const selectedCategory = useTransactionStore(
-    (state) => state.selectedCategory,
+    (state) => state.selectedCategory
   );
 
   useEffect(() => {
@@ -46,58 +53,92 @@ const FormikSync = () => {
   return null;
 };
 
-// НОВЕ end
-
 const validationSchema = Yup.object().shape({
   type: Yup.string().oneOf(["incomes", "expenses"]).required(),
-  date: Yup.string().required("Обов’язкове поле"),
-  time: Yup.string().required("Обов’язкове поле"),
-  category: Yup.string().required("Оберіть категорію"),
+  date: Yup.string().required("Date is required"),
+  time: Yup.string().required("Time is required"),
+  category: Yup.string().required("Please select a category"),
   sum: Yup.number()
-    .typeError("Сума повинна бути числом")
-    .min(1, "Мінімум 1")
-    .max(1000000, "Максимум 1,000,000")
-    .required("Обов’язкове поле"),
+    .typeError("Sum must be a number")
+    .min(1, "Minimum amount is 1")
+    .max(1000000, "Maximum amount is 1,000,000")
+    .required("Sum is required"),
   comment: Yup.string()
-    .min(3, "Мінімум 3 символи")
-    .max(48, "Максимум 48 символів")
+    .min(3, "Minimum 3 characters")
+    .max(48, "Maximum 48 characters")
     .optional(),
 });
 
-const TransactionForm = ({
-  onOpenCategories,
-  selectedCategoryName,
-}: TransactionFormProps) => {
+const TransactionForm: React.FC<TransactionFormProps> = ({
+  currentTransaction,
+  isEditing = false,
+  onClose,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const selectedCategory = useTransactionStore(
-    (state) => state.selectedCategory, // НОВЕ
+    (state) => state.selectedCategory
   );
-  const resetCategory = useTransactionStore((state) => state.resetCategory); // НОВЕ
+  const resetCategory = useTransactionStore((state) => state.resetCategory);
+  const setCategory = useTransactionStore((state) => state.setCategory);
+
+  useEffect(() => {
+    if (isEditing && currentTransaction?.category) {
+      setCategory(
+        currentTransaction.category._id,
+        currentTransaction.category.categoryName
+      );
+      useTransactionStore
+        .getState()
+        .setTransactionType(currentTransaction.type);
+    }
+    return () => {
+      resetCategory();
+    };
+  }, [isEditing, currentTransaction, setCategory, resetCategory]);
 
   const initialValues: FormValues = {
-    type: "expenses",
-    date: new Date().toISOString().split("T")[0],
-    time: new Date().toTimeString().slice(0, 5),
-    category: "",
-    sum: "",
-    comment: "",
+    type: currentTransaction?.type || "expenses",
+    date: currentTransaction?.date || new Date().toISOString().split("T")[0],
+    time: currentTransaction?.time || new Date().toTimeString().slice(0, 5),
+    category: currentTransaction?.category._id || "",
+    sum: currentTransaction?.sum || "",
+    comment: currentTransaction?.comment || "",
   };
 
   const handleSubmit = async (
     values: FormValues,
-    { resetForm }: FormikHelpers<FormValues>,
+    { resetForm }: FormikHelpers<FormValues>
   ) => {
     setIsLoading(true);
     try {
-      await axios.post("/transactions", values);
-      toast.success("Транзакцію успішно додано!");
-      resetForm();
-      resetCategory(); // НОВЕ
+      if (isEditing && currentTransaction?._id) {
+        await axios.patch(
+          `/transactions/${values.type}/${currentTransaction._id}`,
+          {
+            date: values.date,
+            time: values.time,
+            category: values.category,
+            sum: values.sum,
+            comment: values.comment,
+          }
+        );
+        toast.success("Transaction updated successfully!");
+      } else {
+        await axios.post("/transactions", values);
+        toast.success("Transaction added successfully!");
+        resetForm();
+        resetCategory();
+      }
+      router.refresh();
+      if (onClose) {
+        onClose();
+      }
     } catch (error: unknown) {
-      let errorMsg = "Помилка запиту";
+      let errorMsg = "Request failed";
       if (axios.isAxiosError(error)) {
-        errorMsg = error.response?.data?.message || "Помилка сервера";
+        errorMsg = error.response?.data?.message || "Server error";
       }
       toast.error(errorMsg);
     } finally {
@@ -105,7 +146,8 @@ const TransactionForm = ({
     }
   };
 
-  const router = useRouter();
+  const buttonText = isEditing ? "Save" : "Add";
+  const loadingText = isEditing ? "Saving..." : "Sending...";
 
   return (
     <div className={css.formContainer}>
@@ -113,54 +155,81 @@ const TransactionForm = ({
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
+        enableReinitialize
       >
-        {({ values }) => (
+        {({ values, setFieldValue, errors, touched }) => (
           <Form className={css.form}>
-            <FormikSync /> {/* НОВЕ */}
-            {/* Type */}
-            <div className={css.radioGroup}>
+            <FormikSync />
+
+            <div
+              className={css.radioGroup}
+              role="radiogroup"
+              aria-label="Transaction type"
+            >
               <label className={css.radioLabel}>
                 <Field
                   type="radio"
                   name="type"
                   value="expenses"
                   className={css.radioInput}
+                  onChange={() => {
+                    setFieldValue("type", "expenses");
+                    setFieldValue("category", "");
+                    resetCategory();
+                  }}
                 />
                 Expense
               </label>
               <label className={css.radioLabel}>
-                <Field
+                <input
                   type="radio"
                   name="type"
                   value="incomes"
+                  onChange={() => {
+                    setFieldValue("type", "incomes");
+                    setFieldValue("category", "");
+                    resetCategory();
+                  }}
+                  checked={values.type === "incomes"}
                   className={css.radioInput}
                 />
                 Income
               </label>
             </div>
+
             <div className={css.row}>
               <div className={css.fieldGroup}>
-                <label className={css.label}>Date</label>
-                <Field name="date" type="date" className={css.input} />
+                <label htmlFor="date-picker" className={css.label}>
+                  Date
+                </label>
+                <DatePicker id="date-picker" name="date" />
                 <ErrorMessage name="date" component="p" className={css.error} />
               </div>
+
               <div className={css.fieldGroup}>
-                <label className={css.label}>Time</label>
-                <Field name="time" type="time" className={css.input} />
+                <label htmlFor="time-picker" className={css.label}>
+                  Time
+                </label>
+                <CustomTimePicker id="time-picker" name="time" />
                 <ErrorMessage name="time" component="p" className={css.error} />
               </div>
             </div>
-            {/* Category */}
+
             <div className={css.fieldGroup}>
-              <label className={css.label}>Category</label>
-              <Field
-                name="categoryDisplay"
+              <label htmlFor="category-select" className={css.label}>
+                Category
+              </label>
+              <input
+                id="category-select"
                 type="text"
+                role="button"
+                aria-haspopup="dialog"
                 readOnly
                 placeholder="Different"
-                className={css.input}
-                value={selectedCategory?.name || selectedCategoryName || ""} // НОВЕ
-                // НОВЕ для onClick/Полина для тебя
+                className={`${css.input} ${
+                  touched.category && errors.category ? css.inputError : ""
+                }`}
+                value={selectedCategory?.name || ""}
                 onClick={() => {
                   useTransactionStore
                     .getState()
@@ -168,7 +237,6 @@ const TransactionForm = ({
                   router.push("/categoriesModal");
                 }}
               />
-              {/* Прихований Field для зберігання ID */}
               <Field type="hidden" name="category" />
               <ErrorMessage
                 name="category"
@@ -176,26 +244,51 @@ const TransactionForm = ({
                 className={css.error}
               />
             </div>
+
             <div className={css.fieldGroup}>
-              <label className={css.label}>Sum</label>
+              <label htmlFor="sum-input" className={css.label}>
+                Sum
+              </label>
               <div className={css.sumWrapper}>
-                <Field
-                  name="sum"
-                  type="number"
-                  placeholder="0.00"
-                  className={css.input}
-                />
+                <Field name="sum">
+                  {({ field, meta }: FieldProps<FormValues["sum"]>) => (
+                    <input
+                      {...field}
+                      id="sum-input"
+                      type="number"
+                      placeholder="0.00"
+                      aria-invalid={meta.touched && !!meta.error}
+                      aria-errormessage="sum-error"
+                      className={`${css.input} ${
+                        meta.touched && meta.error ? css.inputError : ""
+                      }`}
+                    />
+                  )}
+                </Field>
                 <span className={css.currency}>UAH</span>
               </div>
-              <ErrorMessage name="sum" component="p" className={css.error} />
+              <ErrorMessage name="sum">
+                {(msg) => (
+                  <p id="sum-error" role="alert" className={css.error}>
+                    {msg}
+                  </p>
+                )}
+              </ErrorMessage>
             </div>
+
             <div className={css.fieldGroup}>
-              <label className={css.label}>Comment</label>
+              <label htmlFor="comment" className={css.label}>
+                Comment
+              </label>
               <Field
                 as="textarea"
+                id="comment"
                 name="comment"
                 placeholder="Enter text"
-                className={`${css.input} ${css.textarea}`}
+                maxLength={48}
+                className={`${css.input} ${css.textarea} ${
+                  touched.comment && errors.comment ? css.inputError : ""
+                }`}
               />
               <ErrorMessage
                 name="comment"
@@ -208,7 +301,7 @@ const TransactionForm = ({
               className={css.submitBtn}
               disabled={isLoading}
             >
-              {isLoading ? "Sending..." : "Add"}
+              {isLoading ? loadingText : buttonText}
             </button>
           </Form>
         )}
@@ -218,3 +311,11 @@ const TransactionForm = ({
 };
 
 export default TransactionForm;
+
+{
+  /* <TransactionForm
+  isEditing={true}
+  currentTransaction={selectedTransaction}
+  onClose={() => setModalIsOpen(false)}
+/>; */
+}

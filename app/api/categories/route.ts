@@ -1,61 +1,50 @@
 import { NextResponse } from "next/server";
+import { api, ApiError } from "../api";
 import { cookies } from "next/headers";
-import axios, { AxiosError } from "axios";
-import { Category } from "@/types/category";
 
-const API_URL = "https://expense-tracker-v2.b.goit.study/api";
+export async function GET() {
+  const cookieStore = cookies();
 
-interface ApiErrorResponse {
-  message: string;
-}
-
-export async function GET(): Promise<NextResponse> {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
-
-    const { data } = await axios.get<Category[]>(`${API_URL}/categories`, {
+    const { data } = await api.get("/categories", {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Cookie: cookieStore.toString(),
       },
     });
 
     return NextResponse.json(data);
   } catch (error) {
-    const err = error as AxiosError<ApiErrorResponse>;
-
     return NextResponse.json(
-      { message: err.response?.data.message ?? "Failed to load categories" },
-      { status: err.response?.status ?? 500 },
+      {
+        error:
+          (error as ApiError).response?.data?.error ??
+          (error as ApiError).message,
+      },
+      { status: (error as ApiError).status }
     );
   }
 }
 
-interface CreateCategoryDto {
-  name: string;
-  type: "income" | "expense";
-}
+export async function POST(req: Request) {
+  const cookieStore = cookies();
+  const body = await req.json();
 
-export async function POST(req: Request): Promise<NextResponse> {
   try {
-    const body: CreateCategoryDto = await req.json();
-
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
-
-    const { data } = await axios.post<Category>(`${API_URL}/categories`, body, {
+    const { data } = await api.post("/categories", body, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Cookie: cookieStore.toString(),
       },
     });
 
     return NextResponse.json(data);
   } catch (error) {
-    const err = error as AxiosError<ApiErrorResponse>;
-
     return NextResponse.json(
-      { message: err.response?.data.message ?? "Failed to create category" },
-      { status: err.response?.status ?? 500 },
+      {
+        error:
+          (error as ApiError).response?.data?.error ??
+          (error as ApiError).message,
+      },
+      { status: (error as ApiError).status }
     );
   }
 }

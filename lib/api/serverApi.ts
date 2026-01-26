@@ -4,7 +4,7 @@ import { api } from "./api";
 import type { User } from "@/types/user";
 import type { Expense } from "@/types/expense";
 import type { Income } from "@/types/income";
-import type { ListResponse, SessionResponse } from "@/types/expense";
+import type { ListResponse } from "@/types/expense";
 
 const getAuthHeaders = () => ({
   headers: {
@@ -14,11 +14,12 @@ const getAuthHeaders = () => ({
 
 // Все что связано с User
 export const checkSession = async (externalCookie?: string) => {
-  const cookieString = externalCookie ?? cookies().toString();
+  const cookieString = externalCookie || (await cookies()).toString();
 
-  return api.get<SessionResponse>("/auth/session", {
+  const res = await api.get<string>("/auth/session", {
     headers: { Cookie: cookieString },
   });
+  return res;
 };
 
 export const getMe = async (): Promise<User> => {
@@ -28,7 +29,7 @@ export const getMe = async (): Promise<User> => {
 
 // Расходи
 export const fetchExpenses = async (
-  params?: Record<string, string | number>,
+  params?: Record<string, string | number>
 ): Promise<ListResponse<Expense>> => {
   const res = await api.get<ListResponse<Expense>>("/expenses", {
     ...getAuthHeaders(),
@@ -39,7 +40,7 @@ export const fetchExpenses = async (
 
 // Доходи
 export const fetchIncomes = async (
-  params?: Record<string, string | number>,
+  params?: Record<string, string | number>
 ): Promise<ListResponse<Income>> => {
   const res = await api.get<ListResponse<Income>>("/incomes", {
     ...getAuthHeaders(),

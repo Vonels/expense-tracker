@@ -9,6 +9,16 @@ export type ApiError = {
   };
 };
 
+export function logErrorResponse(errorObj: unknown): void {
+  const green = "\x1b[32m";
+  const yellow = "\x1b[33m";
+  const reset = "\x1b[0m";
+
+  // Стрелка зелёная, текст жёлтый
+  console.log(`${green}> ${yellow}Error Response Data:${reset}`);
+  console.dir(errorObj, { depth: null, colors: true });
+}
+
 const baseURL = process.env.NEXT_PUBLIC_API_URL_BACKEND;
 
 if (!baseURL) {
@@ -32,5 +42,5 @@ api.interceptors.response.use(
     };
 
     return Promise.reject(normalized);
-  },
+  }
 );
