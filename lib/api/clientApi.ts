@@ -92,9 +92,20 @@ export const createIncome = async (
   return res.data;
 };
 
+// export const getCategories = async (): Promise<CategoriesResponse> => {
+//   const res = await api.get<CategoriesResponse>("/categories");
+//   return res.data;
+// };
+
 export const getCategories = async (): Promise<CategoriesResponse> => {
-  const res = await api.get<CategoriesResponse>("/categories");
-  return res.data;
+  const res = await api.get<ICategory[]>("/categories");
+  const allCategories = Array.isArray(res.data) ? res.data : [];
+
+  // ГАРАНТУЄМО наявність обох ключів
+  return {
+    incomes: allCategories.filter((cat) => cat.type === "incomes"),
+    expenses: allCategories.filter((cat) => cat.type === "expenses"),
+  };
 };
 
 export const createCategory = async (
@@ -108,14 +119,14 @@ export const updateCategory = async (
   id: string,
   name: string
 ): Promise<ICategory> => {
-  const res = await api.patch<ICategory>(`/categories?id=${id}`, {
+  const res = await api.patch<ICategory>(`/categories/${id}`, {
     categoryName: name,
   });
   return res.data;
 };
 
 export const deleteCategory = async (id: string): Promise<void> => {
-  await api.delete(`/categories?id=${id}`);
+  await api.delete(`/categories/${id}`);
 };
 
 export const deleteIncome = async (id: string): Promise<void> => {

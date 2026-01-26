@@ -220,8 +220,14 @@ export default function CategoriesModal() {
   const [inputValue, setInputValue] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
 
+  // const categoriesToDisplay = useMemo(
+  //   () => (data ? data[transactionType] : []),
+  //   [data, transactionType]
+  // );
+
   const categoriesToDisplay = useMemo(
-    () => (data ? data[transactionType] : []),
+    // Додаємо || [], щоб map ніколи не зустрів undefined
+    () => (data ? data[transactionType] || [] : []),
     [data, transactionType]
   );
 
@@ -301,6 +307,10 @@ export default function CategoriesModal() {
     setEditId(id);
     setInputValue(name);
   };
+
+  console.log("DEBUG: transactionType is:", transactionType);
+  console.log("DEBUG: data object is:", data);
+  console.log("DEBUG: categoriesToDisplay is:", categoriesToDisplay);
 
   return (
     <Modal>
