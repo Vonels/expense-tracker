@@ -22,6 +22,7 @@ import { CustomTimePicker } from "../TimePicker/TimePicker";
 import { TransactionData } from "@/types/transactions";
 import { useAuthStore } from "@/lib/store/authStore";
 import { Icon } from "../Icon/Icon";
+import * as api from "@/lib/api/clientApi";
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -118,28 +119,39 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   ) => {
     setIsLoading(true);
     try {
+      const commonData = {
+        date: values.date,
+        time: values.time,
+        amount: Number(values.sum),
+        comment: values.comment,
+      };
+
       if (isEditing && currentTransaction?._id) {
-        await axios.patch(
-          `/transactions/${values.type}/${currentTransaction._id}`,
-          {
-            date: values.date,
-            time: values.time,
-            category: values.category,
-            sum: values.sum,
-            comment: values.comment,
-          }
-        );
-        toast.success("Transaction updated successfully!");
+        const path = values.type === "expenses" ? "expenses" : "incomes";
+        await axios.patch(`/${path}/${currentTransaction._id}`, {
+          ...commonData,
+          [values.type === "expenses" ? "category" : "source"]: values.category,
+        });
+        toast.success("Transaction updated!");
       } else {
-        await axios.post("/transactions", values);
+        if (values.type === "expenses") {
+          await api.createExpense({
+            ...commonData,
+            category: values.category,
+          });
+        } else {
+          await api.createIncome({
+            ...commonData,
+            source: values.category,
+          });
+        }
         toast.success("Transaction added successfully!");
         resetForm();
         resetCategory();
       }
+
       router.refresh();
-      if (onClose) {
-        onClose();
-      }
+      if (onClose) onClose();
     } catch (error: unknown) {
       let errorMsg = "Request failed";
       if (axios.isAxiosError(error)) {
@@ -218,7 +230,17 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 <label htmlFor="date-picker" className={css.label}>
                   Date
                 </label>
-                <DatePicker id="date-picker" name="date" />
+                <Field name="date">
+                  {({ field, meta, form }: FieldProps) => (
+                    <DatePicker
+                      id="date-picker"
+                      name={field.name}
+                      value={field.value}
+                      onChange={(val) => form.setFieldValue(field.name, val)}
+                      error={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
                 <ErrorMessage name="date" component="p" className={css.error} />
               </div>
 
