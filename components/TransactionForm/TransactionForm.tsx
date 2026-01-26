@@ -21,6 +21,7 @@ import { DatePicker } from "../DatePicker/DatePicker";
 import { CustomTimePicker } from "../TimePicker/TimePicker";
 import { TransactionData } from "@/types/transactions";
 import { useAuthStore } from "@/lib/store/authStore";
+import { Icon } from "../Icon/Icon";
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -155,6 +156,17 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
   return (
     <div className={css.formContainer}>
+      {onClose && (
+        <button
+          type="button"
+          className={css.closeBtn}
+          onClick={onClose}
+          aria-label="Close form"
+        >
+          <Icon id="icon-Close" className={css.closeBtnIcon} />
+        </button>
+      )}
+
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

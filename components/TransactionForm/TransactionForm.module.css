@@ -142,6 +142,38 @@
   appearance: textfield;
 }
 
+.formContainer {
+  position: relative; /* Обов'язково для позиціонування хрестика */
+  /* ... твої інші стилі */
+}
+
+.closeBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  transform: scale(1);
+
+  transition: transform 250ms linear;
+}
+.closeBtn:hover {
+  transform: scale(1.1);
+}
+
+.closeBtn:hover .closeBtnIcon {
+  stroke: #0ef387;
+}
+.closeBtnIcon {
+  width: 20px;
+  height: 20px;
+  stroke: #fafafa;
+
+  transition: stroke 250ms linear;
+}
+
 @media only screen and (min-width: 768px) {
   .formContainer {
     padding: 40px 105px;
@@ -172,6 +204,10 @@
 
   .submitBtn {
     font-size: 16px;
+  }
+  .closeBtnIcon {
+    width: 24px;
+    height: 24px;
   }
 }
 
