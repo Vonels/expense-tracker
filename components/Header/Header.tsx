@@ -29,30 +29,28 @@ const Header = () => {
           <>
             {/* DESKTOP навігація */}
             <div className={css.desktopNav}>
-              <TransactionsHistoryNav variant="header"/>
+              <TransactionsHistoryNav variant="header" />
               <UserMenu />
             </div>
 
-            {/* MOBILE/TABLET burger */}            
+            {/* MOBILE/TABLET burger */}
             <div className={css.tabletNav}>
               <BurgerMenuBtn onClick={openBurger} />
               <BurgerMenu isOpen={isOpenBurger} onClose={closeBurger} />
-            </div>            
+            </div>
           </>
         )}
 
-{/* test */}
-      <div className={css.desktopNav}>
-              <TransactionsHistoryNav variant="header"/>
-              <UserMenu />
+        {/* test */}
+        <div className={css.desktopNav}>
+          <TransactionsHistoryNav variant="header" />
+          <UserMenu />
+        </div>
+        <div className={css.tabletNav}>
+          <BurgerMenuBtn onClick={openBurger} />
+          <BurgerMenu isOpen={isOpenBurger} onClose={closeBurger} />
+        </div>
       </div>
-      <div className={css.tabletNav}>
-              <BurgerMenuBtn onClick={openBurger} />
-              <BurgerMenu isOpen={isOpenBurger} onClose={closeBurger} />
-            </div>  
-
-      </div>
-    
     </header>
   );
 };
