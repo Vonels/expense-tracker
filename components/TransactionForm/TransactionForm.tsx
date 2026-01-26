@@ -20,6 +20,9 @@ import { useRouter } from "next/navigation";
 import { DatePicker } from "../DatePicker/DatePicker";
 import { CustomTimePicker } from "../TimePicker/TimePicker";
 import { TransactionData } from "@/types/transactions";
+import { useAuthStore } from "@/lib/store/authStore";
+import { Icon } from "../Icon/Icon";
+import * as api from "@/lib/api/clientApi";
 
 interface FormValues {
   type: "incomes" | "expenses";
@@ -77,6 +80,9 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  const user = useAuthStore((state) => state.user);
+  const currentCurrency = user?.currency || "UAH";
+
   const selectedCategory = useTransactionStore(
     (state) => state.selectedCategory
   );
@@ -114,27 +120,26 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     setIsLoading(true);
     try {
       if (isEditing && currentTransaction?._id) {
-        await axios.patch(
-          `/transactions/${values.type}/${currentTransaction._id}`,
-          {
-            date: values.date,
-            time: values.time,
-            category: values.category,
-            sum: values.sum,
-            comment: values.comment,
-          }
+        await api.updateTransaction(
+          values.type,
+          currentTransaction._id,
+          values
         );
         toast.success("Transaction updated successfully!");
       } else {
-        await axios.post("/transactions", values);
+        await api.createTransaction(values.type, values);
         toast.success("Transaction added successfully!");
+
         resetForm();
         resetCategory();
       }
+
       router.refresh();
-      if (onClose) {
-        onClose();
-      }
+
+      const targetPath = values.type === "expenses" ? "/expense" : "/incomes";
+      router.push(targetPath);
+
+      if (onClose) onClose();
     } catch (error: unknown) {
       let errorMsg = "Request failed";
       if (axios.isAxiosError(error)) {
@@ -151,6 +156,17 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
   return (
     <div className={css.formContainer}>
+      {onClose && (
+        <button
+          type="button"
+          className={css.closeBtn}
+          onClick={onClose}
+          aria-label="Close form"
+        >
+          <Icon id="icon-Close" className={css.closeBtnIcon} />
+        </button>
+      )}
+
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -202,7 +218,17 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 <label htmlFor="date-picker" className={css.label}>
                   Date
                 </label>
-                <DatePicker id="date-picker" name="date" />
+                <Field name="date">
+                  {({ field, meta, form }: FieldProps) => (
+                    <DatePicker
+                      id="date-picker"
+                      name={field.name}
+                      value={field.value}
+                      onChange={(val) => form.setFieldValue(field.name, val)}
+                      error={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
                 <ErrorMessage name="date" component="p" className={css.error} />
               </div>
 
@@ -265,7 +291,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                     />
                   )}
                 </Field>
-                <span className={css.currency}>UAH</span>
+                <span className={css.currency}>{currentCurrency}</span>
               </div>
               <ErrorMessage name="sum">
                 {(msg) => (

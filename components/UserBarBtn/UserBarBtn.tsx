@@ -26,6 +26,7 @@ const UserBarBtn = ({ isOpen, onToggle }: Props) => {
       )}
 
       {/* User name */}
+
       <span className={css.userName}>{name}</span>
 
       {/* Arrow icon */}

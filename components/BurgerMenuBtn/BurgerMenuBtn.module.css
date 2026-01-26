@@ -1,0 +1,13 @@
+.burgerBtn {
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+}
+
+.burgerIcon {
+    width: 44px;
+    height: 44px;
+}

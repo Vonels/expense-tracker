@@ -3,7 +3,7 @@ import { api, ApiError } from "../../api";
 import { cookies } from "next/headers";
 
 export async function PATCH(req: Request) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const formData = await req.formData();
 
   try {
@@ -48,3 +48,8 @@ export async function DELETE() {
     );
   }
 }
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};

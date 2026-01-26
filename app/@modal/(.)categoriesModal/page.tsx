@@ -181,25 +181,35 @@ import { useRouter } from "next/navigation";
 
 import { Modal } from "@/components/Modal/Modal";
 import { useTransactionStore } from "@/lib/store/useTransactionStore";
-import { api } from "@/lib/api/api";
+// import { api } from "@/lib/api/api";
 import iziToast from "izitoast";
-import { AxiosError } from "axios";
+// import { AxiosError } from "axios";
 import css from "@/components/Modal/Modal.module.css";
+import {
+  createCategory,
+  deleteCategory,
+  getCategories,
+  updateCategory,
+} from "@/lib/api/clientApi";
 
-interface ICategory {
+export interface ICategory {
   _id: string;
   categoryName: string;
   type: "incomes" | "expenses";
 }
 
-interface CategoriesResponse {
+export interface CategoriesResponse {
   incomes: ICategory[];
   expenses: ICategory[];
 }
 
+export interface CreateCategoryDto {
+  categoryName: string;
+  type: "incomes" | "expenses";
+}
+
 export default function CategoriesModal() {
   const router = useRouter();
-
   const transactionType = useTransactionStore((state) => state.transactionType);
   const setCategory = useTransactionStore((state) => state.setCategory);
 
@@ -207,7 +217,6 @@ export default function CategoriesModal() {
 
   const [data, setData] = useState<CategoriesResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
   const [inputValue, setInputValue] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
 
@@ -219,33 +228,24 @@ export default function CategoriesModal() {
   const loadCategories = async () => {
     setIsLoading(true);
     try {
-      // NEW
-      const res = await api.get<ICategory[]>("/categories");
-      const allCategories = Array.isArray(res.data) ? res.data : [];
-      const organizedData: CategoriesResponse = {
-        incomes: allCategories.filter((cat) => cat.type === "incomes"),
-        expenses: allCategories.filter((cat) => cat.type === "expenses"),
-      };
-
-      setData(organizedData); // NEW
-    } catch (error) {
-      const err = error as AxiosError<{ message: string }>;
+      const result = await getCategories();
+      setData(result);
+    } catch (error: any) {
       iziToast.error({
         title: "Error",
-        message: err.response?.data?.message || "Failed to load categories",
+        message: error.response?.data?.error || "Failed to load categories",
       });
     } finally {
       setIsLoading(false);
     }
   };
-  //NEW
+
   useEffect(() => {
     loadCategories();
-  }, []); // NEW
+  }, []);
 
   const handleSubmit = async () => {
     const name = inputValue.trim();
-
     if (name.length < 2 || name.length > 16) {
       iziToast.warning({ message: "Name must be 2-16 characters" });
       return;
@@ -253,9 +253,9 @@ export default function CategoriesModal() {
 
     try {
       if (editId) {
-        await api.patch(`/categories/${editId}`, { categoryName: name });
+        await updateCategory(editId, name);
       } else {
-        await api.post("/categories", {
+        await createCategory({
           type: transactionType,
           categoryName: name,
         });
@@ -263,40 +263,32 @@ export default function CategoriesModal() {
 
       setInputValue("");
       setEditId(null);
-
       iziToast.success({
         message: editId ? "Category updated" : "Category added",
       });
-
       await loadCategories();
-    } catch (error) {
-      const err = error as AxiosError<{ message: string }>;
+    } catch (error: any) {
       iziToast.error({
-        title: "Error",
-        message: err.response?.data?.message || "Something went wrong",
+        message: error.response?.data?.error || "Something went wrong",
       });
     }
   };
 
   const handleDelete = async (id: string) => {
     try {
-      await api.delete(`/categories/${id}`);
+      await deleteCategory(id);
       iziToast.success({ message: "Deleted successfully" });
       await loadCategories();
-    } catch (error) {
-      const err = error as AxiosError<{ message: string }>;
-
-      if (err.response?.status === 409) {
+    } catch (error: any) {
+      if (error.response?.status === 409) {
         iziToast.error({
-          message:
-            "409 Can`t remove! Some transactions depend on this category",
+          message: "Can't remove! Some transactions depend on this category",
         });
-        return;
+      } else {
+        iziToast.error({
+          message: error.response?.data?.error || "Error deleting",
+        });
       }
-
-      iziToast.error({
-        message: err.response?.data?.message || "Error deleting category",
-      });
     }
   };
 
@@ -319,6 +311,7 @@ export default function CategoriesModal() {
         {isLoading && <li>Loading...</li>}
 
         {!isLoading &&
+          categoriesToDisplay &&
           categoriesToDisplay.map((cat) => (
             <li
               key={cat._id}
@@ -344,7 +337,7 @@ export default function CategoriesModal() {
                 </button>
 
                 <button onClick={() => handleDelete(cat._id)}>
-                  <svg width="16" height="14">
+                  <svg width="16" height="16">
                     <use href="/symbol-defs.svg#icon-trash-2"></use>
                   </svg>
                 </button>
