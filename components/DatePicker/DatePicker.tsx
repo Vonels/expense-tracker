@@ -47,11 +47,14 @@ export const DatePicker = ({ name, id, placeholder }: Props) => {
       placeholder={placeholder || dayjs().format(DATE_FORMAT)}
       valueFormat={DATE_FORMAT}
       rightSection={<Icon id="icon-calendar" className={css.icon} />}
-      rightSectionProps={{ style: { pointerEvents: "none" } }}
+      rightSectionProps={{
+        style: { pointerEvents: "none" },
+      }}
       allowDeselect={false}
       nextIcon={<span className={css.arrow}>&#10095;</span>}
       previousIcon={<span className={css.arrow}>&#x276E;</span>}
       classNames={{
+        section: css.section,
         root: css.root,
         input: css.input,
         calendarHeader: css.calendarHeader,
