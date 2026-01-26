@@ -1,9 +1,17 @@
 @media (min-width: 375px) {
   .header {
     display: flex;
-    justify-content: space-between;
     height: 91px;
     align-items: center;
+    border-bottom: 1px solid rgba(250, 250, 250, 0.1);
+  }
+
+  .guest {
+    justify-content: center;
+  }
+
+  .auth {
+    justify-content: space-between;
   }
 
   .wrapper {
@@ -15,8 +23,6 @@
     display: none;
   }
 }
-
-@media (min-width: 768px) {}
 
 @media (min-width: 1440px) {
   .desktopNav {

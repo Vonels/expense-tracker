@@ -21,8 +21,8 @@ const Header = () => {
   const closeBurger = () => setIsOpenBurger(false);
 
   return (
-    <header className={css.container}>
-      <div className={css.header}>
+    <header className='container'>
+      <div className={`${css.header} ${isLoggedIn ? css.auth : css.guest}`}>
         <Logo />
 
         {isLoggedIn && (
