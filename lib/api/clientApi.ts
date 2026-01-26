@@ -1,6 +1,6 @@
 import { api } from "./api";
 import type { User } from "@/types/user";
-import type { AuthCredentials } from "@/types/auth";
+import type { AuthCredentials, LoginCredentials } from "@/types/auth";
 import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
 import type { ListResponse } from "@/types/expense";
@@ -30,7 +30,7 @@ export const register = async (values: AuthCredentials): Promise<User> => {
   return res.data;
 };
 
-export const login = async (values: AuthCredentials): Promise<User> => {
+export const login = async (values: LoginCredentials): Promise<User> => {
   const res = await api.post<User>("/auth/login", values);
   return res.data;
 };

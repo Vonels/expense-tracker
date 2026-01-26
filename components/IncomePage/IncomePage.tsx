@@ -12,8 +12,9 @@ import css from "./IncomePage.module.css";
 import { toast } from "react-hot-toast";
 import { Income } from "@/types/income";
 import { DatePicker } from "antd";
-import { AntdDatePicker } from "../DatePicker/DatePicker";
-import { ErrorMessage } from "formik";
+import { Field, Formik } from "formik";
+// import { AntdDatePicker } from "../DatePicker/DatePicker";
+// import { ErrorMessage } from "formik";
 
 const IncomePage = () => {
   const [search, setSearch] = useState("");
@@ -78,8 +79,8 @@ const IncomePage = () => {
           <TotalExpense />
         </div>
         <div className={css.incomeForm}>
-          <form action="" onSubmit={(e) => e.preventDefault()}>
-            <label id="search">
+          <Formik onSubmit={(e) => e.preventDefault()}>
+            <Field id="search">
               <Icon id="icon-search" className={css.icon} />
               <input
                 className={css.incomeFormInputSearch}
@@ -89,10 +90,12 @@ const IncomePage = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search for anything.."
               ></input>
-            </label>
-            <AntdDatePicker name="date" />
-            <ErrorMessage name="date" component="p" className={css.error} />
-          </form>
+            </Field>
+            <Field>
+              <AntdDatePicker name="date" />
+              <ErrorMessage name="date" component="p" className={css.error} />
+            </Field>
+          </Formik>
           <div className={css.incomeFormListCategoris}>
             <ul className={css.incomeFormListStatic}>
               <li className={css.incomeFormListItemStaticCategory}>Category</li>
@@ -114,7 +117,6 @@ const IncomePage = () => {
                 >
                   <li className={css.incomeFormListItemDinamicComment}>
                     {income.source}
-                    <p>test</p>
                   </li>
                   <li className={css.incomeFormListItemDinamicDate}>
                     {income.comment || "—"}
