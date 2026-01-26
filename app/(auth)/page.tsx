@@ -28,9 +28,9 @@ export default function Home() {
         <Image
           className={css.image}
           alt="avatars"
-          src="/avatars.png"
-          width={100}
-          height={40}
+          src="/allpeople.webp"
+          width={125}
+          height={48}
         />
         <div>
           <p className={css.form_text4}>1000 users +</p>
