@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
-import Header from "@/components/Header/Header";
-import { Loader } from "@/components/Loader/Loader";
+import Header from "@/components/HeaderUser/HeaderUser";
 import "@mantine/dates/styles.css";
 import "@mantine/core/styles.css";
 import "./globals.css";
