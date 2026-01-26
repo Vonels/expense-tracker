@@ -218,7 +218,17 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 <label htmlFor="date-picker" className={css.label}>
                   Date
                 </label>
-                <DatePicker id="date-picker" name="date" />
+                <Field name="date">
+                  {({ field, meta, form }: FieldProps) => (
+                    <DatePicker
+                      id="date-picker"
+                      name={field.name}
+                      value={field.value}
+                      onChange={(val) => form.setFieldValue(field.name, val)}
+                      error={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
                 <ErrorMessage name="date" component="p" className={css.error} />
               </div>
 
