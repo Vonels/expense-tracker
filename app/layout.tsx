@@ -38,6 +38,7 @@ export default function RootLayout({
         <TanStackProvider>
           <AuthProvider>
             <MantineProvider defaultColorScheme="dark">
+              <Loader />
               <Header />
 
               <main>{children}</main>

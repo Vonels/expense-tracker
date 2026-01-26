@@ -181,9 +181,9 @@ import { useRouter } from "next/navigation";
 
 import { Modal } from "@/components/Modal/Modal";
 import { useTransactionStore } from "@/lib/store/useTransactionStore";
-import { api } from "@/lib/api/api";
+// import { api } from "@/lib/api/api";
 import iziToast from "izitoast";
-import { AxiosError } from "axios";
+// import { AxiosError } from "axios";
 import css from "@/components/Modal/Modal.module.css";
 import {
   createCategory,
@@ -302,10 +302,6 @@ export default function CategoriesModal() {
     setInputValue(name);
   };
 
-  console.log("DEBUG: transactionType is:", transactionType);
-  console.log("DEBUG: data object is:", data);
-  console.log("DEBUG: categoriesToDisplay is:", categoriesToDisplay);
-
   return (
     <Modal>
       <h2 className={css.titleCategoriesModal}>{displayTitle}</h2>
@@ -315,6 +311,7 @@ export default function CategoriesModal() {
         {isLoading && <li>Loading...</li>}
 
         {!isLoading &&
+          categoriesToDisplay &&
           categoriesToDisplay.map((cat) => (
             <li
               key={cat._id}
@@ -340,7 +337,7 @@ export default function CategoriesModal() {
                 </button>
 
                 <button onClick={() => handleDelete(cat._id)}>
-                  <svg width="16" height="14">
+                  <svg width="16" height="16">
                     <use href="/symbol-defs.svg#icon-trash-2"></use>
                   </svg>
                 </button>
