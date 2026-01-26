@@ -186,15 +186,20 @@ import iziToast from "izitoast";
 import { AxiosError } from "axios";
 import css from "@/components/Modal/Modal.module.css";
 
-interface ICategory {
+export interface ICategory {
   _id: string;
   categoryName: string;
   type: "incomes" | "expenses";
 }
 
-interface CategoriesResponse {
+export interface CategoriesResponse {
   incomes: ICategory[];
   expenses: ICategory[];
+}
+
+export interface CreateCategoryDto {
+  categoryName: string;
+  type: "incomes" | "expenses";
 }
 
 export default function CategoriesModal() {
