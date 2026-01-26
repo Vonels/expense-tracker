@@ -7,7 +7,7 @@ type Params = {
 };
 
 export async function PATCH(req: Request, { params }: Params) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const body = await req.json();
 
   try {
