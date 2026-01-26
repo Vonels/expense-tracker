@@ -3,7 +3,12 @@ import type { User } from "@/types/user";
 import type { AuthCredentials, LoginCredentials } from "@/types/auth";
 import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
-import type { ListResponse } from "@/types/expense";
+import type { ListResponse, SessionResponse } from "@/types/expense";
+import {
+  ICategory,
+  CategoriesResponse,
+  CreateCategoryDto,
+} from "@/app/@modal/(.)categoriesModal/page";
 import { useAuthStore } from "@/lib/store/authStore";
 
 // лоадер
@@ -85,6 +90,32 @@ export const createIncome = async (
 ): Promise<Income> => {
   const res = await api.post<Income>("/incomes", values);
   return res.data;
+};
+
+export const getCategories = async (): Promise<CategoriesResponse> => {
+  const res = await api.get<CategoriesResponse>("/categories");
+  return res.data;
+};
+
+export const createCategory = async (
+  payload: CreateCategoryDto
+): Promise<ICategory> => {
+  const res = await api.post<ICategory>("/categories", payload);
+  return res.data;
+};
+
+export const updateCategory = async (
+  id: string,
+  name: string
+): Promise<ICategory> => {
+  const res = await api.patch<ICategory>(`/categories?id=${id}`, {
+    categoryName: name,
+  });
+  return res.data;
+};
+
+export const deleteCategory = async (id: string): Promise<void> => {
+  await api.delete(`/categories?id=${id}`);
 };
 
 export const deleteIncome = async (id: string): Promise<void> => {

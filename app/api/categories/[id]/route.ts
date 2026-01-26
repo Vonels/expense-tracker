@@ -31,7 +31,7 @@ export async function PATCH(req: Request, { params }: Params) {
 }
 
 export async function DELETE(_: Request, { params }: Params) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
   try {
     const { data } = await api.delete(`/categories/${params.id}`, {
