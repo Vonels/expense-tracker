@@ -9,7 +9,8 @@ import css from "./Header.module.css";
 import UserPanel from "../UserPanel/UserPanel";
 
 const Header = () => {
-  const { isLoggedIn } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const isLoggedIn = Boolean(user);
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 

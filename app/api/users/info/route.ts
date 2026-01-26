@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import { api, ApiError } from "../../api";
 import { cookies } from "next/headers";
 
-export async function GET() {
+export async function PATCH(req: Request) {
   const cookieStore = cookies();
+  const body = await req.json();
 
   try {
-    const { data } = await api.get("users/me", {
+    const { data } = await api.patch("/users/info", body, {
       headers: {
         Cookie: cookieStore.toString(),
       },

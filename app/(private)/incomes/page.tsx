@@ -1,4 +1,4 @@
-import IncomePage from "@/components/IncomeForm/IncomeForm";
+import IncomePage from "@/components/IncomePage/IncomePage";
 
 const Page = () => {
   return (

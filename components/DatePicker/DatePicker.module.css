@@ -1,0 +1,171 @@
+.input {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #fafafa;
+  width: 100%;
+  min-height: 42px;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.3;
+
+  transition: border-color 250ms linear;
+}
+.input:hover,
+.input:focus,
+.input:focus-within {
+  border-color: #0ef387;
+}
+
+@media only screen and (max-width: 320px) {
+  .icon {
+    display: none;
+  }
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  stroke: #fafafa;
+}
+
+.dropdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0ef387;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 14px 13px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown .calendarHeader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+}
+
+.dropdown .calendarHeaderLevel {
+  border-radius: 0;
+  color: #0c0d0d;
+  font-weight: 400;
+  font-size: 16px;
+}
+.dropdown .calendarHeaderLevel:hover {
+  background-color: transparent;
+}
+
+.dropdown .headerControl {
+  color: #0c0d0d;
+  opacity: 0.6;
+  border: none;
+  width: 15px;
+  height: 10px;
+
+  transition: opacity 250ms linear;
+}
+
+.dropdown .headerControl:hover {
+  opacity: 1;
+  background-color: transparent;
+}
+
+.dropdown .calendarHeader::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
+  height: 1.6px;
+  background-color: rgba(12, 13, 13, 0.5);
+  pointer-events: none;
+}
+
+.dropdown .weekday {
+  color: rgba(12, 13, 13, 0.5);
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.dropdown .monthsListControl,
+.dropdown .yearsListControl {
+  color: #0c0d0d;
+  background-color: transparent;
+  border-radius: 50%;
+
+  transition:
+    background-color 250ms linear,
+    color 250ms linear;
+}
+.dropdown .monthsListControl:hover,
+.dropdown .yearsListControl:hover {
+  background-color: rgba(12, 13, 13, 0.1);
+}
+
+.dropdown button.monthsListControl[data-selected],
+.dropdown button.yearsListControl[data-selected],
+.dropdown button.day[data-selected] {
+  color: #fafafa;
+  background-color: #0c0d0d;
+}
+.dropdown button.monthsListControl[data-selected]:hover,
+.dropdown button.yearsListControl[data-selected]:hover,
+.dropdown button.day[data-selected]:hover {
+  background-color: #0c0d0d;
+  color: #fafafa;
+}
+
+.dropdown .yearsListCell,
+.dropdown .monthsListCell {
+  background-color: transparent;
+}
+
+.dropdown .day {
+  color: #0c0d0d;
+  background-color: transparent;
+  font-size: 14px;
+  border-radius: 50%;
+  border: none;
+  width: 22.5px;
+  max-height: 23.5px;
+  margin: 2;
+
+  transition: background-color 250ms linear;
+}
+.dropdown .day:hover {
+  background-color: rgba(12, 13, 13, 0.1);
+}
+.dropdown .day:focus,
+.dropdown .day:focus-visible {
+  background-color: rgba(12, 13, 13, 0.1);
+}
+
+.dropdown .day[data-outside],
+.dropdown .day[data-outside] {
+  color: rgba(12, 13, 13, 0.3);
+}
+
+.input:focus-visible,
+.dropdown :global(*:focus-visible) {
+  outline: none;
+}
+
+@media only screen and (min-width: 768px) {
+  .input {
+    padding: 12px 18px;
+    font-size: 16px;
+    line-height: 1.5;
+    min-height: 48px;
+  }
+  .section {
+    margin-right: 18px;
+  }
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+}

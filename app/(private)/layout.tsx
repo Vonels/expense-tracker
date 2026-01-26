@@ -12,3 +12,4 @@ export default function AuthLayout({
     </>
   );
 }
+console.log("PRIVATE LAYOUT RENDER");
