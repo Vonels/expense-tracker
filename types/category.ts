@@ -1,7 +1,9 @@
+import { TransactionType } from "./transactions";
+
 export interface Category {
   id: string;
   name: string;
-  type: "income" | "expense";
+  type: TransactionType;
   createdAt: string;
 }
 
