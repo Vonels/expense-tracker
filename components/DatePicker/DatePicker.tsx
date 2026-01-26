@@ -1,5 +1,4 @@
 import { DatePickerInput, DateValue } from "@mantine/dates";
-import { useFormikContext, FormikValues } from "formik";
 import dayjs from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
 import { Icon } from "../Icon/Icon";
@@ -15,35 +14,42 @@ dayjs.updateLocale("en", {
 const DATE_FORMAT = "MM/DD/YYYY";
 
 interface Props {
-  name: string;
+  value?: string | null;
+  onChange?: (value: string) => void;
+  name?: string;
   placeholder?: string;
   id?: string;
+  error?: string | boolean;
 }
-
-export const DatePicker = ({ name, id, placeholder }: Props) => {
-  const { setFieldValue, values } = useFormikContext<FormikValues>();
-
-  const value = useMemo(() => {
-    const rawValue = values[name];
-    if (!rawValue) return null;
-    const date = dayjs(rawValue, DATE_FORMAT);
+export const DatePicker = ({
+  name,
+  id,
+  placeholder,
+  value,
+  onChange,
+  error,
+}: Props) => {
+  const dateValue = useMemo(() => {
+    if (!value) return null;
+    const date = dayjs(value, DATE_FORMAT);
     return date.isValid() ? date.toDate() : null;
-  }, [values, name]);
+  }, [value]);
 
   const handleChange = useCallback(
     (date: DateValue) => {
       const formattedDate = date ? dayjs(date).format(DATE_FORMAT) : "";
-      setFieldValue(name, formattedDate);
+      onChange?.(formattedDate);
     },
-    [setFieldValue, name]
+    [onChange]
   );
 
   return (
     <DatePickerInput
       id={id}
       name={name}
-      value={value}
+      value={dateValue}
       onChange={handleChange}
+      error={error}
       placeholder={placeholder || dayjs().format(DATE_FORMAT)}
       valueFormat={DATE_FORMAT}
       rightSection={<Icon id="icon-calendar" className={css.icon} />}

@@ -1,17 +1,17 @@
-import { NextResponse } from "next/server";
-import { api, ApiError } from "../../api";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { api, ApiError } from "../../api";
 
-type Params = {
-  params: { id: string };
+type Props = {
+  params: Promise<{ id: string }>;
 };
 
-export async function PATCH(req: Request, { params }: Params) {
+export async function DELETE(_: NextRequest, { params }: Props) {
   const cookieStore = await cookies();
-  const body = await req.json();
+  const { id } = await params;
 
   try {
-    const { data } = await api.patch(`/categories/${params.id}`, body, {
+    const { data } = await api.delete(`/categories/${id}`, {
       headers: {
         Cookie: cookieStore.toString(),
       },
@@ -19,36 +19,26 @@ export async function PATCH(req: Request, { params }: Params) {
 
     return NextResponse.json(data);
   } catch (error) {
+    const err = error as ApiError;
     return NextResponse.json(
-      {
-        error:
-          (error as ApiError).response?.data?.error ??
-          (error as ApiError).message,
-      },
-      { status: (error as ApiError).status }
+      { error: err.response?.data?.error ?? err.message },
+      { status: err.response?.status ?? 500 }
     );
   }
 }
 
-export async function DELETE(_: Request, { params }: Params) {
-  const cookieStore = cookies();
+export async function PATCH(req: NextRequest, { params }: Props) {
+  const cookieStore = await cookies();
+  const { id } = await params;
+  const body = await req.json();
 
   try {
-    const { data } = await api.delete(`/categories/${params.id}`, {
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
+    const { data } = await api.patch(`/categories/${id}`, body, {
+      headers: { Cookie: cookieStore.toString() },
     });
-
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json(
-      {
-        error:
-          (error as ApiError).response?.data?.error ??
-          (error as ApiError).message,
-      },
-      { status: (error as ApiError).status }
-    );
+    const err = error as ApiError;
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
