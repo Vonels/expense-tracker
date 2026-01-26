@@ -1,0 +1,45 @@
+.backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(12, 13, 13, 0.6);
+    z-index: 1000;
+
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal {
+    position: relative;
+    width: 385px;
+    height: 100vh;
+    background: #0ef387;
+    padding: 18px 32px;
+}
+
+.closeBtn {
+    position: absolute;
+    top: 32px;
+    right: 30px;
+
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    z-index: 2000;
+    stroke: #0c0d0d;
+}
+
+.content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.icon {
+    width: 27px;
+    height: 27px;
+}
+
+.navBlock {
+    margin-top: auto;
+    margin-bottom: auto;
+}
