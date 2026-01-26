@@ -3,7 +3,7 @@ import { api, ApiError } from "../../api";
 import { cookies } from "next/headers";
 
 export async function GET() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
   try {
     const { data } = await api.get("/users/current", {
