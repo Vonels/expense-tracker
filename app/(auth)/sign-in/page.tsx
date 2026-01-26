@@ -45,7 +45,6 @@ export default function SignInPage() {
       setLoading(false);
     }
   };
-
   return (
     <div className={styles.page}>
       <section className={styles.container}>
