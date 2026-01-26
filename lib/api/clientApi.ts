@@ -3,8 +3,14 @@ import type { User } from "@/types/user";
 import type { AuthCredentials, LoginCredentials } from "@/types/auth";
 import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
-import type { ListResponse } from "@/types/expense";
+import type { ListResponse, SessionResponse } from "@/types/expense";
+import {
+  ICategory,
+  CategoriesResponse,
+  CreateCategoryDto,
+} from "@/app/@modal/(.)categoriesModal/page";
 import { useAuthStore } from "@/lib/store/authStore";
+import { TransactionFormValues, TransactionType } from "@/types/transactions";
 
 // лоадер
 
@@ -87,11 +93,81 @@ export const createIncome = async (
   return res.data;
 };
 
+export const getCategories = async (): Promise<CategoriesResponse> => {
+  const res = await api.get<CategoriesResponse>("/categories");
+  return res.data;
+};
+
+export const createCategory = async (
+  payload: CreateCategoryDto
+): Promise<ICategory> => {
+  const res = await api.post<ICategory>("/categories", payload);
+  return res.data;
+};
+
+export const updateCategory = async (
+  id: string,
+  name: string
+): Promise<ICategory> => {
+  const res = await api.patch<ICategory>(`/categories/${id}`, {
+    categoryName: name,
+  });
+  return res.data;
+};
+
+export const deleteCategory = async (id: string): Promise<void> => {
+  await api.delete(`/categories/${id}`);
+};
+
 export const deleteIncome = async (id: string): Promise<void> => {
   await api.delete(`/incomes/${id}`);
 };
 
 export const fetchCurrentMonthStats = async (): Promise<CategoryStat[]> => {
   const res = await api.get<CategoryStat[]>("/stats/categories/current-month");
+  return res.data;
+};
+
+// Форма
+export const createTransaction = async (
+  type: TransactionType,
+  values: TransactionFormValues
+): Promise<Expense | Income> => {
+  const commonData = {
+    date: values.date,
+    time: values.time,
+    amount: Number(values.sum),
+    comment: values.comment || "",
+  };
+
+  if (type === "expenses") {
+    return await createExpense({
+      ...commonData,
+      category: values.category,
+    });
+  } else {
+    return await createIncome({
+      ...commonData,
+      source: values.category,
+    });
+  }
+};
+
+export const updateTransaction = async (
+  type: TransactionType,
+  id: string,
+  values: TransactionFormValues
+): Promise<Expense | Income> => {
+  const path = type === "expenses" ? "expenses" : "incomes";
+
+  const payload = {
+    date: values.date,
+    time: values.time,
+    amount: Number(values.sum),
+    comment: values.comment,
+    [type === "expenses" ? "category" : "source"]: values.category,
+  };
+
+  const res = await api.patch<Expense | Income>(`/${path}/${id}`, payload);
   return res.data;
 };

@@ -14,3 +14,11 @@ export interface TransactionData {
   sum: number;
   comment: string;
 }
+
+export interface TransactionFormValues {
+  date: string;
+  time: string;
+  category: string;
+  sum: number | "";
+  comment?: string;
+}
