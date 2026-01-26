@@ -10,9 +10,6 @@ import { Modal } from "../Modal/Modal";
 import TransactionForm from "../TransactionForm/TransactionForm";
 import css from "./IncomePage.module.css";
 import { toast } from "react-hot-toast";
-import { Income } from "@/types/income";
-import { TransactionData } from "@/types/transactions";
-import { DatePicker } from "@/components/DatePicker/DatePicker";
 
 const IncomePage = () => {
   const [search, setSearch] = useState("");

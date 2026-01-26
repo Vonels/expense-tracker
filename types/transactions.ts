@@ -15,10 +15,8 @@ export interface TransactionData {
   comment: string;
 }
 
-export interface TransactionFormValues {
-  date: string;
-  time: string;
-  category: string;
-  sum: number | "";
-  comment?: string;
+export interface TransactionsResponse {
+  type: TransactionType;
+  date?: string;
+  search?: string;
 }

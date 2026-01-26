@@ -10,7 +10,7 @@ import {
   CreateCategoryDto,
 } from "@/app/@modal/(.)categoriesModal/page";
 import { useAuthStore } from "@/lib/store/authStore";
-import { TransactionFormValues, TransactionType } from "@/types/transactions";
+import { TransactionData, TransactionsResponse } from "@/types/transactions";
 
 // лоадер
 
@@ -128,46 +128,14 @@ export const fetchCurrentMonthStats = async (): Promise<CategoryStat[]> => {
   return res.data;
 };
 
-// Форма
-export const createTransaction = async (
-  type: TransactionType,
-  values: TransactionFormValues
-): Promise<Expense | Income> => {
-  const commonData = {
-    date: values.date,
-    time: values.time,
-    amount: Number(values.sum),
-    comment: values.comment || "",
-  };
+export const getTransactionCategories = async ({
+  type,
+  date,
+  search,
+}: TransactionsResponse): Promise<TransactionData[]> => {
+  const { data } = await api.get<TransactionData[]>(`/transactions/${type}`, {
+    params: { date, search },
+  });
 
-  if (type === "expenses") {
-    return await createExpense({
-      ...commonData,
-      category: values.category,
-    });
-  } else {
-    return await createIncome({
-      ...commonData,
-      source: values.category,
-    });
-  }
-};
-
-export const updateTransaction = async (
-  type: TransactionType,
-  id: string,
-  values: TransactionFormValues
-): Promise<Expense | Income> => {
-  const path = type === "expenses" ? "expenses" : "incomes";
-
-  const payload = {
-    date: values.date,
-    time: values.time,
-    amount: Number(values.sum),
-    comment: values.comment,
-    [type === "expenses" ? "category" : "source"]: values.category,
-  };
-
-  const res = await api.patch<Expense | Income>(`/${path}/${id}`, payload);
-  return res.data;
+  return data;
 };
