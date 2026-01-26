@@ -86,9 +86,14 @@ const IncomePage = () => {
             id="search"
             name="filter"
             placeholder="Search for anything.."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           /></div>
           
-          <DatePicker/>
+          <DatePicker
+            value={date}
+            onChange={(val) => setDate(val)}
+          />
           </div>
 
           <div className={css.incomeFormListCategoris}>
@@ -110,6 +115,9 @@ const IncomePage = () => {
                   key={income.id}
                   className={css.incomeFormListDinamicCategory}
                 >
+                  <li className={css.incomeFormListItemDinamicCategory}>
+                    {income.source || "—"}
+                  </li>
                   <li className={css.incomeFormListItemDinamicComment}>
                     {income.comment || "—"}
                   </li>
@@ -120,9 +128,6 @@ const IncomePage = () => {
                     {income.date.includes("T")
                       ? income.date.split("T")[1].slice(0, 5)
                       : "—"}
-                  </li>
-                  <li className={css.incomeFormListItemDinamicSum}>
-                    
                   </li>
                   <li className={css.incomeFormListItemDinamicSum}>
                     {income.amount.toLocaleString()} / UAH
