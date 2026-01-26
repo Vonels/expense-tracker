@@ -1,6 +1,6 @@
 "use client";
 
-import css from "./page.module.css";
+import css from "../page.module.css";
 import { Icon } from "@/components/Icon/Icon";
 
 export default function AuthLayout({
