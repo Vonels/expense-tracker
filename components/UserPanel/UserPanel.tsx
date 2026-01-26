@@ -13,12 +13,12 @@ const UserPanel = ({ isOpen, onClose }: Props) => {
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
   const handleProfileSettings = () => {
-    //відкриття модалки
+    router.push("/profile-settings")
     onClose();
   };
   const handleLogout = () => {
     logout();
-    router.push("./welcome");
+    router.push("/");
     onClose();
   };
 
