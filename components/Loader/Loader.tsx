@@ -1,13 +1,15 @@
 "use client";
-
 import { useAuthStore } from "@/lib/store/authStore";
 import styles from "./Loader.module.css";
 
-export const Loader = () => {
-  const isLoading = useAuthStore((state) => state.isLoading);
+interface LoaderProps {
+  forcedVisible?: boolean;
+}
 
-  if (!isLoading) return null;
+export const Loader = ({ forcedVisible = false }: LoaderProps) => {
+  const { isLoading } = useAuthStore();
 
+  if (!isLoading && !forcedVisible) return null;
   return (
     <div className={styles.backdrop}>
       <div
