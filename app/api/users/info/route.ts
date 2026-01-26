@@ -3,7 +3,7 @@ import { api, ApiError } from "../../api";
 import { cookies } from "next/headers";
 
 export async function PATCH(req: Request) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const body = await req.json();
 
   try {
