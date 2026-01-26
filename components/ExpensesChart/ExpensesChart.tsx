@@ -29,13 +29,13 @@ export const ExpensesChart = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const data = await fetchCurrentMonthStats();
+        const data: CategoryStat[] = await fetchCurrentMonthStats();
 
         const formatted = data.map((item: CategoryStat) => ({
           _id: item._id,
           categoryName: item.category,
           sum: item.totalAmount,
-          type: "expenses",
+          type: "expenses" as const,
         }));
 
         const total = data.reduce(

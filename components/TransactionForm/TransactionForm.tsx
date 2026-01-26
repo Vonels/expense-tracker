@@ -119,38 +119,26 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   ) => {
     setIsLoading(true);
     try {
-      const commonData = {
-        date: values.date,
-        time: values.time,
-        amount: Number(values.sum),
-        comment: values.comment,
-      };
-
       if (isEditing && currentTransaction?._id) {
-        const path = values.type === "expenses" ? "expenses" : "incomes";
-        await axios.patch(`/${path}/${currentTransaction._id}`, {
-          ...commonData,
-          [values.type === "expenses" ? "category" : "source"]: values.category,
-        });
-        toast.success("Transaction updated!");
+        await api.updateTransaction(
+          values.type,
+          currentTransaction._id,
+          values
+        );
+        toast.success("Transaction updated successfully!");
       } else {
-        if (values.type === "expenses") {
-          await api.createExpense({
-            ...commonData,
-            category: values.category,
-          });
-        } else {
-          await api.createIncome({
-            ...commonData,
-            source: values.category,
-          });
-        }
+        await api.createTransaction(values.type, values);
         toast.success("Transaction added successfully!");
+
         resetForm();
         resetCategory();
       }
 
       router.refresh();
+
+      const targetPath = values.type === "expenses" ? "/expense" : "/incomes";
+      router.push(targetPath);
+
       if (onClose) onClose();
     } catch (error: unknown) {
       let errorMsg = "Request failed";
