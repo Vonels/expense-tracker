@@ -48,3 +48,8 @@ export async function DELETE() {
     );
   }
 }
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};

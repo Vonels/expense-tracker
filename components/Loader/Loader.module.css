@@ -4,11 +4,13 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 9999;
+  /* Це "якір" для em. Всі деталі хом'яка тепер масштабуватимуться від цього числа */
+  font-size: 16px;
 }
 
 .wheelAndHamster {
@@ -16,7 +18,6 @@
   position: relative;
   width: 12em;
   height: 12em;
-  font-size: 14px;
 }
 
 .wheel,
@@ -32,24 +33,17 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  box-shadow: 0 0 0 0.1em inset var(--primary-color, #f4ad42); /* Можна змінити колір під бренд */
+  /* Оригінальний градієнт для ефекту металевого колеса */
+  background: radial-gradient(
+    100% 100% at center,
+    hsla(0, 0%, 60%, 0) 47.8%,
+    hsl(0, 0%, 60%) 48%
+  );
   z-index: 2;
 }
 
-.spoke {
-  top: 0;
-  left: 5.95em;
-  width: 0.1em;
-  height: 100%;
-  background: radial-gradient(
-    rgba(244, 173, 66, 0.1) 50%,
-    rgba(244, 173, 66, 1) 0
-  );
-  z-index: 1;
-  animation: rotate var(--dur) linear infinite;
-}
-
 .hamster {
+  animation: hamster var(--dur) ease-in-out infinite;
   top: 50%;
   left: calc(50% - 3.5em);
   width: 7em;
@@ -57,151 +51,285 @@
   transform: rotate(4deg) translate(-0.8em, 1.85em);
   transform-origin: 50% 0;
   z-index: 1;
-  animation: hamster var(--dur) ease-in-out infinite;
 }
 
-.hamster__body {
-  top: 0;
-  left: 0;
+.hamsterBody {
+  animation: hamsterBody var(--dur) ease-in-out infinite;
+  background: hsl(30, 90%, 90%);
+  border-radius: 50% 30% 50% 30% / 15% 60% 40% 40%;
+  box-shadow:
+    0.1em 0.75em 0 hsl(30, 90%, 55%) inset,
+    0.15em -0.5em 0 hsl(30, 90%, 80%) inset;
+  top: 0.25em;
+  left: 2em;
   width: 4.5em;
   height: 3em;
-  background: #ffb149;
-  border-radius: 50% 30% 50% 30% / 55% 60% 40% 45%;
-  box-shadow: 0 0.1em 0.3em rgba(0, 0, 0, 0.2) inset;
+  transform-origin: 17% 50%;
 }
 
-.hamster__head {
-  top: 0.2em;
-  left: 3em;
-  width: 2.3em;
+.hamsterHead {
+  animation: hamsterHead var(--dur) ease-in-out infinite;
+  background: hsl(30, 90%, 55%);
+  border-radius: 70% 30% 0 100% / 40% 25% 25% 60%;
+  box-shadow:
+    0 -0.25em 0 hsl(30, 90%, 80%) inset,
+    0.75em -1.55em 0 hsl(30, 90%, 90%) inset;
+  top: 0;
+  left: -2em;
+  width: 2.75em;
   height: 2.5em;
-  background: #ffc06e;
-  border-radius: 40% 50% 50% 35%;
+  transform-origin: 100% 50%;
 }
 
-.hamster__ear {
-  top: -0.2em;
-  left: 0.8em;
+.hamsterEar {
+  animation: hamsterEar var(--dur) ease-in-out infinite;
+  background: hsl(0, 90%, 85%);
+  border-radius: 50%;
+  box-shadow: -0.25em 0 hsl(30, 90%, 55%) inset;
+  top: -0.25em;
+  right: -0.25em;
   width: 0.75em;
   height: 0.75em;
-  background: #ffdb8c;
-  border-radius: 50%;
+  transform-origin: 50% 75%;
 }
 
-.hamster__eye {
-  top: 0.9em;
+.hamsterEye {
+  animation: hamsterEye var(--dur) linear infinite;
+  background-color: hsl(0, 0%, 0%);
+  border-radius: 50%;
+  top: 0.375em;
   left: 1.25em;
   width: 0.5em;
   height: 0.5em;
-  background: #000;
-  border-radius: 50%;
 }
 
-.hamster__nose {
-  top: 1.2em;
-  left: 1.8em;
+.hamsterNose {
+  background: hsl(0, 90%, 75%);
+  border-radius: 35% 65% 85% 15% / 70% 50% 50% 30%;
+  top: 0.75em;
+  left: 0;
   width: 0.2em;
   height: 0.25em;
-  background: #ff8a8a;
-  border-radius: 35% 65% 85% 15% / 70% 50% 50% 30%;
 }
 
-.hamster__limb {
+.hamsterLimb {
+  top: 2em;
+  left: 0.5em;
+  width: 1em;
+  height: 1.5em;
+  transform-origin: 50% 0;
+}
+
+.hamsterLimbFr {
+  animation: hamsterFRLimb var(--dur) linear infinite;
+  background: linear-gradient(hsl(30, 90%, 80%) 80%, hsl(0, 90%, 75%) 80%);
+  transform: rotate(15deg);
+}
+
+.hamsterLimbFl {
+  animation: hamsterFLLimb var(--dur) linear infinite;
+  background: linear-gradient(hsl(30, 90%, 90%) 80%, hsl(0, 90%, 85%) 80%);
+  transform: rotate(15deg);
+}
+
+/* Перевіряємо позиціювання задніх лап */
+.hamsterLimbBr,
+.hamsterLimbBl {
+  top: 1em;
+  left: 2.8em;
   width: 1.5em;
-  height: 2em;
-  background: linear-gradient(#ffc06e 80%, #ff8a8a 80%);
-  border-radius: 0.75em 0.75em 0 0;
+  height: 2.5em;
 }
 
-.hamster__limbFr {
-  top: 2em;
-  left: 3.3em;
-  animation: limbFr var(--dur) linear infinite;
+.hamsterLimbBr {
+  animation: hamsterBRLimb var(--dur) linear infinite;
+  background: linear-gradient(hsl(30, 90%, 80%) 90%, hsl(0, 90%, 75%) 90%);
 }
 
-.hamster__limbFl {
-  top: 2em;
-  left: 3.3em;
-  animation: limbFl var(--dur) linear infinite;
+.hamsterLimbBl {
+  animation: hamsterBLLimb var(--dur) linear infinite;
+  background: linear-gradient(hsl(30, 90%, 90%) 90%, hsl(0, 90%, 85%) 90%);
 }
 
-.hamster__limbBr {
-  top: 2em;
-  left: 0.5em;
-  animation: limbBr var(--dur) linear infinite;
-}
-
-.hamster__limbBl {
-  top: 2em;
-  left: 0.5em;
-  animation: limbBl var(--dur) linear infinite;
-}
-
-.hamster__tail {
+.hamsterTail {
+  animation: hamsterTail var(--dur) linear infinite;
+  background: hsl(0, 90%, 85%);
+  border-radius: 0.25em 50% 50% 0.25em;
+  box-shadow: 0 -0.2em 0 hsl(0, 90%, 75%) inset;
   top: 1.5em;
   right: -0.5em;
   width: 1em;
   height: 0.5em;
-  background: #ffdb8c;
-  border-radius: 0.25em 50% 50% 0.25em;
+  transform: rotate(30deg);
+  transform-origin: 0.25em 0.25em;
 }
 
-/* Анімації */
-@keyframes rotate {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(1turn);
-  }
+.spoke {
+  animation: spoke var(--dur) linear infinite;
+  background:
+    radial-gradient(
+      100% 100% at center,
+      hsl(0, 0%, 60%) 4.8%,
+      hsla(0, 0%, 60%, 0) 5%
+    ),
+    linear-gradient(
+        hsla(0, 0%, 55%, 0) 46.9%,
+        hsl(0, 0%, 65%) 47% 52.9%,
+        hsla(0, 0%, 65%, 0) 53%
+      )
+      50% 50% / 99% 99% no-repeat;
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
+/* Анімації - копіюємо без змін з сайту для ідеального результату */
 @keyframes hamster {
   from,
   to {
     transform: rotate(4deg) translate(-0.8em, 1.85em);
   }
   50% {
-    transform: rotate(-4deg) translate(-0.8em, 1.85em);
+    transform: rotate(0) translate(-0.8em, 1.85em);
   }
 }
-
-@keyframes limbFr {
+@keyframes hamsterHead {
   from,
+  25%,
+  50%,
+  75%,
+  to {
+    transform: rotate(0);
+  }
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
+    transform: rotate(8deg);
+  }
+}
+@keyframes hamsterEye {
+  from,
+  90%,
+  to {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0);
+  }
+}
+@keyframes hamsterEar {
+  from,
+  25%,
+  50%,
+  75%,
+  to {
+    transform: rotate(0);
+  }
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
+    transform: rotate(12deg);
+  }
+}
+@keyframes hamsterBody {
+  from,
+  25%,
+  50%,
+  75%,
+  to {
+    transform: rotate(0);
+  }
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
+    transform: rotate(-2deg);
+  }
+}
+@keyframes hamsterFRLimb {
+  from,
+  25%,
+  50%,
+  75%,
+  to {
+    transform: rotate(50deg);
+  }
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
+    transform: rotate(-30deg);
+  }
+}
+@keyframes hamsterFLLimb {
+  from,
+  25%,
+  50%,
+  75%,
   to {
     transform: rotate(-30deg);
   }
-  50% {
-    transform: rotate(30deg);
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
+    transform: rotate(50deg);
   }
 }
-
-@keyframes limbFl {
+@keyframes hamsterBRLimb {
   from,
+  25%,
+  50%,
+  75%,
+  to {
+    transform: rotate(-60deg);
+  }
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
+    transform: rotate(20deg);
+  }
+}
+@keyframes hamsterBLLimb {
+  from,
+  25%,
+  50%,
+  75%,
+  to {
+    transform: rotate(20deg);
+  }
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
+    transform: rotate(-60deg);
+  }
+}
+@keyframes hamsterTail {
+  from,
+  25%,
+  50%,
+  75%,
   to {
     transform: rotate(30deg);
   }
-  50% {
-    transform: rotate(-30deg);
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
+    transform: rotate(10deg);
   }
 }
-
-@keyframes limbBr {
-  from,
+@keyframes spoke {
+  from {
+    transform: rotate(0);
+  }
   to {
-    transform: rotate(-40deg);
-  }
-  50% {
-    transform: rotate(40deg);
-  }
-}
-
-@keyframes limbBl {
-  from,
-  to {
-    transform: rotate(40deg);
-  }
-  50% {
-    transform: rotate(-40deg);
+    transform: rotate(-1turn);
   }
 }
