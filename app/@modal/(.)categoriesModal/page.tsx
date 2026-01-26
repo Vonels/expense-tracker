@@ -302,6 +302,10 @@ export default function CategoriesModal() {
     setInputValue(name);
   };
 
+  console.log("DEBUG: transactionType is:", transactionType);
+  console.log("DEBUG: data object is:", data);
+  console.log("DEBUG: categoriesToDisplay is:", categoriesToDisplay);
+
   return (
     <Modal>
       <h2 className={css.titleCategoriesModal}>{displayTitle}</h2>
