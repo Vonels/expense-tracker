@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./SignInPage.module.css";
+import { login } from "@/lib/api/clientApi";
+import { LoginCredentials } from "@/types/auth";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -18,15 +20,14 @@ export default function SignInPage() {
     setErrors({});
     setLoading(true);
 
-    const body = {
-      email: String(formData.get("email")),
-      password: String(formData.get("password")),
+    const values: LoginCredentials = {
+      email: String(formData.get("email") ?? ""),
+      password: String(formData.get("password") ?? ""),
     };
 
     const newErrors: { email?: string; password?: string } = {};
-
-    if (!body.email) newErrors.email = "Email is required";
-    if (!body.password) newErrors.password = "Password is required";
+    if (!values.email) newErrors.email = "Email is required";
+    if (!values.password) newErrors.password = "Password is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -35,25 +36,15 @@ export default function SignInPage() {
     }
 
     try {
-      const res = await fetch("/api/auth/login/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      if (!res.ok) {
-        const data: { error?: string } = await res.json();
-        throw new Error(data.error || "Login failed");
-      }
-
+      await login(values);
       router.push("/dashboard");
+      router.refresh();
     } catch (error) {
-      alert((error as Error).message);
+      alert(error instanceof Error ? error.message : "Login failed");
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <section className={styles.container}>
       <div className={styles.firstblock}>
