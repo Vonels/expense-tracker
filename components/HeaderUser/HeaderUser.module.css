@@ -6,14 +6,6 @@
     border-bottom: 1px solid rgba(250, 250, 250, 0.1);
   }
 
-  .guest {
-    justify-content: center;
-  }
-
-  .auth {
-    justify-content: space-between;
-  }
-
   .wrapper {
     position: relative;
     display: inline-block;
