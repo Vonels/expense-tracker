@@ -248,7 +248,12 @@ export const UserSetsModal = ({ onClose }: { onClose: () => void }) => {
   }, [user, updateUser]);
   const onSubmit = async (data: UserSettingsForm) => {
     try {
-      const updatedData = await userService.updateProfile(data);
+      const formattedData = {
+        ...data,
+        currency: data.currency.toLowerCase(),
+      };
+
+      const updatedData = await userService.updateProfile(formattedData);
 
       updateUser({
         ...updatedData,

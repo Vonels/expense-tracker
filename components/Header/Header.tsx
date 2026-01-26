@@ -7,53 +7,52 @@ import TransactionsHistoryNav from "../TransactionsHistoryNav/TransactionsHistor
 import UserBarBtn from "../UserBarBtn/UserBarBtn";
 import css from "./Header.module.css";
 import UserPanel from "../UserPanel/UserPanel";
+import BurgerMenuBtn from "../BurgerMenuBtn/BurgerMenuBtn";
+import BurgerMenu from "../BurgerMenu/BurgerMenu";
+import UserMenu from "../UserMenu/UserMenu";
 
 const Header = () => {
   const user = useAuthStore((s) => s.user);
   const isLoggedIn = Boolean(user);
-  const [isOpen, setIsOpen] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
 
-  const closePanel = () => setIsOpen(false);
-  const togglePanel = () => setIsOpen((prev) => !prev);
+  const [isOpenBurger, setIsOpenBurger] = useState(false);
 
-  //закриття по кліку поза UserPanel
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (!wrapperRef.current) return;
-      const target = e.target as Node;
-      if (isOpen && !wrapperRef.current.contains(target)) {
-        closePanel();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
-  //закриття по Escape UserPanel
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closePanel();
-    };
-    document.addEventListener("keydown", handleEsc);
-    return () => document.removeEventListener("keydown", handleEsc);
-  }, [isOpen]);
+  const openBurger = () => setIsOpenBurger(true);
+  const closeBurger = () => setIsOpenBurger(false);
 
   return (
     <header className={css.container}>
       <div className={css.header}>
-        {isLoggedIn ? (
+        <Logo />
+
+        {isLoggedIn && (
           <>
-            <Logo />
-            <TransactionsHistoryNav />
-            <div ref={wrapperRef} className={css.wrapper}>
-              <UserBarBtn isOpen={isOpen} onToggle={togglePanel} />
-              <UserPanel isOpen={isOpen} onClose={closePanel} />
+            {/* DESKTOP навігація */}
+            <div className={css.desktopNav}>
+              <TransactionsHistoryNav variant="header"/>
+              <UserMenu />
             </div>
+
+            {/* MOBILE/TABLET burger */}            
+            <div className={css.tabletNav}>
+              <BurgerMenuBtn onClick={openBurger} />
+              <BurgerMenu isOpen={isOpenBurger} onClose={closeBurger} />
+            </div>            
           </>
-        ) : (
-          <Logo />
         )}
+
+{/* test */}
+      <div className={css.desktopNav}>
+              <TransactionsHistoryNav variant="header"/>
+              <UserMenu />
       </div>
+      <div className={css.tabletNav}>
+              <BurgerMenuBtn onClick={openBurger} />
+              <BurgerMenu isOpen={isOpenBurger} onClose={closeBurger} />
+            </div>  
+
+      </div>
+    
     </header>
   );
 };

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
 import Header from "@/components/Header/Header";
+import { Loader } from "@/components/Loader/Loader";
 import "@mantine/dates/styles.css";
 import "@mantine/core/styles.css";
 import "./globals.css";
@@ -38,6 +39,7 @@ export default function RootLayout({
         <TanStackProvider>
           <AuthProvider>
             <MantineProvider defaultColorScheme="dark">
+              <Loader />
               <Header />
 
               <main>{children}</main>

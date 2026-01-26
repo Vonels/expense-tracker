@@ -17,25 +17,25 @@ export const Loader = () => {
       >
         <div className={styles.wheel}></div>
         <div className={styles.hamster}>
-          <div className={styles.hamster__body}>
-            <div className={styles.hamster__head}>
-              <div className={styles.hamster__ear}></div>
-              <div className={styles.hamster__eye}></div>
-              <div className={styles.hamster__nose}></div>
+          <div className={styles.hamsterBody}>
+            <div className={styles.hamsterHead}>
+              <div className={styles.hamsterEar}></div>
+              <div className={styles.hamsterEye}></div>
+              <div className={styles.hamsterNose}></div>
             </div>
             <div
-              className={`${styles.hamster__limb} ${styles.hamster__limbFr}`}
+              className={`${styles.hamsterLimb} ${styles.hamsterLimbFr}`}
             ></div>
             <div
-              className={`${styles.hamster__limb} ${styles.hamster__limbFl}`}
+              className={`${styles.hamsterLimb} ${styles.hamsterLimbFl}`}
             ></div>
             <div
-              className={`${styles.hamster__limb} ${styles.hamster__limbBr}`}
+              className={`${styles.hamsterLimb} ${styles.hamsterLimbBr}`}
             ></div>
             <div
-              className={`${styles.hamster__limb} ${styles.hamster__limbBl}`}
+              className={`${styles.hamsterLimb} ${styles.hamsterLimbBl}`}
             ></div>
-            <div className={styles.hamster__tail}></div>
+            <div className={styles.hamsterTail}></div>
           </div>
         </div>
         <div className={styles.spoke}></div>
