@@ -12,7 +12,7 @@ const UserBarBtn = ({ isOpen, onToggle }: Props) => {
   const user = useAuthStore((state) => state.user);
 
   console.log(user);
-  if (!user) return null; 
+  if (!user) return null;
 
   const { name, avatarUrl } = user;
   const firstLetter = name.charAt(0).toUpperCase();

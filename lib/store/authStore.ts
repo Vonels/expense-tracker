@@ -46,6 +46,7 @@
 //     }
 //   )
 // );
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { api } from "@/lib/api/api";
@@ -71,7 +72,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       isLoading: false,
       _hasHydrated: false,
@@ -86,9 +87,11 @@ export const useAuthStore = create<AuthState>()(
         })),
 
       refreshUser: async () => {
+        if (get().isLoading) return;
+
         set({ isLoading: true });
         try {
-          const { data } = await api.get<User>("/users/info");
+          const { data } = await api.get<User>("/users/current");
           set({ user: data });
         } catch {
           set({ user: null });
