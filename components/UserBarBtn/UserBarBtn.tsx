@@ -4,16 +4,25 @@ import css from "./UserBarBtn.module.css";
 import Image from "next/image";
 import { Icon } from "../Icon/Icon";
 import { useAuthStore } from "@/lib/store/authStore";
+import { useEffect } from "react";
 type Props = {
   isOpen: boolean;
   onToggle: () => void;
 };
 const UserBarBtn = ({ isOpen, onToggle }: Props) => {
-  const user = useAuthStore((state) => state.user);
+  const { user, refreshUser, _hasHydrated } = useAuthStore();
 
   console.log(user);
   if (!user) return null;
+  useEffect(() => {
+    if (_hasHydrated && !user) {
+      refreshUser();
+    }
+  }, [_hasHydrated, user, refreshUser]);
 
+  if (!_hasHydrated) return <div className={css.loaderPlaceholder} />;
+
+  if (!user) return null;
   const { name, avatarUrl } = user;
   const firstLetter = name.charAt(0).toUpperCase();
 
@@ -21,7 +30,13 @@ const UserBarBtn = ({ isOpen, onToggle }: Props) => {
     <button type="button" className={css.UserBarBtn} onClick={onToggle}>
       {/* Avatar */}
       {avatarUrl ? (
-        <Image src={avatarUrl} alt={name} className={css.avatar} />
+        <Image
+          src={avatarUrl}
+          alt={name}
+          className={css.avatar}
+          width={44}
+          height={44}
+        />
       ) : (
         <div className={css.avatarFallback}>{firstLetter}</div>
       )}
