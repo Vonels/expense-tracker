@@ -14,8 +14,6 @@ type Props = {
 const UserBarBtn = ({ isOpen, onToggle }: Props) => {
   const [user, setUser] = useState<UserNew | null>(null)
 
-  console.log(user);
-  if (!user) return null;
   useEffect(() => {
     const fetchUser = async () => {
       try {
