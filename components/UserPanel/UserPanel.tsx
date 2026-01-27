@@ -16,9 +16,10 @@ const UserPanel = ({ isOpen, onClose }: Props) => {
     router.push("/profile-settings")
     onClose();
   };
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async() => {
+    await logout();
     router.push("/");
+    router.refresh();
     onClose();
   };
 

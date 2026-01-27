@@ -18,7 +18,11 @@
 }
 
 @media (min-width: 1440px) {
-  .desktopNav {
+  .historyNav {
+    display: flex;
+  }
+
+  .userMenu {
     display: flex;
   }
 
