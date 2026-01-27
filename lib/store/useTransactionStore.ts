@@ -1,8 +1,9 @@
+import { TransactionType } from "@/types/transactions";
 import { create } from "zustand";
 
 interface TransactionState {
-  transactionType: "expenses" | "incomes";
-  setTransactionType: (type: "expenses" | "incomes") => void;
+  transactionType: TransactionType;
+  setTransactionType: (type: TransactionType) => void;
   selectedCategory: { id: string; name: string } | null;
   setCategory: (id: string, name: string) => void;
   resetCategory: () => void;
