@@ -1,5 +1,6 @@
 "use client";
 
+import HeaderGuest from "@/components/HeaderGuest/HeaderGuest";
 import css from "../page.module.css";
 import { Icon } from "@/components/Icon/Icon";
 
@@ -8,7 +9,8 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
+  return (<>
+    <HeaderGuest/>
     <main className={css.mainContainer}>
       <div className={css.wrapper}>
         <div className={css.backgroundphoto}>
@@ -29,5 +31,6 @@ export default function AuthLayout({
         <div className={css.contentSide}>{children}</div>
       </div>
     </main>
+    </>
   );
 }

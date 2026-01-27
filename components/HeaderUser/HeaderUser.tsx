@@ -17,7 +17,7 @@ const HeaderUser = () => {
   return (
     <header className="container">
       <div className={css.header}>
-        <Logo />
+        <Logo href="/dashboard" />
 
         {/* DESKTOP навігація */}
 
