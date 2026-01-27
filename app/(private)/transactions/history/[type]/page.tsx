@@ -10,14 +10,12 @@ import { getTransactionCategories } from "@/lib/api/clientApi";
 import { TransactionType } from "@/types/transactions";
 
 interface PageProps {
-  params: Promise<{ slug: string[] }>;
+  params: Promise<{ type: TransactionType }>;
 }
 
 const Page = async ({ params }: PageProps) => {
   const queryClient = new QueryClient();
-  const { slug } = await params;
-
-  const type = slug[0] as TransactionType;
+  const { type } = await params;
 
   await queryClient.prefetchQuery({
     queryKey: ["categories", type],
@@ -27,7 +25,7 @@ const Page = async ({ params }: PageProps) => {
   return (
     <section className={css.section}>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        {slug[0] === "expenses" ? <ExpensePage type={type} /> : <IncomePage />}
+        {type === "expenses" ? <ExpensePage type={type} /> : <IncomePage />}
       </HydrationBoundary>
     </section>
   );
