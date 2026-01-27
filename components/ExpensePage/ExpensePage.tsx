@@ -103,14 +103,14 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
               <div className={css.actions}>
                 <button className={css.editBtn} onClick={handleOpenMadal}>
                   <Icon id="icon-Pensil" className={css.iconEdit} />
-                  Edit
+                  <span className={css.hideBtn}>Edit</span>
                 </button>
                 <button
                   className={css.deleteBtn}
                   onClick={() => onDeleteTransaction(item._id)}
                 >
                   <Icon id="icon-trash" className={css.iconDelete} />
-                  Delete
+                  <span className={css.hideBtn}>Delete</span>
                 </button>
               </div>
             </li>
