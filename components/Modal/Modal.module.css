@@ -16,7 +16,7 @@
   border-radius: 30px;
   max-width: 500px;
 
-  width: 100%;
+  width: 335px;
   position: relative;
   box-sizing: border-box;
   border: 1px solid rgba(250, 250, 250, 0.1);
@@ -47,12 +47,12 @@
 .titleCategoriesModal {
   font-family: "Inter", sans-serif;
   font-weight: 400;
-  font-size: 28px;
+  font-size: 24px;
   letter-spacing: -0.02em;
   color: #fafafa;
   margin-bottom: 18px;
   margin-top: 40px;
-  padding: 0 40px;
+  padding: 0 20px;
 }
 
 .allCategoryTxt {
@@ -61,14 +61,14 @@
   font-size: 12px;
   color: rgba(250, 250, 250, 0.4);
   margin-bottom: 4px;
-  padding: 0 40px;
+  padding: 0 20px;
 }
 
 .loadingText {
   font-family: "Inter", sans-serif;
   font-size: 16px;
   color: rgba(250, 250, 250, 0.6);
-  padding: 20px 40px;
+  padding: 20px 20px;
   text-align: center;
   list-style: none;
 }
@@ -100,10 +100,10 @@
 
 .itemCategory {
   margin-right: -10px;
-  padding: 12px 22px 12px 40px;
+  padding: 12px 22px 12px 20px;
   font-family: "Inter", sans-serif;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   color: #fafafa;
   display: flex;
   flex-direction: row;
@@ -111,6 +111,10 @@
   width: 100%;
   box-sizing: border-box;
   transition: background-color 250ms linear;
+}
+
+.itemCategory:hover {
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .chosenCategoryBg {
@@ -135,15 +139,13 @@
 }
 
 .footerModal {
-  /* margin-top: 40px; */
-  /* margin-bottom: 40px; */
-  padding: 0 40px;
+  padding: 0 20px;
 }
 
 .newCategoryTxt {
   font-family: "Inter", sans-serif;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: -0.02em;
   color: #0ef387;
   margin-bottom: 8px;
@@ -167,7 +169,7 @@
   flex: 1;
   font-family: "Inter", sans-serif;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: -0.02em;
   color: #fafafa;
   border: none;
@@ -186,7 +188,7 @@
   background: #0ef387;
   font-family: "Inter", sans-serif;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: -0.02em;
   color: #0c0d0d;
   cursor: pointer;
@@ -212,4 +214,265 @@
   font-size: 12px;
   margin-top: 4px;
   margin-left: 18px;
+}
+@media (min-width: 768px) {
+  .modal {
+    width: 500px;
+  }
+
+  .titleCategoriesModal {
+    font-size: 28px;
+  }
+
+  .itemCategory {
+    font-size: 16px;
+  }
+
+  .newCategoryTxt {
+    font-size: 16px;
+  }
+
+  .inputCategoriesModal {
+    font-size: 16px;
+  }
+
+  .btnCategoriesModal {
+    font-size: 16px;
+  }
+
+  .titleCategoriesModal {
+    padding: 0 40px;
+  }
+
+  .allCategoryTxt {
+    padding: 0 40px;
+  }
+
+  .loadingText {
+    padding: 20px 40px;
+  }
+
+  .itemCategory {
+    padding: 12px 22px 12px 40px;
+  }
+
+  .footerModal {
+    padding: 0px 40px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(12, 13, 13, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal {
+    background-color: #171719;
+    border-radius: 30px;
+    max-width: 500px;
+
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid rgba(250, 250, 250, 0.1);
+  }
+
+  .closeBtnCategoriesModal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 250ms linear;
+  }
+
+  .closeBtnCategoriesModal:hover {
+    opacity: 0.7;
+  }
+
+  .closeBtnCategoriesModal svg {
+    stroke: #fafafa;
+  }
+
+  .titleCategoriesModal {
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    color: #fafafa;
+    margin-bottom: 18px;
+    margin-top: 40px;
+    padding: 0 40px;
+  }
+
+  .allCategoryTxt {
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: rgba(250, 250, 250, 0.4);
+    margin-bottom: 4px;
+    padding: 0 40px;
+  }
+
+  .loadingText {
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    color: rgba(250, 250, 250, 0.6);
+    padding: 20px 40px;
+    text-align: center;
+    list-style: none;
+  }
+
+  .listCategoriesModal {
+    list-style: none;
+    margin-right: 10px;
+    min-height: 150px;
+    max-height: 230px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .listCategoriesModal::-webkit-scrollbar {
+    width: 8px;
+    transition: background-color 250ms linear;
+  }
+
+  .listCategoriesModal::-webkit-scrollbar-thumb {
+    background: #444446;
+    border-radius: 12px;
+  }
+
+  .listCategoriesModal::-webkit-scrollbar-thumb:hover {
+    background: #555557;
+  }
+
+  .itemCategory {
+    margin-right: -10px;
+    padding: 12px 22px 12px 40px;
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: #fafafa;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    transition: background-color 250ms linear;
+  }
+
+  .chosenCategoryBg {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .actionBtns {
+    display: flex;
+    gap: 14px;
+  }
+
+  .actionBtns button svg {
+    stroke: #0ef387;
+  }
+
+  .actionBtns button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+  }
+
+  .footerModal {
+    padding: 0 40px;
+  }
+
+  .newCategoryTxt {
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    color: #0ef387;
+    margin-bottom: 8px;
+    margin-top: 30px;
+  }
+
+  .inputWrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(250, 250, 250, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    background: transparent;
+    height: 48px;
+    width: 100%;
+    transition: border-color 250ms linear;
+    margin-bottom: 40px;
+  }
+
+  .inputCategoriesModal {
+    flex: 1;
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    color: #fafafa;
+    border: none;
+    padding: 12px 18px;
+    background: transparent;
+    outline: none;
+    height: 100%;
+    min-width: 0;
+  }
+
+  .btnCategoriesModal {
+    flex-shrink: 0;
+    border-radius: 12px;
+    width: 119px;
+    height: 100%;
+    background: #0ef387;
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    color: #0c0d0d;
+    cursor: pointer;
+    border: none;
+    transition: background-color 250ms linear;
+  }
+
+  .btnCategoriesModal:hover {
+    background: #0ebb69;
+  }
+
+  .inputWrapper:focus-within,
+  .inputWrapper:hover {
+    border-color: #0ef387;
+  }
+
+  .inputError {
+    border-color: #e74a3b !important;
+  }
+
+  .errorLabel {
+    color: #e74a3b;
+    font-size: 12px;
+    margin-top: 4px;
+    margin-left: 18px;
+  }
 }

@@ -1,10 +1,11 @@
+import { TransactionType } from "@/types/transactions";
 import { create } from "zustand";
 
 interface TransactionState {
-  transactionType: "expenses" | "incomes";
-  setTransactionType: (type: "expenses" | "incomes") => void;
+  transactionType: TransactionType;
   selectedCategory: { id: string; name: string } | null;
-  setCategory: (id: string, name: string) => void;
+  setTransactionType: (type: TransactionType) => void;
+  setCategory: (id: string, name: string, type?: TransactionType) => void;
   resetCategory: () => void;
 }
 
@@ -13,6 +14,10 @@ export const useTransactionStore = create<TransactionState>((set) => ({
   selectedCategory: null,
 
   setTransactionType: (type) => set({ transactionType: type }),
-  setCategory: (id, name) => set({ selectedCategory: { id, name } }),
+  setCategory: (id, name, type) =>
+    set((state) => ({
+      selectedCategory: { id, name },
+      transactionType: type ? type : state.transactionType,
+    })),
   resetCategory: () => set({ selectedCategory: null }),
 }));

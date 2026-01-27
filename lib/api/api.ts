@@ -1,16 +1,8 @@
-// import axios from "axios";
-
-// export const api = axios.create({
-//   baseURL: "/api",
-//   withCredentials: true,
-// });
-
-// console.log("API URL:", process.env.NEXT_PUBLIC_API_URL_BACKEND);
 import axios from "axios";
 import { useAuthStore } from "@/lib/store/authStore";
 
 export const api = axios.create({
-  baseURL: "/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL_FRONTEND + "/api",
   withCredentials: true,
 });
 
@@ -29,5 +21,3 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-console.log("API URL:", process.env.NEXT_PUBLIC_API_URL_BACKEND);

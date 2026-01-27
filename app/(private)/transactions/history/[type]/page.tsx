@@ -25,7 +25,11 @@ const Page = async ({ params }: PageProps) => {
   return (
     <section className={css.section}>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        {type === "expenses" ? <ExpensePage type={type} /> : <IncomePage />}
+        {type === "expenses" ? (
+          <ExpensePage type={type} />
+        ) : (
+          <IncomePage type={type} />
+        )}
       </HydrationBoundary>
     </section>
   );

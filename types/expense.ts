@@ -20,10 +20,6 @@ export interface ListResponse<T> {
   total: number;
 }
 
-export interface SessionResponse {
-  success: boolean;
-}
-
 export interface CategoryStat {
   _id: string;
   totalAmount: number;

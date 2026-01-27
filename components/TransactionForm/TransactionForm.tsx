@@ -19,31 +19,27 @@ import { useTransactionStore } from "@/lib/store/useTransactionStore";
 import { useRouter } from "next/navigation";
 import { DatePicker } from "../DatePicker/DatePicker";
 import { CustomTimePicker } from "../TimePicker/TimePicker";
-import { TransactionData } from "@/types/transactions";
+import {
+  CategoryData,
+  TransactionData,
+  TransactionFormValues,
+  TransactionType,
+} from "@/types/transactions";
 import { useAuthStore } from "@/lib/store/authStore";
 import { Icon } from "../Icon/Icon";
 import * as api from "@/lib/api/clientApi";
 import dayjs from "dayjs";
 
-interface FormValues {
-  type: "incomes" | "expenses";
-  date: string;
-  time: string;
-  category: string;
-  sum: number;
-  comment: string;
-}
-
 interface TransactionFormProps {
-  onOpenCategories?: (type: "incomes" | "expenses") => void;
-  selectedCategoryName?: string;
+  onOpenCategories?: (type: TransactionType) => void;
+  selectedCategoryName?: CategoryData;
   currentTransaction?: TransactionData | null;
   isEditing?: boolean;
   onClose?: () => void;
 }
 
 const FormikSync = () => {
-  const { setFieldValue } = useFormikContext<FormValues>();
+  const { setFieldValue } = useFormikContext<TransactionFormValues>();
   const selectedCategory = useTransactionStore(
     (state) => state.selectedCategory
   );
@@ -77,100 +73,118 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   currentTransaction,
   isEditing = false,
   onClose,
+  selectedCategoryName,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const user = useAuthStore((state) => state.user);
-  const currentCurrency = user?.currency || "UAH";
-
+  const setTransactionType = useTransactionStore(
+    (state) => state.setTransactionType
+  );
+  const setCategory = useTransactionStore((state) => state.setCategory);
+  const resetCategory = useTransactionStore((state) => state.resetCategory);
+  const transactionType = useTransactionStore((state) => state.transactionType);
   const selectedCategory = useTransactionStore(
     (state) => state.selectedCategory
   );
-  const resetCategory = useTransactionStore((state) => state.resetCategory);
-  const setCategory = useTransactionStore((state) => state.setCategory);
 
-  // useEffect(() => {
-  //   if (isEditing && currentTransaction?.category) {
-  //     setCategory(
-  //       currentTransaction.category._id,
-  //       currentTransaction.category.categoryName
-  //     );
-  //     useTransactionStore
-  //       .getState()
-  //       .setTransactionType(currentTransaction.type);
-  //   }
-  //   return () => {
-  //     resetCategory();
-  //   };
-  // }, [isEditing, currentTransaction, setCategory, resetCategory]);
+  const user = useAuthStore((state) => state.user);
+  const currentCurrency = user?.currency || "UAH";
 
-  const initialValues: FormValues = {
-    type: "expenses",
-    date: "",
-    time: "",
-    category: "",
-    sum: 0,
-    comment: "",
+  useEffect(() => {
+    if (isEditing && currentTransaction) {
+      const { category, type } = currentTransaction.transaction;
+
+      setTransactionType(type as TransactionType);
+      if (!useTransactionStore.getState().selectedCategory) {
+        setCategory(category, selectedCategoryName?.categoryName || "");
+      }
+    }
+  }, [
+    isEditing,
+    currentTransaction,
+    setCategory,
+    setTransactionType,
+    selectedCategoryName?.categoryName,
+  ]);
+
+  const initialValues: TransactionFormValues = {
+    type: transactionType || "expenses",
+    date:
+      isEditing && currentTransaction
+        ? dayjs(currentTransaction.transaction.date).format("YYYY-MM-DD")
+        : new Date().toISOString().split("T")[0],
+    time:
+      isEditing && currentTransaction
+        ? currentTransaction.transaction.time
+        : new Date().toTimeString().slice(0, 8),
+    category:
+      selectedCategory?.id ||
+      (isEditing ? currentTransaction?.transaction.category : "") ||
+      "",
+    sum:
+      isEditing && currentTransaction ? currentTransaction.transaction.sum : "",
+    comment:
+      isEditing && currentTransaction
+        ? currentTransaction.transaction.comment
+        : "",
   };
 
   const handleSubmit = async (
-    values: FormValues,
-    { resetForm }: FormikHelpers<FormValues>
+    values: TransactionFormValues,
+    { resetForm }: FormikHelpers<TransactionFormValues>
   ) => {
+    setIsLoading(true);
+
     const formattedDate = values ? dayjs(values.date).format("YYYY-MM-DD") : "";
     const formattedTime = values.time.slice(0, 5);
-    // const payload = values.time.slice(0, 5);
-
-    // console.log(payload);
-    console.log(formattedDate);
-    setIsLoading(true);
+    const formattedSum = values.sum === "" ? 0 : Number(values.sum);
 
     const responseData = {
       ...values,
       date: formattedDate,
       time: formattedTime,
+      sum: formattedSum,
     };
 
-    await api.createTransaction(responseData);
-    // try {
-    // if (isEditing && currentTransaction?._id) {
-    //   await api.updateTransaction(
-    //     values.type,
-    //     currentTransaction._id,
-    //     values
-    //   );
-    //   toast.success("Transaction updated successfully!");
-    // } else {
+    try {
+      if (isEditing && currentTransaction?.transaction._id) {
+        await api.updateTransaction(
+          values.type,
+          currentTransaction.transaction._id,
+          responseData
+        );
+        toast.success("Transaction updated successfully!");
+      } else {
+        await api.createTransaction(responseData);
+        toast.success("Transaction added successfully!");
 
-    toast.success("Transaction added successfully!");
+        resetForm();
+        resetCategory();
+      }
 
-    resetForm();
-    resetCategory();
+      router.refresh();
+
+      const targetPath =
+        values.type === "expenses"
+          ? "transactions/history/expense"
+          : "transactions/history/income";
+      router.push(targetPath);
+
+      if (onClose) onClose();
+    } catch (error: unknown) {
+      let errorMsg = "Request failed";
+      if (axios.isAxiosError(error)) {
+        errorMsg = error.response?.data?.message || "Server error";
+      }
+      toast.error(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // router.refresh();
-
-  // const targetPath =
-  //   values.type === "expenses"
-  //     ? "transaction/history/expense"
-  //     : "transaction/history/incomes";
-  // router.push(targetPath);
-
-  // if (onClose) onClose();
-  // } catch (error: unknown) {
-  //   let errorMsg = "Request failed";
-  //   if (axios.isAxiosError(error)) {
-  //     errorMsg = error.response?.data?.message || "Server error";
-  //   }
-  //   toast.error(errorMsg);
-  // } finally {
-  //   setIsLoading(false);
-  // }
-  // };
-
-  // const buttonText = isEditing ? "Save" : "Add";
-  // const loadingText = isEditing ? "Saving..." : "Sending...";
+  const buttonText = isEditing ? "Save" : "Add";
+  const loadingText = isEditing ? "Saving..." : "Sending...";
 
   return (
     <div className={css.formContainer}>
@@ -208,6 +222,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   className={css.radioInput}
                   onChange={() => {
                     setFieldValue("type", "expenses");
+                    setTransactionType("expenses");
                     setFieldValue("category", "");
                     resetCategory();
                   }}
@@ -221,6 +236,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   value="incomes"
                   onChange={() => {
                     setFieldValue("type", "incomes");
+                    setTransactionType("incomes");
                     setFieldValue("category", "");
                     resetCategory();
                   }}
@@ -273,7 +289,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 className={`${css.input} ${
                   touched.category && errors.category ? css.inputError : ""
                 }`}
-                value={selectedCategory?.name || ""}
+                value={
+                  selectedCategory?.name ||
+                  selectedCategoryName?.categoryName ||
+                  ""
+                }
                 onClick={() => {
                   useTransactionStore
                     .getState()
@@ -295,7 +315,10 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
               </label>
               <div className={css.sumWrapper}>
                 <Field name="sum">
-                  {({ field, meta }: FieldProps<FormValues["sum"]>) => (
+                  {({
+                    field,
+                    meta,
+                  }: FieldProps<TransactionFormValues["sum"]>) => (
                     <input
                       {...field}
                       id="sum-input"
@@ -345,7 +368,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
               className={css.submitBtn}
               disabled={isLoading}
             >
-              {/* {isLoading ? loadingText : buttonText} */}
+              {isLoading ? loadingText : buttonText}
             </button>
           </Form>
         )}

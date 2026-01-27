@@ -15,7 +15,7 @@ export interface TransactionFormValues {
   date: string;
   time: string;
   category: string;
-  sum: number;
+  sum: number | string;
   comment?: string;
   type: TransactionType;
 }
