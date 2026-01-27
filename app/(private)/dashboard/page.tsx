@@ -24,8 +24,6 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardPage() {
-  const handleOpenCategories = (type: "incomes" | "expenses") => {};
-
   return (
     <main className={css.container}>
       <div className={css.mainLayout}>
@@ -46,10 +44,7 @@ export default function DashboardPage() {
         </section>
 
         <aside className={css.formSection}>
-          <TransactionForm
-          // onOpenCategories={handleOpenCategories}
-          // selectedCategoryName="Category"
-          />
+          <TransactionForm />
         </aside>
       </div>
     </main>
