@@ -32,20 +32,3 @@ export interface TransactionData {
   };
   total: number;
 }
-
-export interface TransactionTypeData {
-  _id: string;
-  type: string;
-  date: string;
-  time: string;
-  category: {
-    _id: string;
-    categoryName: string;
-  };
-  sum: number;
-  comment: string;
-}
-
-export interface TransactionDelete {
-  total: number;
-}
