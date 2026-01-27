@@ -30,6 +30,9 @@
 }
 
 .button {
+  display: flex;
+  align-items: center;
+  justify-content: start;
   width: 100%;
   background-color: transparent;
   border: none;
@@ -48,9 +51,18 @@
 .icon {
   width: 16px;
   height: 16px;
+  margin-right: 12px;
   stroke: rgba(250, 250, 250, 0.5);
+  transition: stroke 250ms linear;
 }
 
-.icon:hover {
+.icon path,
+.icon use {
+  stroke: rgba(250, 250, 250, 0.5);
+  transition: stroke 250ms linear;
+}
+
+.button:hover .icon path,
+.button:hover .icon use {
   stroke: #0ef387;
 }

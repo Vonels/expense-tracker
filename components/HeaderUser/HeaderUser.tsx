@@ -21,8 +21,10 @@ const HeaderUser = () => {
 
         {/* DESKTOP навігація */}
 
-        <div className={css.desktopNav}>
+        <div className={css.historyNav}>
           <TransactionsHistoryNav variant="header" />
+          </div>
+        <div className={css.userMenu}>
           <UserMenu />
         </div>
 

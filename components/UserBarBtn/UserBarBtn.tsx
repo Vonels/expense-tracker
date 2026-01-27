@@ -3,28 +3,33 @@
 import css from "./UserBarBtn.module.css";
 import Image from "next/image";
 import { Icon } from "../Icon/Icon";
-import { useAuthStore } from "@/lib/store/authStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { UserNew } from "@/types/user";
+import { getMe } from "@/lib/api/clientApi";
+
 type Props = {
   isOpen: boolean;
   onToggle: () => void;
 };
 const UserBarBtn = ({ isOpen, onToggle }: Props) => {
-  const { user, refreshUser, _hasHydrated } = useAuthStore();
+  const [user, setUser] = useState<UserNew | null>(null)
 
-  console.log(user);
-  if (!user) return null;
   useEffect(() => {
-    if (_hasHydrated && !user) {
-      refreshUser();
-    }
-  }, [_hasHydrated, user, refreshUser]);
+    const fetchUser = async () => {
+      try {
+        const data = await getMe();
+        setUser(data);
+      } catch (error) {
+        console.error("Failed to fetch user", error);
+      }
+    };
 
-  if (!_hasHydrated) return <div className={css.loaderPlaceholder} />;
-
+    fetchUser();
+  }, []);
+  
   if (!user) return null;
   const { name, avatarUrl } = user;
-  const firstLetter = name.charAt(0).toUpperCase();
+  const firstLetter = name?.charAt(0).toUpperCase();
 
   return (
     <button type="button" className={css.UserBarBtn} onClick={onToggle}>
@@ -32,7 +37,7 @@ const UserBarBtn = ({ isOpen, onToggle }: Props) => {
       {avatarUrl ? (
         <Image
           src={avatarUrl}
-          alt={name}
+          alt={name ?? 'user avatar'}
           className={css.avatar}
           width={44}
           height={44}
