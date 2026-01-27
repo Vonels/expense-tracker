@@ -1,5 +1,5 @@
 import { api } from "./api";
-import type { User } from "@/types/user";
+import type { User, UserNew } from "@/types/user";
 import type { AuthCredentials, LoginCredentials } from "@/types/auth";
 import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
@@ -66,8 +66,8 @@ export const checkSession = async () => {
   return res.json();
 };
 
-export const getMe = async (): Promise<User> => {
-  const res = await api.get<User>("/users/me");
+export const getMe = async (): Promise<UserNew> => {
+  const res = await api.get<UserNew>("/users/current");
   return res.data;
 };
 
