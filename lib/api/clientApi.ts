@@ -4,13 +4,19 @@ import type { AuthCredentials, LoginCredentials } from "@/types/auth";
 import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
 import type { ListResponse } from "@/types/expense";
+import type { ListResponse } from "@/types/expense";
 import {
   ICategory,
   CategoriesResponse,
   CreateCategoryDto,
 } from "@/app/@modal/(.)categoriesModal/page";
 import { useAuthStore } from "@/lib/store/authStore";
-import { TransactionData, TransactionsResponse } from "@/types/transactions";
+import {
+  TransactionData,
+  TransactionFormValues,
+  TransactionsResponse,
+  TransactionType,
+} from "@/types/transactions";
 
 // лоадер
 
@@ -71,25 +77,11 @@ export const fetchExpenses = async (
   return res.data;
 };
 
-export const createExpense = async (
-  values: Omit<Expense, "id" | "createdAt" | "updatedAt">
-): Promise<Expense> => {
-  const res = await api.post<Expense>("/expenses", values);
-  return res.data;
-};
-
 // Доходи
 export const fetchIncomes = async (
   params?: IncomesQuery
 ): Promise<ListResponse<Income>> => {
   const res = await api.get<ListResponse<Income>>("/incomes", { params });
-  return res.data;
-};
-
-export const createIncome = async (
-  values: Omit<Income, "id" | "createdAt" | "updatedAt">
-): Promise<Income> => {
-  const res = await api.post<Income>("/incomes", values);
   return res.data;
 };
 
@@ -138,4 +130,31 @@ export const getTransactionCategories = async ({
   });
 
   return data;
+};
+// Форма
+export const createTransaction = async (
+  values: TransactionFormValues
+): Promise<TransactionData> => {
+  const { data } = await api.post<TransactionData>(`/transactions`, values);
+
+  return data;
+};
+
+export const updateTransaction = async (
+  type: TransactionType,
+  id: string,
+  values: TransactionFormValues
+): Promise<Expense | Income> => {
+  const path = type === "expenses" ? "expenses" : "incomes";
+
+  const payload = {
+    date: values.date,
+    time: values.time,
+    sum: Number(values.sum),
+    comment: values.comment,
+    [type === "expenses" ? "category" : "source"]: values.category,
+  };
+
+  const res = await api.patch<Expense | Income>(`/${path}/${id}`, payload);
+  return res.data;
 };
