@@ -12,13 +12,13 @@ interface UserResponse {
 }
 export const userService = {
   updateProfile: async (values: UpdateProfileData): Promise<UserResponse> => {
-    const { data } = await api.patch<UserResponse>("user/info", values);
+    const { data } = await api.patch<UserResponse>("users/info", values);
     return data;
   },
 
   updateAvatar: async (formData: FormData): Promise<{ avatarUrl: string }> => {
     const { data } = await api.patch<{ avatarUrl: string }>(
-      "user/avatar",
+      "users/avatar",
       formData,
       {
         headers: {
@@ -30,6 +30,6 @@ export const userService = {
   },
 
   deleteAvatar: async (): Promise<void> => {
-    await api.delete("user/avatar");
+    await api.delete("users/avatar");
   },
 };

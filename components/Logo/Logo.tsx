@@ -5,9 +5,13 @@ import css from "./Logo.module.css";
 import { Icon } from "../Icon/Icon";
 
 const Logo = () => {
-  const { isLoggedIn } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const token = useAuthStore((state) => state.token);
+
+  const isLoggedIn = Boolean(user && token);
+  
   const navigateTo = isLoggedIn
-    ? "/transactions" // MainTransactionsPage
+    ? "/dashboard" // MainTransactionsPage
     : "/"; // WelcomePage
   return (
     <Link href={navigateTo} aria-label="Home" className={css.link}>

@@ -1,125 +1,204 @@
-.incomePage {
-  max-width: 1440px;
-  max-height: 800px;
-  background: #0c0d0d;
+.titleWrapper {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
   align-items: center;
-  padding-top: 59px;
+  justify-content: space-between;
+  margin-bottom: 40px;
 }
-.title {
-  margin-right: 94px;
-  align-items: center;
-}
-.titleText {
-  font-family: "Inter", sans-serif;
+
+.titleExpense {
+  margin-bottom: 13px;
   font-weight: 400;
   font-size: 38px;
   letter-spacing: -0.02em;
   color: #fafafa;
-  margin-bottom: 13px;
 }
-.titleParagraf {
-  font-family: "Inter", sans-serif;
+
+.textExpense {
   font-weight: 400;
   font-size: 16px;
   letter-spacing: -0.02em;
   color: rgba(250, 250, 250, 0.4);
   max-width: 516px;
 }
-.total {
-  max-width: 630px;
+
+.totals {
+  display: flex;
+  gap: 24px;
+}
+
+.filterWrapper {
+  background-color: #171719;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  padding-top: 20px;
+  padding-bottom: 22px;
+  padding-left: 40px;
+  padding-right: 40px;
+  display: flex;
+}
+
+.filterInputWrapper {
+  position: relative;
+}
+
+.filterInput {
+  max-width: 261px;
+  margin-right: 13px;
+  outline: none;
+  padding: 14px 50px 14px 30px;
+  border: 1px solid #0c0d0d;
+  border-radius: 30px;
+  background-color: #0c0d0d;
+  transition: border 250ms linear;
+  color: #fafafa;
+  font-size: 16px;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  caret-color: #0ef387;
+
+  &::placeholder {
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    color: rgba(250, 250, 250, 0.4);
+  }
+
+  &:focus {
+    border: 1px solid #0ef387;
+  }
+
+  &:hover {
+    border: 1px solid #0ef387;
+  }
+}
+
+.iconSearch {
+  position: absolute;
+  top: 50%;
+  right: 30px;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  fill: #0c0d0d;
+  stroke: #0ef387;
+  cursor: text;
+}
+
+.list {
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  overflow: hidden;
+}
+
+.header {
+  display: grid;
+  grid-template-columns:
+    1fr
+    /* Category */
+    1.3fr
+    /* Comment */
+    1.3fr
+    /* Date */
+    0.8fr
+    /* Time */
+    1fr
+    /* Sum */
+    2fr;
+  /* Actions */
+  background: linear-gradient(180deg, #111, #0b0b0b);
+  padding: 20px 40px;
+  font-weight: 400;
+  font-size: 16px;
+  color: rgba(250, 250, 250, 0.4);
+}
+
+.row {
+  display: grid;
+  grid-template-columns:
+    1fr
+    /* Category */
+    1.3fr
+    /* Comment */
+    1.3fr
+    /* Date */
+    0.8fr
+    /* Time */
+    1fr
+    /* Sum */
+    2fr;
+  /* Actions */
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #171719;
+  font-weight: 400;
+  font-size: 20px;
+  color: #fafafa;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.editBtn {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
+  background: #0ef387;
+  border-radius: 40px;
+  border: 1px solid #0ef387;
+  padding: 13px 32px;
+  line-height: 0;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  color: #0c0d0d;
+  transition:
+    background 250ms linear,
+    border 250ms linear;
+
+  &:hover {
+    background: #0ebb69;
+    border: 1px solid #0ebb69;
+  }
+
+  &:focus {
+    background: #0ebb69;
+    border: 1px solid #0ebb69;
+  }
 }
 
-.incomeForm {
-  border-radius: 30px;
-  min-width: 1240px;
-  max-height: 439px;
-  background: #171719;
-  padding-top: 20px;
-  margin-top: 40px;
-  margin-bottom: 50px;
-}
-.icon {
-  width: 20px;
-  height: 20px;
-  fill: #0ef387;
-}
-.incomeFormInputSearch {
-  border-radius: 30px;
-  padding: 15px 30px;
-  margin-right: 13px;
-  background-color: #0c0d0d;
-}
-.incomeFormInputData {
-  border: 1px solid rgba(250, 250, 250, 0.2);
-  border-radius: 30px;
-  padding: 15px 30px;
-  background-color: #0c0d0d;
+.iconEdit {
+  width: 16px;
+  height: 16px;
+  fill: transparent;
+  stroke: #0c0d0d;
 }
 
-.incomeFormList {
+.deleteBtn {
   display: flex;
-  flex-direction: row;
-  padding-top: 20px;
-  padding-right: 66px;
-  padding-bottom: 20px;
-  padding-left: 40px;
-}
-.incomeFormListItemCategory {
-  padding-right: 86px;
-}
-.incomeFormListItemComment {
-  padding-right: 120px;
-}
-.incomeFormListItemDate {
-  padding-right: 162px;
-}
-.incomeFormListItemTime {
-  padding-right: 98px;
-}
-.incomeFormListItemSum {
-  padding-right: 154px;
-}
-.incomeFormListItemText {
-  padding-top: 52px;
-}
-.incomeFormBtn {
-  display: flex;
-  gap: 8px;
-  padding-top: 52px;
-}
-.incomeFormBtnEdit {
-  border-radius: 40px;
-  padding: 14px 32px;
-  background: #0ef387;
-}
-.incomeFormBtnDelete {
-  border-radius: 40px;
-  padding: 14px 30px;
-}
-.totalSvg {
-  border-radius: 13px;
-  width: 43px;
-  height: 43px;
-  background: #0ef387;
-  fill: #0c0d0d;
   align-items: center;
-  justify-content: space-between;
-  background-size: 43px;
-}
-.incomeFormSvg {
-  fill: #0ef387;
+  justify-content: center;
+  gap: 10px;
+  background: #0c0d0d;
+  line-height: 0;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  color: #fafafa;
+  border-radius: 40px;
+  border: 1px solid #0c0d0d;
+  padding: 13px 30px;
+  transition: border 250ms linear;
+
+  &:hover {
+    border: 1px solid #0ef387;
+  }
+
+  &:focus {
+    border: 1px solid #0ef387;
+  }
 }
 
-.loadingText,
-.noDataText {
-  color: #fafafa;
-  padding: 20px 40px;
-  font-family: "Inter", sans-serif;
-  opacity: 0.6;
+.iconDelete {
+  width: 16px;
+  height: 16px;
 }

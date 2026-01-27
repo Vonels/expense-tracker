@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
-import Header from "@/components/Header/Header";
+import Header from "@/components/HeaderUser/HeaderUser";
 import "@mantine/dates/styles.css";
 import "@mantine/core/styles.css";
 import "./globals.css";
@@ -11,6 +11,7 @@ import { ToastProvider } from "@/components/ToastProvider/ToastProvider";
 
 import AuthProvider from "@/components/AuthProvider/AuthProvider";
 import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
+import { Loader } from "@/components/Loader/Loader";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
@@ -38,6 +39,7 @@ export default function RootLayout({
         <TanStackProvider>
           <AuthProvider>
             <MantineProvider defaultColorScheme="dark">
+              <Loader />
               <Header />
 
               <main>{children}</main>
