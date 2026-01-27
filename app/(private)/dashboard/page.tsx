@@ -34,7 +34,7 @@ export default async function DashboardPage() {
 
   await queryClient.prefetchQuery({
     queryKey: ["user", "current"],
-    queryFn: getMe,
+    queryFn: () => getMe(),
   });
 
   return (

@@ -23,7 +23,11 @@ export const checkSession = async (externalCookie?: string) => {
 };
 
 export const getMe = async (): Promise<UserNew> => {
-  const res = await api.get<UserNew>("/users/current", getAuthHeaders());
+  const cookieString = (await cookies()).toString();
+
+  const res = await api.get<UserNew>("/users/current", {
+    headers: { Cookie: cookieString },
+  });
   return res.data;
 };
 
