@@ -23,13 +23,14 @@ import { TransactionData } from "@/types/transactions";
 import { useAuthStore } from "@/lib/store/authStore";
 import { Icon } from "../Icon/Icon";
 import * as api from "@/lib/api/clientApi";
+import dayjs from "dayjs";
 
 interface FormValues {
   type: "incomes" | "expenses";
   date: string;
   time: string;
   category: string;
-  sum: number | "";
+  sum: number;
   comment: string;
 }
 
@@ -89,82 +90,87 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   const resetCategory = useTransactionStore((state) => state.resetCategory);
   const setCategory = useTransactionStore((state) => state.setCategory);
 
-  useEffect(() => {
-    if (isEditing && currentTransaction?.category) {
-      setCategory(
-        currentTransaction.category._id,
-        currentTransaction.category.categoryName
-      );
-      useTransactionStore
-        .getState()
-        .setTransactionType(currentTransaction.type);
-    }
-    return () => {
-      resetCategory();
-    };
-  }, [isEditing, currentTransaction, setCategory, resetCategory]);
+  // useEffect(() => {
+  //   if (isEditing && currentTransaction?.category) {
+  //     setCategory(
+  //       currentTransaction.category._id,
+  //       currentTransaction.category.categoryName
+  //     );
+  //     useTransactionStore
+  //       .getState()
+  //       .setTransactionType(currentTransaction.type);
+  //   }
+  //   return () => {
+  //     resetCategory();
+  //   };
+  // }, [isEditing, currentTransaction, setCategory, resetCategory]);
 
   const initialValues: FormValues = {
-    type: currentTransaction?.type || "expenses",
-    date: currentTransaction?.date || new Date().toISOString().split("T")[0],
-    time: currentTransaction?.time || new Date().toTimeString().slice(0, 5),
-    category: currentTransaction?.category._id || "",
-    sum: currentTransaction?.sum || "",
-    comment: currentTransaction?.comment || "",
+    type: "expenses",
+    date: "",
+    time: "",
+    category: "",
+    sum: 0,
+    comment: "",
   };
 
   const handleSubmit = async (
     values: FormValues,
     { resetForm }: FormikHelpers<FormValues>
   ) => {
+    const formattedDate = values ? dayjs(values.date).format("YYYY-MM-DD") : "";
+    const formattedTime = values.time.slice(0, 5);
+    // const payload = values.time.slice(0, 5);
+
+    // console.log(payload);
+    console.log(formattedDate);
     setIsLoading(true);
-    try {
-      const commonData = {
-        date: values.date,
-        time: values.time,
-        amount: Number(values.sum),
-        comment: values.comment,
-      };
 
-      if (isEditing && currentTransaction?._id) {
-        const path = values.type === "expenses" ? "expenses" : "incomes";
-        await axios.patch(`/${path}/${currentTransaction._id}`, {
-          ...commonData,
-          [values.type === "expenses" ? "category" : "source"]: values.category,
-        });
-        toast.success("Transaction updated!");
-      } else {
-        if (values.type === "expenses") {
-          await api.createExpense({
-            ...commonData,
-            category: values.category,
-          });
-        } else {
-          await api.createIncome({
-            ...commonData,
-            source: values.category,
-          });
-        }
-        toast.success("Transaction added successfully!");
-        resetForm();
-        resetCategory();
-      }
+    const responseData = {
+      ...values,
+      date: formattedDate,
+      time: formattedTime,
+    };
 
-      router.refresh();
-      if (onClose) onClose();
-    } catch (error: unknown) {
-      let errorMsg = "Request failed";
-      if (axios.isAxiosError(error)) {
-        errorMsg = error.response?.data?.message || "Server error";
-      }
-      toast.error(errorMsg);
-    } finally {
-      setIsLoading(false);
-    }
+    await api.createTransaction(responseData);
+    // try {
+    // if (isEditing && currentTransaction?._id) {
+    //   await api.updateTransaction(
+    //     values.type,
+    //     currentTransaction._id,
+    //     values
+    //   );
+    //   toast.success("Transaction updated successfully!");
+    // } else {
+
+    toast.success("Transaction added successfully!");
+
+    resetForm();
+    resetCategory();
   };
 
-  const buttonText = isEditing ? "Save" : "Add";
-  const loadingText = isEditing ? "Saving..." : "Sending...";
+  // router.refresh();
+
+  // const targetPath =
+  //   values.type === "expenses"
+  //     ? "transaction/history/expense"
+  //     : "transaction/history/incomes";
+  // router.push(targetPath);
+
+  // if (onClose) onClose();
+  // } catch (error: unknown) {
+  //   let errorMsg = "Request failed";
+  //   if (axios.isAxiosError(error)) {
+  //     errorMsg = error.response?.data?.message || "Server error";
+  //   }
+  //   toast.error(errorMsg);
+  // } finally {
+  //   setIsLoading(false);
+  // }
+  // };
+
+  // const buttonText = isEditing ? "Save" : "Add";
+  // const loadingText = isEditing ? "Saving..." : "Sending...";
 
   return (
     <div className={css.formContainer}>
@@ -339,7 +345,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
               className={css.submitBtn}
               disabled={isLoading}
             >
-              {isLoading ? loadingText : buttonText}
+              {/* {isLoading ? loadingText : buttonText} */}
             </button>
           </Form>
         )}
@@ -349,11 +355,3 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 };
 
 export default TransactionForm;
-
-{
-  /* <TransactionForm
-  isEditing={true}
-  currentTransaction={selectedTransaction}
-  onClose={() => setModalIsOpen(false)}
-/>; */
-}

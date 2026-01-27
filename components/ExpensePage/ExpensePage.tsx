@@ -1,10 +1,24 @@
+"use client";
+
 import css from "./ExpensePage.module.css";
 import { TotalExpense } from "../TotalExpense/TotalExpense";
 import { TotalIncome } from "../TotalIncome/TotalIncome";
 import { Icon } from "../Icon/Icon";
 import Calendar from "../Calendar/Calendar";
+import { getTransactionCategories } from "@/lib/api/clientApi";
+import { useQuery } from "@tanstack/react-query";
+import { TransactionType } from "@/types/transactions";
 
-const ExpensePage = () => {
+interface ExpensePageProps {
+  type: TransactionType;
+}
+
+const ExpensePage = ({ type }: ExpensePageProps) => {
+  const {} = useQuery({
+    queryKey: ["categories", type],
+    queryFn: () => getTransactionCategories({ type }),
+  });
+
   return (
     <div className="container">
       <div className={css.titleWrapper}>

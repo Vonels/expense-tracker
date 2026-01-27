@@ -175,7 +175,9 @@
   outline: none;
   transition: border-color 0.2s;
 }
-.input:focus {
+
+.input:focus,
+.select:focus .input:focus {
   border-color: #0ef387;
 }
 
@@ -183,6 +185,12 @@
   background-color: #171719;
   color: #fafafa;
   padding: 12px;
+}
+
+.option:checked,
+.option:hover {
+  background-color: #0c0d0e !important;
+  color: #0ef387 !important;
 }
 
 .error {
@@ -442,5 +450,35 @@
   .submitBtn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+}
+.modalContent {
+  width: calc(100% - 40px);
+  max-width: 335px;
+  padding: 20px;
+  background-color: #171719;
+  border-radius: 30px;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inputsRow {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media screen and (min-width: 768px) {
+  .modalContent {
+    max-width: 500px;
+    padding: 40px;
+  }
+
+  .inputsRow {
+    flex-direction: row;
+    gap: 14px;
   }
 }
