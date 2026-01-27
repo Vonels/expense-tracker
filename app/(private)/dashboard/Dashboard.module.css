@@ -44,6 +44,7 @@
 }
 
 .formSection {
+  max-height: 600px;
   order: 3;
   background: #171719;
   border-radius: 30px;
@@ -76,12 +77,9 @@
 }
 
 @media (min-width: 1440px) {
-  /* .container {
-    max-width: 1240px;
-    max-height: 600px;
-    padding: 0;
-    margin: 0 auto;
-  } */
+  .container {
+    padding: 30px 0 0;
+  }
 
   .mainLayout {
     display: grid;
