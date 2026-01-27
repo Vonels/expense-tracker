@@ -62,41 +62,37 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
         </li>
 
         {/* ITEM */}
-        <li className={css.row}>
-          <p>Cinema</p>
-          <p className={css.ellipsis}>John Wick 4</p>
-          <p>Sn, 03.03.2023</p>
-          <p>14:30</p>
-          <p className={css.money}>150 / UAH</p>
-          <div className={css.actions}>
-            <button className={css.editBtn}>
-              <Icon id="icon-Pensil" className={css.iconEdit} />
-              Edit
-            </button>
-            <button className={css.deleteBtn}>
-              <Icon id="icon-trash" className={css.iconDelete} />
-              Delete
-            </button>
-          </div>
-        </li>
-        <li className={css.row}>
-          <p>Cinema</p>
-          <p className={css.ellipsis}>John Wick 4</p>
-          <p>Sn, 03.03.2023</p>
-          <p>14:30</p>
-          <p className={css.money}>150 / UAH</p>
-          <div className={css.actions}>
-            <button className={css.editBtn}>
-              <Icon id="icon-Pensil" className={css.iconEdit} />
-              Edit
-            </button>
-            <button className={css.deleteBtn}>
-              <Icon id="icon-trash" className={css.iconDelete} />
-              Delete
-            </button>
-          </div>
-        </li>
+        {data &&
+          data.map((item) => (
+            <li className={css.row} key={item._id}>
+              <p>{item.category.categoryName}</p>
+              <p className={css.ellipsis}>{item.comment}</p>
+              <p>{item.date}</p>
+              <p>{item.time}</p>
+              <p className={css.money}>
+                {item.sum} / {upperCurrency}
+              </p>
+              <div className={css.actions}>
+                <button className={css.editBtn} onClick={handleOpenMadal}>
+                  <Icon id="icon-Pensil" className={css.iconEdit} />
+                  Edit
+                </button>
+                <button
+                  className={css.deleteBtn}
+                  onClick={() => onDeleteTransaction(item._id)}
+                >
+                  <Icon id="icon-trash" className={css.iconDelete} />
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
       </ul>
+      {isOpen && (
+        <Modal>
+          <TransactionForm />
+        </Modal>
+      )}
     </div>
   );
 };
