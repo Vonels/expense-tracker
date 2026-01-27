@@ -1,5 +1,10 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { UserSetsModal } from "@/components/UserSetsModal/UserSetsModal";
 
 export default function Page() {
-  return <UserSetsModal />;
+  const router = useRouter();
+
+  return <UserSetsModal onClose={() => router.back()} />;
 }
