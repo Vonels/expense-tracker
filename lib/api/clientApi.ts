@@ -3,18 +3,19 @@ import type { User } from "@/types/user";
 import type { AuthCredentials, LoginCredentials } from "@/types/auth";
 import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
-import type { ListResponse, SessionResponse } from "@/types/expense";
+import type { ListResponse } from "@/types/expense";
 import {
   ICategory,
   CategoriesResponse,
   CreateCategoryDto,
 } from "@/app/@modal/(.)categoriesModal/page";
 import { useAuthStore } from "@/lib/store/authStore";
-<<<<<<< HEAD
-import { TransactionData, TransactionsResponse } from "@/types/transactions";
-=======
-import { TransactionFormValues, TransactionType } from "@/types/transactions";
->>>>>>> main
+import {
+  TransactionData,
+  TransactionFormValues,
+  TransactionsResponse,
+  TransactionType,
+} from "@/types/transactions";
 
 // лоадер
 
@@ -75,25 +76,11 @@ export const fetchExpenses = async (
   return res.data;
 };
 
-export const createExpense = async (
-  values: Omit<Expense, "id" | "createdAt" | "updatedAt">
-): Promise<Expense> => {
-  const res = await api.post<Expense>("/expenses", values);
-  return res.data;
-};
-
 // Доходи
 export const fetchIncomes = async (
   params?: IncomesQuery
 ): Promise<ListResponse<Income>> => {
   const res = await api.get<ListResponse<Income>>("/incomes", { params });
-  return res.data;
-};
-
-export const createIncome = async (
-  values: Omit<Income, "id" | "createdAt" | "updatedAt">
-): Promise<Income> => {
-  const res = await api.post<Income>("/incomes", values);
   return res.data;
 };
 
@@ -132,7 +119,6 @@ export const fetchCurrentMonthStats = async (): Promise<CategoryStat[]> => {
   return res.data;
 };
 
-<<<<<<< HEAD
 export const getTransactionCategories = async ({
   type,
   date,
@@ -143,30 +129,14 @@ export const getTransactionCategories = async ({
   });
 
   return data;
-=======
+};
 // Форма
 export const createTransaction = async (
-  type: TransactionType,
   values: TransactionFormValues
-): Promise<Expense | Income> => {
-  const commonData = {
-    date: values.date,
-    time: values.time,
-    amount: Number(values.sum),
-    comment: values.comment || "",
-  };
+): Promise<TransactionData> => {
+  const { data } = await api.post<TransactionData>(`/transactions`, values);
 
-  if (type === "expenses") {
-    return await createExpense({
-      ...commonData,
-      category: values.category,
-    });
-  } else {
-    return await createIncome({
-      ...commonData,
-      source: values.category,
-    });
-  }
+  return data;
 };
 
 export const updateTransaction = async (
@@ -179,12 +149,11 @@ export const updateTransaction = async (
   const payload = {
     date: values.date,
     time: values.time,
-    amount: Number(values.sum),
+    sum: Number(values.sum),
     comment: values.comment,
     [type === "expenses" ? "category" : "source"]: values.category,
   };
 
   const res = await api.patch<Expense | Income>(`/${path}/${id}`, payload);
   return res.data;
->>>>>>> main
 };

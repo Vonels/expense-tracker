@@ -10,12 +10,9 @@ import { Modal } from "../Modal/Modal";
 import TransactionForm from "../TransactionForm/TransactionForm";
 import css from "./IncomePage.module.css";
 import { toast } from "react-hot-toast";
-<<<<<<< HEAD
-=======
 import { Income } from "@/types/income";
 import { TransactionData } from "@/types/transactions";
 import { DatePicker } from "@/components/DatePicker/DatePicker";
->>>>>>> main
 
 const IncomePage = () => {
   const [search, setSearch] = useState("");
@@ -80,109 +77,108 @@ const IncomePage = () => {
           <TotalExpense />
         </div>
         <div className={css.incomeForm}>
-          <div className={css.incomeFormInput}><label htmlFor="search">
-            <Icon id="icon-search" className={css.icon} />
-          </label>
-          <input
-            className={css.incomeFormInputSearch}
-            type="text"
-            id="search"
-            name="filter"
-            placeholder="Search for anything.."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          /></div>
-          
-          <DatePicker
-            value={date}
-            onChange={(val) => setDate(val)}
-          />
+          <div className={css.incomeFormInput}>
+            <label htmlFor="search">
+              <Icon id="icon-search" className={css.icon} />
+            </label>
+            <input
+              className={css.incomeFormInputSearch}
+              type="text"
+              id="search"
+              name="filter"
+              placeholder="Search for anything.."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
 
-          <div className={css.incomeFormListCategoris}>
-            <ul className={css.incomeFormListStatic}>
-              <li className={css.incomeFormListItemStaticCategory}>Category</li>
-              <li className={css.incomeFormListItemStaticComment}>Comment</li>
-              <li className={css.incomeFormListItemStaticDate}>Date</li>
-              <li className={css.incomeFormListItemStaticTime}>Time</li>
-              <li className={css.incomeFormListItemStaticSum}>Sum</li>
-              <li className={css.incomeFormItemStaticActions}>Actions</li>
-            </ul>
-            {isLoading ? (
-              <p className={css.loadingText}>Loading...</p>
-            ) : incomFormList.length === 0 ? (
-              <p className={css.noDataText}>No income records found.</p>
-            ) : (
-              incomFormList.map((income) => (
-                <ul
-                  key={income.id}
-                  className={css.incomeFormListDinamicCategory}
-                >
-                  <li className={css.incomeFormListItemDinamicCategory}>
-                    {income.source || "—"}
-                  </li>
-                  <li className={css.incomeFormListItemDinamicComment}>
-                    {income.comment || "—"}
-                  </li>
-                  <li className={css.incomeFormListItemDinamicDate}>
-                    {income.date}
-                  </li>
-                  <li className={css.incomeFormListItemDinamicTime}>
-                    {income.date.includes("T")
-                      ? income.date.split("T")[1].slice(0, 5)
-                      : "—"}
-                  </li>
-                  <li className={css.incomeFormListItemDinamicSum}>
-                    {income.amount.toLocaleString()} / UAH
-                  </li>
-                  <li className={css.incomeFormBtn}>
-                    <button
-                      className={css.incomeFormBtnEdit}
-                      onClick={() => handleOpenModal(income)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className={css.incomeFormBtnDelete}
-                      onClick={() => handleDelete(income.id)}
-                    >
-                      Delete
-                    </button>
-                  </li>
-                </ul>
-              ))
-            )}
-          </div>
+          {/* <DatePicker
+            value={date}
+            onChange={(val) => setDate(val)}
+          /> */}
         </div>
-        {isModalOpen && (
-          <Modal>
-            <div className={css.modalContent}>
-              <TransactionForm
-                isEditing={!!selectedIncome}
-                currentTransaction={
-                  selectedIncome
-                    ? ({
-                        _id: selectedIncome.id,
-                        type: "incomes",
-                        date: selectedIncome.date.split("T")[0],
-                        time: selectedIncome.date.includes("T")
-                          ? selectedIncome.date.split("T")[1].slice(0, 5)
-                          : "00:00",
-                        category: {
-                          _id: selectedIncome.source,
-                          categoryName: selectedIncome.source,
-                        },
-                        sum: selectedIncome.amount,
-                        comment: selectedIncome.comment || "",
-                      } as TransactionData)
-                    : null
-                }
-                onClose={handleCloseModal}
-              />
-            </div>
-          </Modal>
-        )}
+
+        <div className={css.incomeFormListCategoris}>
+          <ul className={css.incomeFormListStatic}>
+            <li className={css.incomeFormListItemStaticCategory}>Category</li>
+            <li className={css.incomeFormListItemStaticComment}>Comment</li>
+            <li className={css.incomeFormListItemStaticDate}>Date</li>
+            <li className={css.incomeFormListItemStaticTime}>Time</li>
+            <li className={css.incomeFormListItemStaticSum}>Sum</li>
+            <li className={css.incomeFormItemStaticActions}>Actions</li>
+          </ul>
+          {isLoading ? (
+            <p className={css.loadingText}>Loading...</p>
+          ) : incomFormList.length === 0 ? (
+            <p className={css.noDataText}>No income records found.</p>
+          ) : (
+            incomFormList.map((income) => (
+              <ul key={income.id} className={css.incomeFormListDinamicCategory}>
+                <li className={css.incomeFormListItemDinamicCategory}>
+                  {income.source || "—"}
+                </li>
+                <li className={css.incomeFormListItemDinamicComment}>
+                  {income.comment || "—"}
+                </li>
+                <li className={css.incomeFormListItemDinamicDate}>
+                  {income.date}
+                </li>
+                <li className={css.incomeFormListItemDinamicTime}>
+                  {income.date.includes("T")
+                    ? income.date.split("T")[1].slice(0, 5)
+                    : "—"}
+                </li>
+                <li className={css.incomeFormListItemDinamicSum}>
+                  {income.amount.toLocaleString()} / UAH
+                </li>
+                <li className={css.incomeFormBtn}>
+                  <button
+                    className={css.incomeFormBtnEdit}
+                    onClick={() => handleOpenModal(income)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className={css.incomeFormBtnDelete}
+                    onClick={() => handleDelete(income.id)}
+                  >
+                    Delete
+                  </button>
+                </li>
+              </ul>
+            ))
+          )}
+        </div>
       </div>
+      {isModalOpen && (
+        <Modal>
+          <div className={css.modalContent}>
+            <TransactionForm
+              isEditing={!!selectedIncome}
+              currentTransaction={
+                selectedIncome
+                  ? ({
+                      _id: selectedIncome.id,
+                      type: "incomes",
+                      date: selectedIncome.date.split("T")[0],
+                      time: selectedIncome.date.includes("T")
+                        ? selectedIncome.date.split("T")[1].slice(0, 5)
+                        : "00:00",
+                      category: {
+                        _id: selectedIncome.source,
+                        categoryName: selectedIncome.source,
+                      },
+                      sum: selectedIncome.amount,
+                      comment: selectedIncome.comment || "",
+                    } as TransactionData)
+                  : null
+              }
+              onClose={handleCloseModal}
+            />
+          </div>
+        </Modal>
+      )}
+    </div>
   );
 };
 
