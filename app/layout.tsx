@@ -40,7 +40,6 @@ export default function RootLayout({
           <AuthProvider>
             <MantineProvider defaultColorScheme="dark">
               <Loader />
-              <Header />
 
               <main>{children}</main>
 
