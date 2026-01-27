@@ -30,9 +30,15 @@ export default function SignUpPage() {
     };
 
     const newErrors: FormErrors = {};
+
     if (!values.name) newErrors.name = "Name is required";
     if (!values.email) newErrors.email = "Email is required";
-    if (!values.password) newErrors.password = "Password is required";
+
+    if (!values.password) {
+      newErrors.password = "Password is required";
+    } else if (values.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -85,7 +91,6 @@ export default function SignUpPage() {
             )}
           </div>
 
-          {}
           <div className={styles.field}>
             <div className={styles.inputWrapper}>
               <input
