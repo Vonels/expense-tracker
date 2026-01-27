@@ -1,6 +1,6 @@
 /* --- MOBILE (320px+) --- */
 
-.container {
+.mainContainer {
   padding: 66px 20px 80px;
   min-height: 100vh;
   display: flex;
@@ -61,7 +61,7 @@
 /* --- TABLET (768px+) --- */
 
 @media (min-width: 768px) {
-  .container {
+  .mainContainer {
     padding: 60px 32px;
   }
 
@@ -89,7 +89,7 @@
 /* --- DESKTOP (1440px+) --- */
 
 @media (min-width: 1440px) {
-  .container {
+  .mainContainer {
     padding: 80px 100px;
   }
 
