@@ -1,10 +1,11 @@
 .card {
   background: #171719;
   border-radius: 30px;
-  padding: 24px;
+  padding: 33px 23px;
   display: flex;
   align-items: center;
   gap: 22px;
+  max-height: 121px;
 }
 
 .iconWrapperIncome,
