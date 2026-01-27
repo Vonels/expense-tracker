@@ -23,7 +23,7 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
     <div className="container">
       <div className={css.titleWrapper}>
         <div>
-          <h3 className={css.titleExpense}>All Expense</h3>
+          <h3 className={css.titleExpense}>All Incomes</h3>
           <p className={css.textExpense}>
             View and manage every transaction seamlessly! Your entire financial
             landscape, all in one place.
