@@ -13,9 +13,11 @@ import {
 import { useAuthStore } from "@/lib/store/authStore";
 import {
   TransactionData,
+  TransactionDelete,
   TransactionFormValues,
   TransactionsResponse,
   TransactionType,
+  TransactionTypeData,
 } from "@/types/transactions";
 
 // лоадер
@@ -124,13 +126,27 @@ export const getTransactionCategories = async ({
   type,
   date,
   search,
-}: TransactionsResponse): Promise<TransactionData[]> => {
-  const { data } = await api.get<TransactionData[]>(`/transactions/${type}`, {
-    params: { date, search },
-  });
+}: TransactionsResponse): Promise<TransactionTypeData[]> => {
+  const { data } = await api.get<TransactionTypeData[]>(
+    `/transactions/${type}`,
+    {
+      params: { date, search },
+    }
+  );
 
   return data;
 };
+
+export const deleteTransactionById = async (
+  id: string
+): Promise<TransactionDelete> => {
+  const { data } = await api.delete<TransactionDelete>(
+    `/transactions/id/${id}`
+  );
+
+  return data;
+};
+
 // Форма
 export const createTransaction = async (
   values: TransactionFormValues
