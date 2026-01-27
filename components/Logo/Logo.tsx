@@ -4,17 +4,13 @@ import { useAuthStore } from "@/lib/store/authStore";
 import css from "./Logo.module.css";
 import { Icon } from "../Icon/Icon";
 
-const Logo = () => {
-  const user = useAuthStore((state) => state.user);
-  const token = useAuthStore((state) => state.token);
+type Props = {
+  href: string;
+};
 
-  const isLoggedIn = Boolean(user && token);
-  
-  const navigateTo = isLoggedIn
-    ? "/dashboard" // MainTransactionsPage
-    : "/"; // WelcomePage
+const Logo = ({ href }: Props) => {
   return (
-    <Link href={navigateTo} aria-label="Home" className={css.link}>
+    <Link href={href} aria-label="Home" className={css.link}>
       <Icon id={"icon-Logo"} className={css.logoSvg} />
       Expensetracker
     </Link>
