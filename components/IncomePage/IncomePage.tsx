@@ -71,11 +71,11 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
           <div className={css.actions}>
             <button className={css.editBtn}>
               <Icon id="icon-Pensil" className={css.iconEdit} />
-              Edit
+              <span className={css.hideBtn}>Edit</span>
             </button>
             <button className={css.deleteBtn}>
               <Icon id="icon-trash" className={css.iconDelete} />
-              Delete
+              <span className={css.hideBtn}>Delete</span>
             </button>
           </div>
         </li>
@@ -88,11 +88,11 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
           <div className={css.actions}>
             <button className={css.editBtn}>
               <Icon id="icon-Pensil" className={css.iconEdit} />
-              Edit
+              <span className={css.hideBtn}>Edit</span>
             </button>
             <button className={css.deleteBtn}>
               <Icon id="icon-trash" className={css.iconDelete} />
-              Delete
+              <span className={css.hideBtn}>Delete</span>
             </button>
           </div>
         </li>
