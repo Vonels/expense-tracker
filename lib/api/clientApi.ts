@@ -160,17 +160,17 @@ export const updateTransaction = async (
   type: TransactionType,
   id: string,
   values: TransactionFormValues
-): Promise<Expense | Income> => {
-  const path = type === "expenses" ? "expenses" : "incomes";
+): Promise<TransactionData> => {
+  const path = `/transactions/${type}/${id}`;
 
   const payload = {
     date: values.date,
     time: values.time,
+    category: values.category,
     sum: Number(values.sum),
     comment: values.comment,
-    [type === "expenses" ? "category" : "source"]: values.category,
   };
 
-  const res = await api.patch<Expense | Income>(`/${path}/${id}`, payload);
+  const res = await api.patch<TransactionData>(path, payload);
   return res.data;
 };
