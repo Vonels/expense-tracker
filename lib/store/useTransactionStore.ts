@@ -5,7 +5,6 @@ interface TransactionState {
   transactionType: TransactionType;
   setTransactionType: (type: TransactionType) => void;
   selectedCategory: { id: string; name: string } | null;
-  setTransactionType: (type: TransactionType) => void;
   setCategory: (id: string, name: string, type?: TransactionType) => void;
   resetCategory: () => void;
 }
