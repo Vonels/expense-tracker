@@ -5,19 +5,47 @@ import { TotalExpense } from "../TotalExpense/TotalExpense";
 import { TotalIncome } from "../TotalIncome/TotalIncome";
 import { Icon } from "../Icon/Icon";
 import Calendar from "../Calendar/Calendar";
-import { getTransactionCategories } from "@/lib/api/clientApi";
-import { useQuery } from "@tanstack/react-query";
+import {
+  deleteTransactionById,
+  getTransactionCategories,
+} from "@/lib/api/clientApi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { TransactionType } from "@/types/transactions";
+import { useUserStore } from "@/lib/store/userStore";
+import { Modal } from "../Modal/Modal";
+import TransactionForm from "../TransactionForm/TransactionForm";
+import { useState } from "react";
 
 interface ExpensePageProps {
   type: TransactionType;
 }
 
 const ExpensePage = ({ type }: ExpensePageProps) => {
-  const {} = useQuery({
+  const [isOpen, setIsOpen] = useState(false);
+  const currency = useUserStore((s) => s.currency);
+  const upperCurrency = currency.toUpperCase();
+  const queryClient = useQueryClient();
+
+  const { data } = useQuery({
     queryKey: ["categories", type],
     queryFn: () => getTransactionCategories({ type }),
   });
+
+  const deleteTransaction = useMutation({
+    mutationFn: (id: string) => deleteTransactionById(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories", type] });
+    },
+    onError: () => {},
+  });
+
+  const onDeleteTransaction = (id: string) => {
+    deleteTransaction.mutate(id);
+  };
+
+  const handleOpenMadal = () => {
+    setIsOpen(true);
+  };
 
   return (
     <div className="container">
@@ -62,41 +90,37 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
         </li>
 
         {/* ITEM */}
-        <li className={css.row}>
-          <p>Cinema</p>
-          <p className={css.ellipsis}>John Wick 4</p>
-          <p>Sn, 03.03.2023</p>
-          <p>14:30</p>
-          <p className={css.money}>150 / UAH</p>
-          <div className={css.actions}>
-            <button className={css.editBtn}>
-              <Icon id="icon-Pensil" className={css.iconEdit} />
-              Edit
-            </button>
-            <button className={css.deleteBtn}>
-              <Icon id="icon-trash" className={css.iconDelete} />
-              Delete
-            </button>
-          </div>
-        </li>
-        <li className={css.row}>
-          <p>Cinema</p>
-          <p className={css.ellipsis}>John Wick 4</p>
-          <p>Sn, 03.03.2023</p>
-          <p>14:30</p>
-          <p className={css.money}>150 / UAH</p>
-          <div className={css.actions}>
-            <button className={css.editBtn}>
-              <Icon id="icon-Pensil" className={css.iconEdit} />
-              Edit
-            </button>
-            <button className={css.deleteBtn}>
-              <Icon id="icon-trash" className={css.iconDelete} />
-              Delete
-            </button>
-          </div>
-        </li>
+        {data &&
+          data.map((item) => (
+            <li className={css.row} key={item._id}>
+              <p>{item.category.categoryName}</p>
+              <p className={css.ellipsis}>{item.comment}</p>
+              <p>{item.date}</p>
+              <p>{item.time}</p>
+              <p className={css.money}>
+                {item.sum} / {upperCurrency}
+              </p>
+              <div className={css.actions}>
+                <button className={css.editBtn} onClick={handleOpenMadal}>
+                  <Icon id="icon-Pensil" className={css.iconEdit} />
+                  Edit
+                </button>
+                <button
+                  className={css.deleteBtn}
+                  onClick={() => onDeleteTransaction(item._id)}
+                >
+                  <Icon id="icon-trash" className={css.iconDelete} />
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
       </ul>
+      {isOpen && (
+        <Modal>
+          <TransactionForm />
+        </Modal>
+      )}
     </div>
   );
 };
