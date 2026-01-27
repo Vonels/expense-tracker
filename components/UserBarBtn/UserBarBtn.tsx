@@ -12,6 +12,8 @@ type Props = {
 const UserBarBtn = ({ isOpen, onToggle }: Props) => {
   const { user, refreshUser, _hasHydrated } = useAuthStore();
 
+  console.log(user);
+  if (!user) return null;
   useEffect(() => {
     if (_hasHydrated && !user) {
       refreshUser();
@@ -28,7 +30,13 @@ const UserBarBtn = ({ isOpen, onToggle }: Props) => {
     <button type="button" className={css.UserBarBtn} onClick={onToggle}>
       {/* Avatar */}
       {avatarUrl ? (
-        <Image src={avatarUrl} alt={name} className={css.avatar} width={44} height={44}/>
+        <Image
+          src={avatarUrl}
+          alt={name}
+          className={css.avatar}
+          width={44}
+          height={44}
+        />
       ) : (
         <div className={css.avatarFallback}>{firstLetter}</div>
       )}

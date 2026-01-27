@@ -181,8 +181,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
       const targetPath =
         values.type === "expenses"
-          ? "transactions/history/expenses"
-          : "transactions/history/incomes";
+          ? "transactions/history/expense"
+          : "transactions/history/income";
       router.push(targetPath);
 
       if (onClose) onClose();
