@@ -1,6 +1,5 @@
 .panel {
   position: absolute;
-  /* відступ ще треба підкорегувати */
   top: calc(100% + 10px);
   left: 0;
 
@@ -20,8 +19,8 @@
   pointer-events: none;
 
   transition:
-    opacity 250ms ease,
-    transform 250ms ease;
+    opacity 250ms linear,
+    transform 250ms linear;
 }
 
 .open {
@@ -39,7 +38,7 @@
   text-align: left;
   border-radius: 14px;
   cursor: pointer;
-  transition: color 250ms ease;
+  transition: color 250ms linear;
 }
 
 .button:hover {
