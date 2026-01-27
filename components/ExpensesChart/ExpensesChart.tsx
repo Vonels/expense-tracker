@@ -1,10 +1,16 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import css from "./ExpensesChart.module.css";
-import { useUserStore } from "@/lib/store/userStore";
 import { CategoryStat } from "@/types/expense";
+import { fetchCurrentMonthStats } from "@/lib/api/clientApi";
+
+interface FormattedCategory {
+  _id: string;
+  categoryName: string;
+  sum: number;
+}
 
 const generateColors = (count: number) => {
   return Array.from({ length: count }, (_, i) => {
@@ -18,43 +24,37 @@ const generateColors = (count: number) => {
 };
 
 export const ExpensesChart = () => {
-  const categoriesData = useUserStore((state) => state.categories.expenses);
-  const totalExpenses = useUserStore(
-    (state) => state.transactionsTotal.expenses
-  );
-  const setCategories = useUserStore((state) => state.setCategories);
-  const updateTotals = useUserStore((state) => state.updateTotals);
+  const [stats, setStats] = useState<FormattedCategory[]>([]);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch("/api/stats/categories/current-month");
-        const data = await response.json();
+        const data: CategoryStat[] = await fetchCurrentMonthStats();
 
-        const formatted = data.map((item: CategoryStat) => ({
+        const formatted = data.map((item) => ({
           _id: item._id,
           categoryName: item.category,
           sum: item.totalAmount,
-          type: "expenses",
         }));
 
-        const total = data.reduce(
-          (acc: number, curr: CategoryStat) => acc + curr.totalAmount,
+        const totalAmount = data.reduce(
+          (acc, curr) => acc + curr.totalAmount,
           0
         );
 
-        setCategories("expenses", formatted);
-        updateTotals({ expenses: total });
+        setStats(formatted);
+        setTotal(totalAmount);
       } catch (error) {
         console.error("Failed to load statistics:", error);
       }
     };
 
     fetchStats();
-  }, [setCategories, updateTotals]);
+  }, []);
 
   const { finalChartData, isPlaceholder } = useMemo(() => {
-    if (categoriesData.length === 0) {
+    if (stats.length === 0) {
       return {
         isPlaceholder: true,
         finalChartData: [
@@ -68,24 +68,19 @@ export const ExpensesChart = () => {
       };
     }
 
-    const sortedData = [...categoriesData].sort(
-      (a, b) => (b.sum || 0) - (a.sum || 0)
-    );
+    const sortedData = [...stats].sort((a, b) => b.sum - a.sum);
     const colors = generateColors(sortedData.length);
 
     return {
       isPlaceholder: false,
       finalChartData: sortedData.map((cat, index) => ({
         name: cat.categoryName,
-        value: cat.sum || 0,
-        percent:
-          totalExpenses > 0
-            ? Math.round(((cat.sum || 0) / totalExpenses) * 100)
-            : 0,
+        value: cat.sum,
+        percent: total > 0 ? Math.round((cat.sum / total) * 100) : 0,
         color: colors[index],
       })),
     };
-  }, [categoriesData, totalExpenses]);
+  }, [stats, total]);
 
   return (
     <div className={css.chartContainer}>
@@ -96,8 +91,8 @@ export const ExpensesChart = () => {
             <PieChart>
               <Pie
                 data={finalChartData}
-                innerRadius={80}
-                outerRadius={125}
+                innerRadius={70}
+                outerRadius={110}
                 startAngle={180}
                 endAngle={0}
                 cornerRadius={6}
@@ -112,7 +107,7 @@ export const ExpensesChart = () => {
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-          <div className={css.chartLabel}>100%</div>
+          <div className={css.chartLabel}>{isPlaceholder ? "0" : "100"}%</div>
         </div>
 
         <ul className={css.legend}>

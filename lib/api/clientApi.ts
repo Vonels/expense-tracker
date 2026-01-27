@@ -1,5 +1,5 @@
 import { api } from "./api";
-import type { User } from "@/types/user";
+import type { User, UserNew } from "@/types/user";
 import type { AuthCredentials, LoginCredentials } from "@/types/auth";
 import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
@@ -13,9 +13,11 @@ import {
 import { useAuthStore } from "@/lib/store/authStore";
 import {
   TransactionData,
+  TransactionDelete,
   TransactionFormValues,
   TransactionsResponse,
   TransactionType,
+  TransactionTypeData,
 } from "@/types/transactions";
 
 // лоадер
@@ -64,8 +66,8 @@ export const checkSession = async () => {
   return res.json();
 };
 
-export const getMe = async (): Promise<User> => {
-  const res = await api.get<User>("/users/me");
+export const getMe = async (): Promise<UserNew> => {
+  const res = await api.get<UserNew>("/users/current");
   return res.data;
 };
 
@@ -124,13 +126,27 @@ export const getTransactionCategories = async ({
   type,
   date,
   search,
-}: TransactionsResponse): Promise<TransactionData[]> => {
-  const { data } = await api.get<TransactionData[]>(`/transactions/${type}`, {
-    params: { date, search },
-  });
+}: TransactionsResponse): Promise<TransactionTypeData[]> => {
+  const { data } = await api.get<TransactionTypeData[]>(
+    `/transactions/${type}`,
+    {
+      params: { date, search },
+    }
+  );
 
   return data;
 };
+
+export const deleteTransactionById = async (
+  id: string
+): Promise<TransactionDelete> => {
+  const { data } = await api.delete<TransactionDelete>(
+    `/transactions/id/${id}`
+  );
+
+  return data;
+};
+
 // Форма
 export const createTransaction = async (
   values: TransactionFormValues

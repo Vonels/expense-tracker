@@ -49,7 +49,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { api } from "@/lib/api/api";
-
 interface User {
   name: string;
   email: string;
@@ -59,12 +58,11 @@ interface User {
 
 interface AuthState {
   user: User | null;
-  token: string | null;
   isLoading: boolean;
   _hasHydrated: boolean;
 
   setLoading: (status: boolean) => void;
-  setAuthData: (user: User, token: string) => void;
+  setAuthData: (user: User) => void;
   updateUser: (data: Partial<User>) => void;
   refreshUser: () => Promise<void>;
   logout: () => void;
@@ -73,17 +71,14 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
-      token: null,
       isLoading: false,
       _hasHydrated: false,
 
       setLoading: (status) => set({ isLoading: status }),
-
       setHasHydrated: (state) => set({ _hasHydrated: state }),
-
-      setAuthData: (user, token) => set({ user, token }),
+      setAuthData: (user) => set({ user }),
 
       updateUser: (data) =>
         set((state) => ({
@@ -91,29 +86,22 @@ export const useAuthStore = create<AuthState>()(
         })),
 
       refreshUser: async () => {
-        const { token } = get();
-        if (!token) return;
-
         set({ isLoading: true });
         try {
           const { data } = await api.get<User>("/users/info");
           set({ user: data });
-        } catch (error) {
-          console.error("Auth refresh failed:", error);
-          set({ user: null, token: null });
+        } catch {
+          set({ user: null });
         } finally {
           set({ isLoading: false });
         }
       },
 
-      logout: () => set({ user: null, token: null }),
+      logout: () => set({ user: null }),
     }),
     {
       name: "auth-storage",
-      partialize: (state) => ({
-        user: state.user,
-        token: state.token,
-      }),
+      partialize: (state) => ({ user: state.user }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },
