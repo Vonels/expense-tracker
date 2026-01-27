@@ -1,23 +1,51 @@
 "use client";
-
+// test
 import css from "./ExpensePage.module.css";
 import { TotalExpense } from "../TotalExpense/TotalExpense";
 import { TotalIncome } from "../TotalIncome/TotalIncome";
 import { Icon } from "../Icon/Icon";
 import Calendar from "../Calendar/Calendar";
-import { getTransactionCategories } from "@/lib/api/clientApi";
-import { useQuery } from "@tanstack/react-query";
+import {
+  deleteTransactionById,
+  getTransactionCategories,
+} from "@/lib/api/clientApi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { TransactionType } from "@/types/transactions";
+import { useUserStore } from "@/lib/store/userStore";
+import { Modal } from "../Modal/Modal";
+import TransactionForm from "../TransactionForm/TransactionForm";
+import { useState } from "react";
 
 interface ExpensePageProps {
   type: TransactionType;
 }
 
 const ExpensePage = ({ type }: ExpensePageProps) => {
-  const {} = useQuery({
+  const [isOpen, setIsOpen] = useState(false);
+  const currency = useUserStore((s) => s.currency);
+  const upperCurrency = currency.toUpperCase();
+  const queryClient = useQueryClient();
+
+  const { data } = useQuery({
     queryKey: ["categories", type],
     queryFn: () => getTransactionCategories({ type }),
   });
+
+  const deleteTransaction = useMutation({
+    mutationFn: (id: string) => deleteTransactionById(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories", type] });
+    },
+    onError: () => {},
+  });
+
+  const onDeleteTransaction = (id: string) => {
+    deleteTransaction.mutate(id);
+  };
+
+  const handleOpenMadal = () => {
+    setIsOpen(true);
+  };
 
   return (
     <div className="container">
