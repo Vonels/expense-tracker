@@ -11,6 +11,7 @@ import { ToastProvider } from "@/components/ToastProvider/ToastProvider";
 
 import AuthProvider from "@/components/AuthProvider/AuthProvider";
 import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
+import { Loader } from "@/components/Loader/Loader";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
