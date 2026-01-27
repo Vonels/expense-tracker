@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { useAuthStore } from "@/lib/store/authStore";
 import css from "./Logo.module.css";
 import { Icon } from "../Icon/Icon";
 

@@ -4,15 +4,17 @@ import css from "./UserBarBtn.module.css";
 import Image from "next/image";
 import { Icon } from "../Icon/Icon";
 import { useAuthStore } from "@/lib/store/authStore";
+import { useEffect } from "react";
 type Props = {
   isOpen: boolean;
   onToggle: () => void;
 };
 const UserBarBtn = ({ isOpen, onToggle }: Props) => {
-  const user = useAuthStore((state) => state.user);
-
-  console.log(user);
-  if (!user) return null; 
+  const { refreshUser, user } = useAuthStore();
+  
+  useEffect(() => {
+  if (!user) refreshUser();
+}, []);
 
   const { name, avatarUrl } = user;
   const firstLetter = name.charAt(0).toUpperCase();
