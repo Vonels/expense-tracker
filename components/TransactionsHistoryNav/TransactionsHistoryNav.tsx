@@ -18,7 +18,7 @@ const TransactionsHistoryNav = ({ variant = "header", onNavigate }: Props) => {
     <ul className={`${css.list} ${css[variant]}`}>
       <li>
         <Link
-          href="/transactions/history/expense"
+          href="/transactions/history/expenses"
           className={`${css.link} ${isExpense ? css.active : ""}`}
           onClick={onNavigate}
         >
@@ -27,7 +27,7 @@ const TransactionsHistoryNav = ({ variant = "header", onNavigate }: Props) => {
       </li>
       <li>
         <Link
-          href="/transactions/history/income"
+          href="/transactions/history/incomes"
           className={`${css.link} ${isIncome ? css.active : ""}`}
           onClick={onNavigate}
         >

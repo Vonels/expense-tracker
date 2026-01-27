@@ -34,12 +34,12 @@ export default async function DashboardPage() {
 
   await queryClient.prefetchQuery({
     queryKey: ["user", "current"],
-    queryFn: getMe,
+    queryFn: () => getMe(),
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <main className={css.container}>
+      <main className={css.mainContainer}>
         <div className={css.mainLayout}>
           <section className={css.statsSection}>
             <div className={css.info}>

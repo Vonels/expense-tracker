@@ -14,6 +14,8 @@ type Props = {
 const UserBarBtn = ({ isOpen, onToggle }: Props) => {
   const [user, setUser] = useState<UserNew | null>(null)
 
+  console.log(user);
+  if (!user) return null;
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -37,7 +39,7 @@ const UserBarBtn = ({ isOpen, onToggle }: Props) => {
       {avatarUrl ? (
         <Image
           src={avatarUrl}
-          alt={name ?? 'User avatar'}
+          alt={name ?? 'user avatar'}
           className={css.avatar}
           width={44}
           height={44}

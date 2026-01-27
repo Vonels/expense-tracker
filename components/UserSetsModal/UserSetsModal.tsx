@@ -123,15 +123,16 @@ export const UserSetsModal = ({ onClose }: { onClose: () => void }) => {
   const onSubmit = async (data: UserSettingsForm) => {
     try {
       const formattedData = {
-        ...data,
+        name: data.name,
         currency: data.currency.toLowerCase(),
       };
 
       const updatedData = await userService.updateProfile(formattedData);
 
       updateUser({
-        ...updatedData,
-        avatarUrl: updatedData.avatarUrl ?? undefined,
+        name: updatedData.name,
+        currency: updatedData.currency.toUpperCase(),
+        ...(updatedData.avatarUrl ? { avatarUrl: updatedData.avatarUrl } : {}),
       });
 
       toast.success("Profile updated!");
