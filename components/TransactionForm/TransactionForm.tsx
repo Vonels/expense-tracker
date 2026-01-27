@@ -312,6 +312,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   useTransactionStore
                     .getState()
                     .setTransactionType(values.type);
+
                   router.push("/categoriesModal");
                 }}
               />
