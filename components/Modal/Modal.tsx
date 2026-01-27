@@ -1,15 +1,26 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import css from "./Modal.module.css";
+// import { useRouter } from "next/navigation";
 
 interface ModalProps {
   children: React.ReactNode;
+  // onClose: () => void;
 }
 
 export const Modal = ({ children }: ModalProps) => {
+  // const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
-  const onClose = () => setIsOpen(false);
+  const onClose = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  // const onClose = () => {
+  //   setIsOpen(false);
+
+  //   router.back();
+  // };
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -23,7 +34,7 @@ export const Modal = ({ children }: ModalProps) => {
       document.body.style.overflow = "unset";
       window.removeEventListener("keydown", handleEscape);
     };
-  }, [isOpen]);
+  }, [onClose]);
 
   if (!isOpen) return null;
 
