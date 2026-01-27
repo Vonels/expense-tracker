@@ -29,6 +29,7 @@ import { useAuthStore } from "@/lib/store/authStore";
 import { Icon } from "../Icon/Icon";
 import * as api from "@/lib/api/clientApi";
 import dayjs from "dayjs";
+import { useUserStore } from "@/lib/store/userStore";
 
 interface TransactionFormProps {
   onOpenCategories?: (type: TransactionType) => void;
@@ -87,6 +88,12 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   const selectedCategory = useTransactionStore(
     (state) => state.selectedCategory
   );
+
+  const totalIncomes = useUserStore((state) => state.transactionsTotal.incomes);
+  const totalExpenses = useUserStore(
+    (state) => state.transactionsTotal.expenses
+  );
+  const updateTotals = useUserStore((state) => state.updateTotals);
 
   const user = useAuthStore((state) => state.user);
   const currentCurrency = user?.currency || "UAH";
@@ -157,6 +164,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         toast.success("Transaction updated successfully!");
       } else {
         await api.createTransaction(responseData);
+        const isExpense = values.type === "expenses";
+        const currentTotal = isExpense ? totalExpenses : totalIncomes;
+
+        updateTotals({
+          [values.type]: currentTotal + responseData.sum,
+        });
+
         toast.success("Transaction added successfully!");
 
         resetForm();

@@ -4,6 +4,7 @@ import type { AuthCredentials, LoginCredentials } from "@/types/auth";
 import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
 import type { ListResponse } from "@/types/expense";
+
 import {
   ICategory,
   CategoriesResponse,
