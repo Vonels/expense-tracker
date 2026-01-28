@@ -42,6 +42,7 @@ export const useTransactionStore = create<TransactionState>()(
     }),
     {
       name: "transaction-storage",
+      partialize: (state) => ({ draftData: state.draftData }),
     }
   )
 );
