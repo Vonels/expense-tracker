@@ -1,3 +1,5 @@
+import HeaderUser from "@/components/HeaderUser/HeaderUser";
+
 export default function AuthLayout({
   children,
   modal,
@@ -7,6 +9,7 @@ export default function AuthLayout({
 }) {
   return (
     <>
+      <HeaderUser/>
       {children}
       {modal}
     </>

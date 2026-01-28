@@ -1,14 +1,19 @@
-.container {
+/* --- MOBILE (320px+) --- */
+
+.mainContainer {
   padding: 66px 20px 80px;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .mainLayout {
   display: flex;
   flex-direction: column;
   gap: 40px;
+  width: 100%;
+  max-width: 335px;
 }
 
 .statsSection {
@@ -23,6 +28,7 @@
   font-family: var(--font-family);
   font-weight: 400;
   font-size: 32px;
+  line-height: 1.19;
   letter-spacing: -0.02em;
   color: #fafafa;
   margin-bottom: 20px;
@@ -32,6 +38,7 @@
   font-family: var(--font-family);
   font-weight: 400;
   font-size: 14px;
+  line-height: 1.29;
   letter-spacing: -0.02em;
   color: rgba(250, 250, 250, 0.4);
 }
@@ -43,21 +50,23 @@
   gap: 12px;
 }
 
-.formSection {
-  order: 3;
-  background: #171719;
-  border-radius: 30px;
-  display: flex;
-  justify-content: center;
-}
-
 .statsSection > :last-child {
   order: 4;
 }
 
+.formSection {
+  order: 3;
+}
+
+/* --- TABLET (768px+) --- */
+
 @media (min-width: 768px) {
-  .container {
+  .mainContainer {
     padding: 60px 32px;
+  }
+
+  .mainLayout {
+    max-width: 704px;
   }
 
   .title {
@@ -67,6 +76,8 @@
 
   .subtitle {
     font-size: 16px;
+    line-height: 1.5;
+    max-width: 500px;
   }
 
   .summaryCards {
@@ -75,18 +86,19 @@
   }
 }
 
+/* --- DESKTOP (1440px+) --- */
+
 @media (min-width: 1440px) {
-  .container {
-    max-width: 1240px;
-    max-height: 600px;
-    padding: 0;
-    margin: 0 auto;
+  .mainContainer {
+    padding: 80px 100px;
   }
 
   .mainLayout {
+    max-width: 1240px;
     display: grid;
-    grid-template-columns: 1.11fr 1fr;
+    grid-template-columns: 1.1fr 1fr;
     gap: 44px;
+    align-items: flex-start;
   }
 
   .statsSection {
@@ -101,5 +113,13 @@
   .formSection,
   .statsSection > :last-child {
     order: unset;
+  }
+
+  .formSection {
+    max-height: 600px;
+  }
+
+  .title {
+    margin-bottom: 15px;
   }
 }

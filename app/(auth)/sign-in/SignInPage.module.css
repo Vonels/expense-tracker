@@ -9,7 +9,7 @@
   font-size: 14px;
   letter-spacing: -0.02em;
   color: rgba(250, 250, 250, 0.4);
-
+  margin-bottom: 37px;
   width: 335px;
   height: 34px;
 }
@@ -25,6 +25,7 @@
   color: rgba(250, 250, 250, 0.4);
   background-color: #0c0d0d;
   outline: none;
+  padding-right: 48px;
 }
 .button {
   border-radius: 40px;
@@ -37,7 +38,6 @@
   letter-spacing: -0.02em;
   color: #0c0d0d;
   margin-top: 142px;
-  margin-bottom: 20px;
 }
 .firstblock {
   display: flex;
@@ -50,14 +50,61 @@
 .linkText {
   color: rgba(250, 250, 250, 0.6);
   margin-bottom: 185px;
+  margin-top: 20px;
 }
-.container {
-  padding: 20px;
-}
+
 .form {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+.inputWrapper {
+  position: relative;
+}
+.inputs {
+  border: 1px solid rgba(250, 250, 250, 0.2);
+  border-radius: 12px;
+  padding-left: 12px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  color: rgba(250, 250, 250, 0.4);
+  background-color: #0c0d0d;
+  outline: none;
+  padding-right: 48px;
+  width: 100%;
+  height: 48px;
+  padding-right: 48px;
+  box-sizing: border-box;
+}
+.inputs:hover {
+  border: 1px solid #0ef387;
+  border-radius: 12px;
+}
+.eyeIcon {
+  position: absolute;
+  right: 14px;
+  inset-block: 0;
+  margin: auto 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  stroke-width: 1.5px;
+  stroke: #fafafa;
+  fill: none;
+}
+.eyeIcon use {
+  pointer-events: none;
+}
+.error {
+  margin-top: 4px;
+  display: flex;
+  font-weight: 400;
+  font-size: 10px;
+  color: #e74a3b;
 }
 @media (min-width: 768px) {
   .title {
@@ -120,7 +167,8 @@
     margin-bottom: 262px;
   }
   .container {
-    padding-left: 190px;
+    width: 399px;
+    margin: 0 auto;
   }
 }
 
@@ -137,6 +185,7 @@
     letter-spacing: -0.02em;
     color: rgba(250, 250, 250, 0.4);
   }
+
   .input {
     border: 1px solid rgba(250, 250, 250, 0.2);
     border-radius: 12px;

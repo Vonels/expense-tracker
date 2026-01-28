@@ -1,20 +1,33 @@
 "use client";
-import { useEffect } from "react";
+
+import { useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import css from "./Modal.module.css";
 
 interface ModalProps {
   children: React.ReactNode;
+  /**
+   * Optional close handler.
+   * If not provided, modal will navigate back in history (router.back()).
+   */
+  onClose?: () => void;
 }
 
-export const Modal = ({ children }: ModalProps) => {
+export const Modal = ({ children, onClose }: ModalProps) => {
   const router = useRouter();
-  const onClose = () => router.back();
+
+  const handleClose = useCallback(() => {
+    if (onClose) {
+      onClose();
+    } else {
+      router.back();
+    }
+  }, [onClose, router]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.code === "Escape") router.back();
+      if (e.code === "Escape") handleClose();
     };
 
     document.body.style.overflow = "hidden";
@@ -24,15 +37,15 @@ export const Modal = ({ children }: ModalProps) => {
       document.body.style.overflow = "unset";
       window.removeEventListener("keydown", handleEscape);
     };
-  }, [router]);
+  }, [handleClose]);
 
   return createPortal(
     <div
       className={css.backdrop}
-      onClick={(e) => e.target === e.currentTarget && router.back()}
+      onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
       <div className={css.modal}>
-        <button className={css.closeBtnCategoriesModal} onClick={onClose}>
+        <button className={css.closeBtnCategoriesModal} onClick={handleClose}>
           <svg width="24" height="24">
             <use href="/symbol-defs.svg#icon-Close"></use>
           </svg>

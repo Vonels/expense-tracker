@@ -5,6 +5,8 @@
   display: flex;
   align-items: center;
   gap: 22px;
+  max-height: 121px;
+  width: 100%;
 }
 
 .iconWrapperIncome,

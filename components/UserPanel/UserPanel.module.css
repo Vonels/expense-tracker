@@ -1,6 +1,5 @@
 .panel {
   position: absolute;
-  /* відступ ще треба підкорегувати */
   top: calc(100% + 10px);
   left: 0;
 
@@ -20,8 +19,8 @@
   pointer-events: none;
 
   transition:
-    opacity 250ms ease,
-    transform 250ms ease;
+    opacity 250ms linear,
+    transform 250ms linear;
 }
 
 .open {
@@ -31,6 +30,9 @@
 }
 
 .button {
+  display: flex;
+  align-items: center;
+  justify-content: start;
   width: 100%;
   background-color: transparent;
   border: none;
@@ -39,7 +41,7 @@
   text-align: left;
   border-radius: 14px;
   cursor: pointer;
-  transition: color 250ms ease;
+  transition: color 250ms linear;
 }
 
 .button:hover {
@@ -49,9 +51,117 @@
 .icon {
   width: 16px;
   height: 16px;
+  margin-right: 12px;
   stroke: rgba(250, 250, 250, 0.5);
+  transition: stroke 250ms linear;
 }
 
-.icon:hover {
+.icon path,
+.icon use {
+  stroke: rgba(250, 250, 250, 0.5);
+  transition: stroke 250ms linear;
+}
+
+.button:hover .icon path,
+.button:hover .icon use {
   stroke: #0ef387;
+}
+
+/* ConfirmForm */
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  position: relative;
+  border: 1px solid rgba(250, 250, 250, 0.1);
+  border-radius: 30px;
+  width: 500px;
+  height: 266px;
+  background: #171719;
+  padding: 80px;
+  text-align: center;
+}
+
+.modal p {
+  font-family: var(--font-family);
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: #fafafa;
+  margin-bottom: 40px;
+  font-size: 16px;
+}
+
+.confirm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 40px;
+  padding: 14px 44px;
+  min-width: 144px;
+  height: 47px;
+  background: #0ef387;
+  letter-spacing: -0.02em;
+
+  margin-bottom: 12px;
+  border: none;
+
+  color: #0c0d0d;
+  cursor: pointer;
+}
+
+.cancel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 40px;
+  padding: 14px 44px;
+  width: 139px;
+  height: 47px;
+  border: none;
+  background: #29292b;
+  color: #fafafa;
+  cursor: pointer;
+  letter-spacing: -0.02em;
+}
+
+.confirm:hover {
+  opacity: 0.9;
+}
+
+.cancel:hover {
+  opacity: 0.85;
+}
+
+.btnDiv {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+}
+
+.closeIcon {
+  width: 24px;
+  height: 24px;
+  stroke: #fafafa;
 }

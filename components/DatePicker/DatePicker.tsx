@@ -76,6 +76,8 @@ export const DatePicker = ({
       }}
       popoverProps={{
         position: "bottom-start",
+        withinPortal: true,
+        zIndex: 10000,
         offset: 5,
         transitionProps: { transition: "pop", duration: 250 },
         classNames: {

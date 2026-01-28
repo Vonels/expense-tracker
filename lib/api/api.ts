@@ -1,8 +1,35 @@
 import axios from "axios";
+import { useAuthStore } from "@/lib/store/authStore";
 
 export const api = axios.create({
-  baseURL: "/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL_FRONTEND + "/api",
   withCredentials: true,
 });
 
-console.log("API URL:", process.env.NEXT_PUBLIC_API_URL_BACKEND);
+api.interceptors.request.use((config) => {
+  useAuthStore.getState().setLoading(true);
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => {
+    useAuthStore.getState().setLoading(false);
+    return response;
+  },
+  (error) => {
+    useAuthStore.getState().setLoading(false);
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.request.use((config) => {
+  useAuthStore.getState().setLoading(true);
+
+  const token = useAuthStore.getState().token;
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});

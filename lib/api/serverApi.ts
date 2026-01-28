@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { api } from "./api";
 
-import type { User } from "@/types/user";
+import type { UserNew } from "@/types/user";
 import type { Expense } from "@/types/expense";
 import type { Income } from "@/types/income";
 import type { ListResponse } from "@/types/expense";
@@ -22,8 +22,12 @@ export const checkSession = async (externalCookie?: string) => {
   return res;
 };
 
-export const getMe = async (): Promise<User> => {
-  const res = await api.get<User>("/users/me", getAuthHeaders());
+export const getMe = async (): Promise<UserNew> => {
+  const cookieString = (await cookies()).toString();
+
+  const res = await api.get<UserNew>("/users/current", {
+    headers: { Cookie: cookieString },
+  });
   return res.data;
 };
 

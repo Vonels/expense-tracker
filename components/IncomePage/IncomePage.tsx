@@ -1,163 +1,186 @@
 "use client";
+
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchIncomes, deleteIncome } from "@/lib/api/clientApi";
-import { Icon } from "../Icon/Icon";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import css from "./IncomePage.module.css";
 import { TotalExpense } from "../TotalExpense/TotalExpense";
 import { TotalIncome } from "../TotalIncome/TotalIncome";
-// import { Modal } from "../Modal/Modal";
-// import TransactionForm from "../TransactionForm/TransactionForm";
-import css from "./IncomePage.module.css";
-import { toast } from "react-toastify";
+import { Icon } from "../Icon/Icon";
+import Calendar from "../Calendar/Calendar";
+import {
+  deleteTransactionById,
+  getTransactionCategories,
+} from "@/lib/api/clientApi";
+import { TransactionType, TransactionTypeData } from "@/types/transactions";
+import { useUserStore } from "@/lib/store/userStore";
+import { Modal } from "../Modal/Modal";
+import TransactionForm from "../TransactionForm/TransactionForm";
+import { format } from "date-fns";
 
-const IncomePage = () => {
-  const [search, setSearch] = useState("");
-  const [date, setDate] = useState("");
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [selectedIncome, setSelectedIncome] = useState<any>(null);
+interface ExpensePageProps {
+  type: TransactionType;
+}
 
+const ExpensePage = ({ type }: ExpensePageProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const [selectedTransaction, setSelectedTransaction] = useState<{
+    transaction: TransactionTypeData;
+    total: number;
+  } | null>(null);
+
+  const currency = useUserStore((s) => s.currency);
+  const upperCurrency = currency.toUpperCase();
   const queryClient = useQueryClient();
 
-  // const handleOpenModal = (income?: any) => {
-  //   setSelectedIncome(income || null);
-  //   setIsModalOpen(true);
-  // };
-
-  const { data: incomesData, isLoading } = useQuery({
-    queryKey: ["incomes", search, date],
+  const { data } = useQuery<TransactionTypeData[]>({
+    queryKey: ["categories", type, selectedDate, searchQuery],
     queryFn: () =>
-      fetchIncomes({
-        from: date || undefined,
-        to: date || undefined,
+      getTransactionCategories({
+        type,
+        date: selectedDate,
+        search: searchQuery,
       }),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteIncome(id),
+    mutationFn: (id: string) => deleteTransactionById(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["incomes"] });
-      toast.success("Income deleted successfully");
-    },
-    onError: () => {
-      toast.error("Failed to delete income");
+      queryClient.invalidateQueries({ queryKey: ["categories", type] });
+      queryClient.invalidateQueries({ queryKey: ["user", "current"] });
     },
   });
 
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this income?")) {
-      deleteMutation.mutate(id);
+  const onDeleteTransaction = (id: string) => {
+    deleteMutation.mutate(id);
+  };
+
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(format(date, "yyyy-MM-dd"));
+    } else {
+      setSelectedDate("");
     }
   };
 
-  // const handleCloseModal = () => {
-  //   setIsModalOpen(false);
-  //   setSelectedIncome(null);
-  // };
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.currentTarget.value);
+  };
 
-  const incomFormList = incomesData?.items || [];
+  const handleOpenEditModal = (item: TransactionTypeData) => {
+    setSelectedTransaction({
+      transaction: item,
+      total: 0,
+    });
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+    setSelectedTransaction(null);
+  };
 
   return (
     <div className="container">
-      <div className={css.incomePage}>
-        <div className={css.title}>
-          <h3 className={css.titleText}>All Income</h3>
-          <p className={css.titleParagraf}>
+      <div className={css.titleWrapper}>
+        <div>
+          <h3 className={css.titleExpense}>
+            All {type === "expenses" ? "Expense" : "Income"}
+          </h3>
+          <p className={css.textExpense}>
             Track and celebrate every bit of earnings effortlessly! Gain
             insights into your total revenue in a snap.
           </p>
         </div>
-        <div className={css.total}>
+        <div className={css.totals}>
           <TotalIncome />
           <TotalExpense />
         </div>
-        <div className={css.incomeForm}>
-          <form action="" onSubmit={(e) => e.preventDefault()}>
-            <label id="search">
-              <Icon id="icon-search" className={css.icon} />
-              <input
-                className={css.incomeFormInputSearch}
-                type="text"
-                id="search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search for anything.."
-              ></input>
-            </label>
-            <label id="date">
-              <Icon id="icon-search" className={css.icon} />
-              <input
-                className={css.incomeFormInputData}
-                type="date"
-                id="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                placeholder="dd/mm/yyyy"
-              ></input>
-            </label>
-          </form>
-          <div className={css.incomeFormListCategoris}>
-            <ul>
-              <li className={css.incomeFormListItemCategory}>Category</li>
-              <li className={css.incomeFormListItemComment}>Comment</li>
-              <li className={css.incomeFormListItemDate}>Date</li>
-              <li className={css.incomeFormListItemTime}>Time</li>
-              <li className={css.incomeFormListItemSum}>Sum</li>
-              <li className={css.incomeFormItem}>Actions</li>
-            </ul>
-            {isLoading ? (
-              <p className={css.loadingText}>Loading...</p>
-            ) : incomFormList.length === 0 ? (
-              <p className={css.noDataText}>No income records found.</p>
-            ) : (
-              incomFormList.map((income) => (
-                <ul key={income.id} className={css.incomeFormList}>
-                  <li className={css.incomeFormListItemText}>
-                    {income.source}
-                  </li>
-                  <li className={css.incomeFormListItemText}>
-                    {income.comment || "—"}
-                  </li>
-                  <li className={css.incomeFormListItemText}>{income.date}</li>
-                  <li className={css.incomeFormListItemText}>
-                    {income.date.includes("T")
-                      ? income.date.split("T")[1].slice(0, 5)
-                      : "—"}
-                  </li>
-                  <li className={css.incomeFormListItemText}>
-                    {income.amount.toLocaleString()} / UAH
-                  </li>
-                  <li className={css.incomeFormBtn}>
-                    <button
-                      className={css.incomeFormBtnEdit}
-                      // onClick={() => handleOpenModal(income)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className={css.incomeFormBtnDelete}
-                      onClick={() => handleDelete(income.id)}
-                    >
-                      Delete
-                    </button>
-                  </li>
-                </ul>
-              ))
-            )}
-          </div>
-        </div>
       </div>
-      {/* {isModalOpen && (
+
+      <div className={css.filterWrapper}>
+        <div className={css.filterInputWrapper}>
+          <label htmlFor="filterSearch">
+            <Icon id="icon-search" className={css.iconSearch} />
+          </label>
+          <input
+            type="text"
+            id="filterSearch"
+            className={css.filterInput}
+            placeholder="Search for anything.."
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+        </div>
+        <Calendar onDateSelect={handleDateSelect} />
+      </div>
+
+      <ul className={css.list}>
+        <li className={css.header}>
+          <p>Category</p>
+          <p>Comment</p>
+          <p>Date</p>
+          <p>Time</p>
+          <p>Sum</p>
+          <p>Actions</p>
+        </li>
+
+        {data &&
+          data.map((item) => (
+            <li className={css.row} key={item._id}>
+              <p>{item.category?.categoryName || "Other"}</p>
+              <p className={css.ellipsis}>{item.comment}</p>
+              <p>{item.date}</p>
+              <p>{item.time}</p>
+              <p className={css.money}>
+                {item.sum} / {upperCurrency}
+              </p>
+              <div className={css.actions}>
+                <button
+                  className={css.editBtn}
+                  onClick={() => handleOpenEditModal(item)}
+                >
+                  <Icon id="icon-Pensil" className={css.iconEdit} />
+                  <span className={css.hideBtn}>Edit</span>
+                </button>
+                <button
+                  className={css.deleteBtn}
+                  onClick={() => onDeleteTransaction(item._id)}
+                  disabled={deleteMutation.isPending}
+                >
+                  <Icon id="icon-trash" className={css.iconDelete} />
+                  <span className={css.hideBtn}>Delete</span>
+                </button>
+              </div>
+            </li>
+          ))}
+      </ul>
+
+      {isOpen && selectedTransaction && (
         <Modal onClose={handleCloseModal}>
-          <div className={css.modalContent}>
-            <TransactionForm
-              onOpenCategories={() => {}}
-              selectedCategoryName={selectedIncome?.source || ""}
-            />
-          </div>
+          <TransactionForm
+            isEditing={!!selectedTransaction}
+            currentTransaction={{
+              transaction: {
+                _id: selectedTransaction.transaction._id,
+                type: selectedTransaction.transaction.type,
+                date: selectedTransaction.transaction.date,
+                time: selectedTransaction.transaction.time,
+                category: selectedTransaction.transaction.category._id,
+                sum: selectedTransaction.transaction.sum,
+                comment: selectedTransaction.transaction.comment,
+              },
+              total: selectedTransaction.total,
+            }}
+            selectedCategoryName={selectedTransaction.transaction.category}
+            onClose={handleCloseModal}
+          />
         </Modal>
-      )} */}
+      )}
     </div>
   );
 };
 
-export default IncomePage;
+export default ExpensePage;

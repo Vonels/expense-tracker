@@ -4,6 +4,12 @@ import { TotalExpense } from "@/components/TotalExpense/TotalExpense";
 import { ExpensesChart } from "@/components/ExpensesChart/ExpensesChart";
 import TransactionForm from "@/components/TransactionForm/TransactionForm";
 import { Metadata } from "next";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import { getMe } from "@/lib/api/serverApi";
 
 export const metadata: Metadata = {
   title: "Expense Log | ExpenseTracker",
@@ -23,35 +29,38 @@ export const metadata: Metadata = {
   },
 };
 
-export default function DashboardPage() {
-  const handleOpenCategories = (type: "incomes" | "expenses") => {};
+export default async function DashboardPage() {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["user", "current"],
+    queryFn: () => getMe(),
+  });
 
   return (
-    <main className={css.container}>
-      <div className={css.mainLayout}>
-        <section className={css.statsSection}>
-          <div className={css.info}>
-            <h1 className={css.title}>Expense Log</h1>
-            <p className={css.subtitle}>
-              Capture and organize every penny spent with ease! A clear view of
-              your financial habits at your fingertips.
-            </p>
-          </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <main className={css.mainContainer}>
+        <div className={css.mainLayout}>
+          <section className={css.statsSection}>
+            <div className={css.info}>
+              <h1 className={css.title}>Expense Log</h1>
+              <p className={css.subtitle}>
+                Capture and organize every penny spent with ease!
+              </p>
+            </div>
 
-          <div className={css.summaryCards}>
-            <TotalIncome />
-            <TotalExpense />
-          </div>
-          <ExpensesChart />
-        </section>
+            <div className={css.summaryCards}>
+              <TotalIncome />
+              <TotalExpense />
+            </div>
+            <ExpensesChart />
+          </section>
 
-        <aside className={css.formSection}>
-          <TransactionForm
-          // onOpenCategories={handleOpenCategories}
-          // selectedCategoryName="Category"
-          />
-        </aside>
-      </div>
-    </main>
+          <aside className={css.formSection}>
+            <TransactionForm />
+          </aside>
+        </div>
+      </main>
+    </HydrationBoundary>
   );
 }

@@ -16,6 +16,7 @@ export default function AuthLayout({
   return (
     <main className={css.mainContainer}>
       <div className={css.wrapper}>
+        {/* 4. Використовуємо умовний рендеринг */}
         {showBackground && (
           <div className={css.backgroundphoto}>
             <div className={css.rectangle}>
