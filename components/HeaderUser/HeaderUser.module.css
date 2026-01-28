@@ -12,7 +12,11 @@
     display: inline-block;
   }
 
-  .desktopNav {
+  .historyNav {
+    display: none;
+  }
+
+  .userMenu {
     display: none;
   }
 }
