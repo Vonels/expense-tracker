@@ -212,6 +212,8 @@
 .errorLabel {
   color: #e74a3b;
   font-size: 12px;
+  position: absolute;
+  bottom: 15px;
   margin-top: 4px;
   margin-left: 18px;
 }
