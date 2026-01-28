@@ -6,15 +6,19 @@ import { Icon } from "../Icon/Icon";
 import { useEffect, useState } from "react";
 import { UserNew } from "@/types/user";
 import { getMe } from "@/lib/api/clientApi";
+import { useAuthStore } from "@/lib/store/authStore";
 
 type Props = {
   isOpen: boolean;
   onToggle: () => void;
 };
-const UserBarBtn = ({ isOpen, onToggle }: Props) => {
-  const [user, setUser] = useState<UserNew | null>(null)
+  const UserBarBtn = ({ isOpen, onToggle }: Props) => {
+    const [user, setUser] = useState<UserNew | null>(null)
+    
+    const token = useAuthStore((s) => s.token);
 
-  useEffect(() => {
+    useEffect(() => {
+    // if (!token) return;
     const fetchUser = async () => {
       try {
         const data = await getMe();
@@ -25,9 +29,14 @@ const UserBarBtn = ({ isOpen, onToggle }: Props) => {
     };
 
     fetchUser();
-  }, []);
+  }, [token]);
   
-  if (!user) return null;
+    if (!user) return null;
+    
+  //   const user = useAuthStore((s) => s.user);
+
+  // if (!user) return null;
+
   const { name, avatarUrl } = user;
   const firstLetter = name?.charAt(0).toUpperCase();
 

@@ -144,6 +144,7 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
           <TransactionForm
             isEditing={!!selectedTransaction}
             currentTransaction={selectedTransaction}
+            selectedCategoryName={selectedTransaction?.transaction.category}
             onClose={handleCloseModal}
           />
         </Modal>

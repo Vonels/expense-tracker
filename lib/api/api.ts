@@ -21,3 +21,15 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+// пробую виправити проблему з логаут
+api.interceptors.request.use((config) => {
+  useAuthStore.getState().setLoading(true);
+
+  const token = useAuthStore.getState().token;
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
