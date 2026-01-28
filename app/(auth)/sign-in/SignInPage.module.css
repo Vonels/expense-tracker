@@ -79,6 +79,10 @@
   padding-right: 48px;
   box-sizing: border-box;
 }
+.inputs:hover {
+  border: 1px solid #0ef387;
+  border-radius: 12px;
+}
 .eyeIcon {
   position: absolute;
   right: 14px;
@@ -97,11 +101,13 @@
 .eyeIcon use {
   pointer-events: none;
 }
-
-.backgroundphoto {
-  display: none;
+.error {
+  margin-top: 4px;
+  display: flex;
+  font-weight: 400;
+  font-size: 10px;
+  color: #e74a3b;
 }
-
 @media (min-width: 768px) {
   .title {
     font-weight: 400;

@@ -17,7 +17,6 @@ export const TotalExpense = () => {
   const { data: userData } = useQuery({
     queryKey: ["user", "current"],
     queryFn: getMe,
-    staleTime: Infinity,
   });
 
   const totalExpenses = useUserStore(
@@ -30,6 +29,7 @@ export const TotalExpense = () => {
     if (userData?.transactionsTotal) {
       updateTotals({
         expenses: userData.transactionsTotal.expenses,
+        incomes: userData.transactionsTotal.incomes,
       });
     }
   }, [userData, updateTotals]);

@@ -7,14 +7,21 @@ export async function GET(
   { params }: { params: Promise<{ type: string }> }
 ) {
   const type = (await params).type;
+  const search = req.nextUrl.searchParams.get("search");
+  const date = req.nextUrl.searchParams.get("date");
 
   try {
     const cookieStore = await cookies();
+
+    const queryParams: Record<string, string> = {};
+    if (search) queryParams.search = search;
+    if (date) queryParams.date = date;
 
     const data = await api.get(`/transactions/${type}`, {
       headers: {
         Cookie: cookieStore.toString(),
       },
+      params: queryParams,
     });
 
     return NextResponse.json(data.data);

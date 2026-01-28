@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "@/lib/store/authStore";
 
 export const api = axios.create({
-  baseURL: "/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL_FRONTEND + "/api",
   withCredentials: true,
 });
 
@@ -21,7 +21,7 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-// пробую виправити проблему з логаут
+
 api.interceptors.request.use((config) => {
   useAuthStore.getState().setLoading(true);
 
