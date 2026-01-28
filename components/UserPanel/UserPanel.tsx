@@ -1,5 +1,5 @@
 "use client";
-import { useAuthStore } from "@/lib/store/authStore";
+import { logout as apiLogout } from "@/lib/api/clientApi";
 import { useRouter } from "next/navigation";
 import css from "./UserPanel.module.css";
 import { Icon } from "../Icon/Icon";
@@ -11,15 +11,16 @@ type Props = {
 
 const UserPanel = ({ isOpen, onClose }: Props) => {
   const router = useRouter();
-  const logout = useAuthStore((state) => state.logout);
+
   const handleProfileSettings = () => {
-    router.push("/profile-settings")
+    router.push("/profile-settings");
     onClose();
   };
-  const handleLogout = async() => {
-    await logout();
+
+  const handleLogout = async () => {
+    await apiLogout();
+
     router.push("/");
-    router.refresh();
     onClose();
   };
 
