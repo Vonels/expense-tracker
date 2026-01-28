@@ -1,4 +1,4 @@
-![Banner](https://chatgpt.com/backend-api/estuary/content?id=file_00000000cbf471f49bb48ffe56b42c31&ts=491554&p=fs&cid=1&sig=b1f4e8d06fff59d2cb3113a93d2284d73749836de9381a56b892a39b13ad0653&v=0)
+![Banner](https://ibb.co/WvZ0brt4)
 
 **Expense Tracker** — современное веб-приложение для управления личными финансами.  
 Позволяет отслеживать доходы и расходы, анализировать баланс и управлять транзакциями в удобном и адаптивном интерфейсе.
