@@ -30,6 +30,7 @@ import { Icon } from "../Icon/Icon";
 import dayjs from "dayjs";
 import { useUserStore } from "@/lib/store/userStore";
 import { createTransaction, updateTransaction } from "@/lib/api/clientApi";
+import axios from "axios";
 
 interface TransactionFormProps {
   onOpenCategories?: (type: TransactionType) => void;
@@ -92,10 +93,9 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   const currentCurrency = user?.currency || "UAH";
 
   const transactionId = useMemo(() => {
-    return currentTransaction?.transaction?._id || currentTransaction?._id;
+    return currentTransaction?.transaction?._id;
   }, [currentTransaction]);
 
-  // Mutation для оновлення
   const updateMutation = useMutation({
     mutationFn: ({
       type,
@@ -111,23 +111,23 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       if (onClose) onClose();
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Update failed");
+    onError: (error: unknown) => {
+      let errorMsg = "Request failed";
+      if (axios.isAxiosError(error)) {
+        errorMsg = error.response?.data?.message || "Update failed";
+      }
+      toast.error(errorMsg);
     },
   });
 
   useEffect(() => {
     if (isEditing && currentTransaction) {
-      const data = currentTransaction.transaction || currentTransaction;
+      const data = currentTransaction.transaction;
       setTransactionType(data.type as TransactionType);
 
       if (!selectedCategory) {
-        const catId =
-          typeof data.category === "object" ? data.category._id : data.category;
-        const catName =
-          data.category?.categoryName ||
-          selectedCategoryName?.categoryName ||
-          "";
+        const catId = data.category;
+        const catName = selectedCategoryName?.categoryName || "";
         setCategory(catId, catName);
       }
     }
@@ -142,32 +142,23 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
   const initialValues: TransactionFormValues = {
     type: isEditing
-      ? currentTransaction?.transaction?.type ||
-        currentTransaction?.type ||
-        "expenses"
-      : transactionType || "expenses",
+      ? (currentTransaction?.transaction?.type as TransactionType) || "expenses"
+      : (transactionType as TransactionType) || "expenses",
     date: isEditing
       ? dayjs(
-          currentTransaction?.transaction?.date || currentTransaction?.date
+          currentTransaction?.transaction?.date ||
+            currentTransaction?.transaction?.date
         ).format("YYYY-MM-DD")
       : new Date().toISOString().split("T")[0],
     time: isEditing
-      ? currentTransaction?.transaction?.time || currentTransaction?.time || ""
+      ? currentTransaction?.transaction?.time || ""
       : new Date().toTimeString().slice(0, 8),
     category:
-      selectedCategory?.id ||
-      (typeof currentTransaction?.transaction?.category === "object"
-        ? currentTransaction?.transaction?.category?._id
-        : currentTransaction?.transaction?.category) ||
+      selectedCategory?.id || // Пріоритет вибору зі стору (після модалки категорій)
+      currentTransaction?.transaction?.category || // Потім значення з транзакції (ID як рядок)
       "",
-    sum: isEditing
-      ? currentTransaction?.transaction?.sum || currentTransaction?.sum || ""
-      : "",
-    comment:
-      (isEditing
-        ? currentTransaction?.transaction?.comment ||
-          currentTransaction?.comment
-        : "") || "",
+    sum: isEditing ? currentTransaction?.transaction?.sum || "" : "",
+    comment: (isEditing ? currentTransaction?.transaction?.comment : "") || "",
   };
 
   const handleSubmit = async (
@@ -196,10 +187,22 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         resetForm();
         resetCategory();
         queryClient.invalidateQueries({ queryKey: ["categories"] });
-        if (onClose) onClose();
-      } catch (error: any) {
-        toast.error(error.response?.data?.message || "Creation failed");
+      } catch (error: unknown) {
+        let errorMsg = "Request failed";
+        if (axios.isAxiosError(error)) {
+          errorMsg = error.response?.data?.message || "Creation failed";
+        }
+        toast.error(errorMsg);
       }
+
+      router.refresh();
+
+      const targetPath =
+        values.type === "expenses"
+          ? "/transactions/history/expenses"
+          : "/transactions/history/incomes";
+      router.push(targetPath);
+      if (onClose) onClose();
     }
   };
 
@@ -227,6 +230,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   type="radio"
                   name="type"
                   value="expenses"
+                  disabled={isEditing}
                   className={css.radioInput}
                   onChange={() => {
                     setFieldValue("type", "expenses");
