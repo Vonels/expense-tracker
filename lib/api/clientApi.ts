@@ -32,12 +32,18 @@ api.interceptors.response.use(
     useAuthStore.getState().setLoading(false);
     return response;
   },
-  (error) => {
+  async (error) => {
     useAuthStore.getState().setLoading(false);
+
+    if (error.response?.status === 401) {
+      useAuthStore.getState().logout();
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("auth-storage");
+      }
+    }
     return Promise.reject(error);
   }
 );
-
 // Все что связано с User
 export const register = async (values: AuthCredentials): Promise<User> => {
   const res = await api.post<User>("/auth/register", values);
@@ -50,8 +56,29 @@ export const login = async (values: LoginCredentials): Promise<User> => {
 };
 
 export const logout = async (): Promise<void> => {
-  await api.post("/auth/logout");
+  try {
+    useAuthStore.getState().logout();
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("auth-storage");
+    }
+
+    await api.post("/auth/logout").catch(() => {});
+  } finally {
+    if (typeof window !== "undefined") {
+      window.location.replace("/sign-in");
+    }
+  }
 };
+// export const logout = async (): Promise<void> => {
+//   try {
+//     await api.post("/auth/logout");
+//   } finally {
+//     useAuthStore.getState().logout();
+//     if (typeof window !== "undefined") {
+//       window.location.href = "/";
+//     }
+//   }
+// };
 
 export const checkSession = async () => {
   const res = await fetch("/api/auth/session", {

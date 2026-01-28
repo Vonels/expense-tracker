@@ -1,11 +1,10 @@
 "use client";
-
-import { useRouter } from "next/navigation";
-import css from "./UserPanel.module.css";
-import { Icon } from "../Icon/Icon";
 import { useState } from "react";
-import { logout } from "@/lib/api/clientApi";
+import { useRouter } from "next/navigation";
+import { logout as apiLogout } from "@/lib/api/clientApi";
 import { useAuthStore } from "@/lib/store/authStore";
+import { Icon } from "../Icon/Icon";
+import css from "./UserPanel.module.css";
 
 type Props = {
   isOpen: boolean;
@@ -14,87 +13,89 @@ type Props = {
 
 const UserPanel = ({ isOpen, onClose }: Props) => {
   const router = useRouter();
+
   const [confirm, setConfirm] = useState(false);
   const localLogout = useAuthStore((state) => state.logout);
 
   const handleProfileSettings = () => {
-    router.push("/profile-settings")
+    router.push("/profile-settings");
     onClose();
   };
-  
+
   const closeConfirmModal = () => {
     setConfirm(false);
   };
 
   const handleLogout = async () => {
-  try {
-    await logout(); // api
-  } catch (e) {
-    console.log(e);
-  }
+    try {
+      await apiLogout();
 
-  localLogout();
+      if (localLogout) localLogout();
 
-  setConfirm(false);
-  onClose();
+      setConfirm(false);
+      onClose();
 
-  router.replace("/");
-  router.refresh();
-};
+      router.replace("/");
+      router.refresh();
+    } catch (e) {
+      console.error("Logout failed:", e);
 
-  
-  return (<>
-    <div className={`${css.panel} ${isOpen ? css.open : ""}`}>
-      <button
-        type="button"
-        onClick={handleProfileSettings}
-        className={css.button}
-      >
-        <Icon id={"icon-user"} className={css.icon} />
-        Profile settings
-      </button>
-      <button type="button" onClick={() => setConfirm(true)} className={css.button}>
-        <Icon id={"icon-log-out"} className={css.icon} />
-        Log out
-      </button>
-    </div>
-    
-    {confirm && (
-      <div
-        className={css.backdrop}
-        onClick={closeConfirmModal}
-      >
-        <div
-          className={css.modal}
-          onClick={(e) => e.stopPropagation()}
+      setConfirm(false);
+      onClose();
+      router.replace("/");
+    }
+  };
+
+  return (
+    <>
+      <div className={`${css.panel} ${isOpen ? css.open : ""}`}>
+        <button
+          type="button"
+          onClick={handleProfileSettings}
+          className={css.button}
         >
-          <button
+          <Icon id={"icon-user"} className={css.icon} />
+          Profile settings
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setConfirm(true)}
+          className={css.button}
+        >
+          <Icon id={"icon-log-out"} className={css.icon} />
+          Log out
+        </button>
+      </div>
+
+      {confirm && (
+        <div className={css.backdrop} onClick={closeConfirmModal}>
+          <div className={css.modal} onClick={(e) => e.stopPropagation()}>
+            <button
               type="button"
               className={css.closeBtn}
               onClick={closeConfirmModal}
               aria-label="Close modal"
             >
-              <Icon id={'icon-Close'} className={css.closeIcon} />
-            </button>
-            <p>Are you sure you want to log out?</p>
-            <div className={css.btnDiv}>
-            <button
-              className={css.confirm}
-              onClick={handleLogout}
-            >
-              Log out
+              <Icon id={"icon-Close"} className={css.closeIcon} />
             </button>
 
-            <button
-              className={css.cancel}
-              onClick={() => setConfirm(false)}
-            >
-              Cancel
-            </button>
+            <p className={css.modalText}>Are you sure you want to log out?</p>
+
+            <div className={css.btnDiv}>
+              <button className={css.confirm} onClick={handleLogout}>
+                Log out
+              </button>
+
+              <button className={css.cancel} onClick={closeConfirmModal}>
+                Cancel
+              </button>
             </div>
           </div>
         </div>
       )}
-  </>);
+    </>
+  );
 };
+
 export default UserPanel;
