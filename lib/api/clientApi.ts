@@ -4,6 +4,7 @@ import type { AuthCredentials, LoginCredentials } from "@/types/auth";
 import type { CategoryStat, Expense, ExpensesQuery } from "@/types/expense";
 import type { Income, IncomesQuery } from "@/types/income";
 import type { ListResponse } from "@/types/expense";
+
 import {
   ICategory,
   CategoriesResponse,
@@ -23,11 +24,6 @@ import {
 
 api.interceptors.request.use((config) => {
   useAuthStore.getState().setLoading(true);
-  // Виправлення Пункту №3
-  const token = useAuthStore.getState().token;
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
   return config;
 });
 
@@ -38,18 +34,6 @@ api.interceptors.response.use(
   },
   (error) => {
     useAuthStore.getState().setLoading(false);
-
-    //Виправлення Пункту №3
-    if (error.response?.status === 401) {
-      useAuthStore.getState().logout();
-      if (
-        typeof window !== "undefined" &&
-        !window.location.pathname.includes("sign-in")
-      ) {
-        window.location.href = "/sign-in";
-      }
-    }
-
     return Promise.reject(error);
   }
 );
@@ -70,17 +54,16 @@ export const logout = async (): Promise<void> => {
 };
 
 export const checkSession = async () => {
-  try {
-    const res = await api.get("/auth/session");
+  const res = await fetch("/api/auth/session", {
+    method: "GET",
+    credentials: "include",
+  });
 
-    return {
-      success: true,
-      data: res.data,
-    };
-  } catch (error) {
-    console.error("Session check failed:", error);
+  if (!res.ok) {
     return { success: false };
   }
+
+  return res.json();
 };
 
 export const getMe = async (): Promise<UserNew> => {
