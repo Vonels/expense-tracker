@@ -17,10 +17,10 @@ export const TotalIncome = () => {
   const { data: userData } = useQuery({
     queryKey: ["user", "current"],
     queryFn: getMe,
+    staleTime: 1000 * 60 * 5,
   });
-
   const totalIncomes = useUserStore((state) => state.transactionsTotal.incomes);
-  const currency = useUserStore((state) => state.currency);
+  const currency = userData?.currency || "usd";
   const updateTotals = useUserStore((state) => state.updateTotals);
 
   useEffect(() => {
@@ -32,7 +32,8 @@ export const TotalIncome = () => {
     }
   }, [userData, updateTotals]);
 
-  const symbol = currencySymbols[currency.toLowerCase()] || currency;
+  const symbol =
+    currencySymbols[currency.toLowerCase()] || currency.toUpperCase();
 
   return (
     <div className={css.card}>
@@ -41,13 +42,13 @@ export const TotalIncome = () => {
       </div>
       <div>
         <p className={css.label}>Total Income</p>
-        <p className={css.amount}>
-          {symbol}
+        <div className={css.amount}>
+          <span className={css.symbol}>{symbol}</span>
           {(totalIncomes || 0).toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })}
-        </p>
+        </div>
       </div>
     </div>
   );
