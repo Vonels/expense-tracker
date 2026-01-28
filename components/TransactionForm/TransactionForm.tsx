@@ -126,7 +126,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       setTransactionType(data.type as TransactionType);
 
       if (!selectedCategory) {
-        const catId = data.category;
+        const catId = data._id;
         const catName = selectedCategoryName?.categoryName || "";
         setCategory(catId, catName);
       }
