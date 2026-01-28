@@ -12,13 +12,12 @@ type Props = {
   isOpen: boolean;
   onToggle: () => void;
 };
-  const UserBarBtn = ({ isOpen, onToggle }: Props) => {
-    const [user, setUser] = useState<UserNew | null>(null)
-    
-    const token = useAuthStore((s) => s.token);
+const UserBarBtn = ({ isOpen, onToggle }: Props) => {
+  const [user, setUser] = useState<UserNew | null>(null);
 
-    useEffect(() => {
-    // if (!token) return;
+  const token = useAuthStore((s) => s.token);
+
+  useEffect(() => {
     const fetchUser = async () => {
       try {
         const data = await getMe();
@@ -30,23 +29,18 @@ type Props = {
 
     fetchUser();
   }, [token]);
-  
-    if (!user) return null;
-    
-  //   const user = useAuthStore((s) => s.user);
 
-  // if (!user) return null;
+  if (!user) return null;
 
   const { name, avatarUrl } = user;
   const firstLetter = name?.charAt(0).toUpperCase();
 
   return (
     <button type="button" className={css.UserBarBtn} onClick={onToggle}>
-      {/* Avatar */}
       {avatarUrl ? (
         <Image
           src={avatarUrl}
-          alt={name ?? 'user avatar'}
+          alt={name ?? "user avatar"}
           className={css.avatar}
           width={44}
           height={44}
@@ -55,11 +49,8 @@ type Props = {
         <div className={css.avatarFallback}>{firstLetter}</div>
       )}
 
-      {/* User name */}
-
       <span className={css.userName}>{name}</span>
 
-      {/* Arrow icon */}
       <Icon
         id={isOpen ? "icon-listpump" : "icon-listdamp"}
         className={css.icon}
