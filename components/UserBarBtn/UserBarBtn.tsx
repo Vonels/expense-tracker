@@ -3,8 +3,7 @@
 import css from "./UserBarBtn.module.css";
 import Image from "next/image";
 import { Icon } from "../Icon/Icon";
-import { useEffect, useState } from "react";
-import { UserNew } from "@/types/user";
+import { useEffect } from "react";
 import { getMe } from "@/lib/api/clientApi";
 import { useAuthStore } from "@/lib/store/authStore";
 
@@ -13,22 +12,32 @@ type Props = {
   onToggle: () => void;
 };
 const UserBarBtn = ({ isOpen, onToggle }: Props) => {
-  const [user, setUser] = useState<UserNew | null>(null);
+  const { user, setAuthData, token, _hasHydrated } = useAuthStore();
 
-  const token = useAuthStore((s) => s.token);
-
+  // Завантажуємо дані користувача, якщо їх немає в сторі
   useEffect(() => {
+    if (!_hasHydrated || user) return;
+    
     const fetchUser = async () => {
       try {
         const data = await getMe();
-        setUser(data);
+        // Оновлюємо стор
+        setAuthData(
+          {
+            name: data.name || null,
+            email: data.email,
+            avatarUrl: data.avatarUrl || null,
+            currency: (data.currency || "UAH").toUpperCase(),
+          },
+          token || ""
+        );
       } catch (error) {
         console.error("Failed to fetch user", error);
       }
     };
 
     fetchUser();
-  }, [token]);
+  }, [token, _hasHydrated, user, setAuthData]);
 
   if (!user) return null;
 
