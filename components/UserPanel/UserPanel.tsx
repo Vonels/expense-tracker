@@ -22,6 +22,9 @@ const UserPanel = ({ isOpen, onClose }: Props) => {
     onClose();
   };
   
+  const closeConfirmModal = () => {
+    setConfirm(false);
+  };
 
   const handleLogout = async () => {
   try {
@@ -57,8 +60,22 @@ const UserPanel = ({ isOpen, onClose }: Props) => {
     </div>
     
     {confirm && (
-        <div className={css.backdrop}>
-          <div className={css.modal}>
+      <div
+        className={css.backdrop}
+        onClick={closeConfirmModal}
+      >
+        <div
+          className={css.modal}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+              type="button"
+              className={css.closeBtn}
+              onClick={closeConfirmModal}
+              aria-label="Close modal"
+            >
+              <Icon id={'icon-Close'} className={css.closeIcon} />
+            </button>
             <p>Are you sure you want to log out?</p>
             <div className={css.btnDiv}>
             <button

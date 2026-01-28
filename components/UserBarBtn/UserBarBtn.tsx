@@ -18,7 +18,7 @@ type Props = {
     const token = useAuthStore((s) => s.token);
 
     useEffect(() => {
-    if (!token) return;
+    // if (!token) return;
     const fetchUser = async () => {
       try {
         const data = await getMe();

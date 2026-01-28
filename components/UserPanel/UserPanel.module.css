@@ -83,11 +83,12 @@
 }
 
 .modal {
+  position: relative;
   border: 1px solid rgba(250, 250, 250, 0.1);
   border-radius: 30px;
   width: 500px;
   height: 266px;
-  background: #1e1f23;
+  background: #171719;
   padding: 80px;
   text-align: center;
 }
@@ -146,4 +147,21 @@
   display: flex;
   justify-content: center;
   gap: 8px;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+}
+
+.closeIcon {
+  width: 24px;
+  height: 24px;
+  stroke: #fafafa;
 }
