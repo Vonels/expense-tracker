@@ -284,7 +284,7 @@ import { useAuthStore } from "@/lib/store/authStore";
 import { userService } from "@/lib/api/userService";
 import toast from "react-hot-toast";
 import styles from "./UserSetsModal.module.css";
-
+import axios from "axios";
 interface AvatarFieldProps {
   avatarUrl: string | null;
   userName: string;
@@ -297,26 +297,18 @@ export const AvatarField = ({
   onAvatarChange,
 }: AvatarFieldProps) => {
   const { user, updateUser, setLoading } = useAuthStore();
-  const spritePath = "/symbol-defs.svg";
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    return () => {
-      if (previewUrl?.startsWith("blob:")) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
+    if (propsAvatarUrl) {
+      setPreviewUrl(null);
+    }
+  }, [propsAvatarUrl]);
 
   const avatarSrc = useMemo(() => {
     if (previewUrl) return previewUrl;
-
     const finalUrl = user?.avatarUrl || propsAvatarUrl;
-
-    if (finalUrl) {
-      return finalUrl.includes("?") ? finalUrl : `${finalUrl}?t=${Date.now()}`;
-    }
-    return null;
+    return finalUrl || null;
   }, [previewUrl, user?.avatarUrl, propsAvatarUrl]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -336,11 +328,32 @@ export const AvatarField = ({
 
       updateUser({ avatarUrl: freshUrl });
       onAvatarChange(freshUrl);
-
       toast.success("Avatar updated!");
     } catch {
       toast.error("Upload failed");
       setPreviewUrl(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleRemove = async () => {
+    if (!confirm("Are you sure?")) return;
+    setLoading(true);
+    try {
+      await userService.deleteAvatar();
+
+      // Очищуємо стор і локальний стан
+      updateUser({ avatarUrl: null });
+      onAvatarChange("");
+      setPreviewUrl(null);
+
+      toast.success("Avatar removed");
+    } catch (error: unknown) {
+      let message = "Failed to remove";
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.message || message;
+      }
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -351,6 +364,7 @@ export const AvatarField = ({
       <div className={styles.avatarCircle}>
         {avatarSrc ? (
           <Image
+            key={avatarSrc}
             src={avatarSrc}
             alt={userName || "User Avatar"}
             className={styles.avatarImg}
@@ -362,7 +376,7 @@ export const AvatarField = ({
         ) : (
           <div className={styles.defaultAvatarContainer}>
             <svg className={styles.defaultAvatarIcon}>
-              <use href={`${spritePath}#icon-user`}></use>
+              <use href="/symbol-defs.svg#icon-user"></use>
             </svg>
           </div>
         )}
@@ -381,21 +395,7 @@ export const AvatarField = ({
         <button
           type="button"
           className={styles.removeBtn}
-          onClick={async () => {
-            if (!confirm("Are you sure?")) return;
-            setLoading(true);
-            try {
-              await userService.deleteAvatar();
-              updateUser({ avatarUrl: "" });
-              onAvatarChange("");
-              setPreviewUrl(null);
-              toast.success("Avatar removed");
-            } catch {
-              toast.error("Failed to remove");
-            } finally {
-              setLoading(false);
-            }
-          }}
+          onClick={handleRemove}
           disabled={!avatarSrc}
         >
           Remove
