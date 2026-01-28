@@ -40,7 +40,7 @@
 **Ключевые идеи архитектуры:**
 
 - `components/` — плоская структура компонентов  
-- `services/` — работа с API  
+- `lib/` — работа с API  
 - `store/` — Zustand-сторы  
 - `types/` — централизованные TypeScript типы  
 - `(auth)` и `(private)` layout'ы для роутинга
