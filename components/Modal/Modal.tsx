@@ -6,15 +6,15 @@ import css from "./Modal.module.css";
 
 interface ModalProps {
   children: React.ReactNode;
-  // onClose: () => void;
+  onClose: () => void;
 }
 
-export const Modal = ({ children }: ModalProps) => {
+export const Modal = ({ children, onClose }: ModalProps) => {
   // const router = useRouter();
-  const [isOpen, setIsOpen] = useState(true);
-  const onClose = useCallback(() => {
-    setIsOpen(false);
-  }, []);
+  // const [isOpen, setIsOpen] = useState(true);
+  // const onClose = useCallback(() => {
+  //   setIsOpen(false);
+  // }, []);
 
   // const onClose = () => {
   //   setIsOpen(false);
@@ -36,7 +36,7 @@ export const Modal = ({ children }: ModalProps) => {
     };
   }, [onClose]);
 
-  if (!isOpen) return null;
+  // if (!isOpen) return null;
 
   return createPortal(
     <div
