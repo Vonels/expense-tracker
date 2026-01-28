@@ -4,6 +4,11 @@
   background-color: #171719;
   border-radius: 30px;
 }
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 .formModalContainer {
   padding: 28px 20px 39px;
 }
@@ -11,7 +16,6 @@
 .radioGroup {
   display: flex;
   gap: 20px;
-  margin-bottom: 20px;
 }
 
 .radioLabel {
@@ -72,13 +76,13 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 20px;
   position: relative;
   width: 100%;
 }
 
 .label {
   font-size: 14px;
+  line-height: 1.18;
   color: #fafafa;
 }
 
@@ -130,6 +134,7 @@
   border-radius: 40px;
   font-size: 14px;
   min-height: 45px;
+  width: auto;
   letter-spacing: -0.02em;
   line-height: 1.15;
   box-sizing: border-box;

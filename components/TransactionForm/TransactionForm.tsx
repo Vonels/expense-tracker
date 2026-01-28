@@ -226,6 +226,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         resetDraft();
         resetCategory();
         queryClient.invalidateQueries({ queryKey: ["categories"] });
+        queryClient.invalidateQueries({ queryKey: ["user", "current"] });
       } catch (error: unknown) {
         let errorMsg = "Request failed";
         if (axios.isAxiosError(error)) {
