@@ -69,21 +69,30 @@
 .list {
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
+  overflow: hidden;
+}
+
+.listTransaction {
+  list-style: none;
+  width: 100%;
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 290px;
   background-color: #171719;
 }
 
-/* Стилізація скролбару */
-.list::-webkit-scrollbar {
-  height: 6px;
+.listTransaction::-webkit-scrollbar {
+  width: 8px;
+  transition: background-color 250ms linear;
 }
-.list::-webkit-scrollbar-track {
-  background: #111;
-  border-radius: 10px;
+
+.listTransaction::-webkit-scrollbar-thumb {
+  background: #444446;
+  border-radius: 12px;
 }
-.list::-webkit-scrollbar-thumb {
-  background: rgba(14, 243, 135, 0.2);
-  border-radius: 10px;
+
+.listTransaction::-webkit-scrollbar-thumb:hover {
+  background: #555557;
 }
 
 .header,
@@ -105,7 +114,6 @@
 .row {
   font-size: 14px;
   color: #fafafa;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .ellipsis {
