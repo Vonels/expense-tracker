@@ -4,11 +4,7 @@
   background-color: #171719;
   border-radius: 30px;
 }
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+
 .formModalContainer {
   padding: 28px 20px 39px;
 }
@@ -16,6 +12,7 @@
 .radioGroup {
   display: flex;
   gap: 20px;
+  margin-bottom: 20px;
 }
 
 .radioLabel {
@@ -98,6 +95,7 @@
   line-height: 1.15;
   outline: none;
   box-sizing: border-box;
+  margin-bottom: 20px;
 
   transition: border-color 250ms linear;
 }
@@ -112,6 +110,7 @@
   padding: 12px 14px;
   min-height: 91px;
   resize: none;
+  margin-bottom: 20px;
 }
 .sumWrapper {
   position: relative;
@@ -120,8 +119,8 @@
 .currency {
   position: absolute;
   right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 15%;
+
   color: rgba(255, 255, 255, 0.4);
   font-size: 14px;
   pointer-events: none;
@@ -148,7 +147,7 @@
   color: #e74a3b;
   font-size: 12px;
   position: absolute;
-  bottom: -18px;
+  bottom: 0;
 }
 
 .inputError {
