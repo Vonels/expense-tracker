@@ -21,6 +21,10 @@ export const metadata: Metadata = {
     template: "%s | ExpenseTracker",
   },
   description: "Personal finance tracker: expenses & incomes.",
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    shortcut: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
