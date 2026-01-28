@@ -37,7 +37,7 @@ export default function SignUpPage() {
     if (!values.password) {
       newErrors.password = "Password is required";
     } else if (values.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
+      newErrors.password = "Enter a valid Password";
     }
 
     if (Object.keys(newErrors).length > 0) {
