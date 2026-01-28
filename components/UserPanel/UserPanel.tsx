@@ -1,8 +1,11 @@
 "use client";
-import { useAuthStore } from "@/lib/store/authStore";
+
 import { useRouter } from "next/navigation";
 import css from "./UserPanel.module.css";
 import { Icon } from "../Icon/Icon";
+import { useState } from "react";
+import { logout } from "@/lib/api/clientApi";
+import { useAuthStore } from "@/lib/store/authStore";
 
 type Props = {
   isOpen: boolean;
@@ -11,19 +14,33 @@ type Props = {
 
 const UserPanel = ({ isOpen, onClose }: Props) => {
   const router = useRouter();
-  const logout = useAuthStore((state) => state.logout);
+  const [confirm, setConfirm] = useState(false);
+  const localLogout = useAuthStore((state) => state.logout);
+
   const handleProfileSettings = () => {
     router.push("/profile-settings")
     onClose();
   };
-  const handleLogout = async() => {
-    await logout();
-    router.push("/");
-    router.refresh();
-    onClose();
-  };
+  
 
-  return (
+  const handleLogout = async () => {
+  try {
+    await logout(); // api
+  } catch (e) {
+    console.log(e);
+  }
+
+  localLogout(); // ✅ ОЦЕ ГОЛОВНЕ (очищає user/token)
+
+  setConfirm(false);
+  onClose();
+
+  router.replace("/");
+  router.refresh();
+};
+
+  
+  return (<>
     <div className={`${css.panel} ${isOpen ? css.open : ""}`}>
       <button
         type="button"
@@ -33,11 +50,33 @@ const UserPanel = ({ isOpen, onClose }: Props) => {
         <Icon id={"icon-user"} className={css.icon} />
         Profile settings
       </button>
-      <button type="button" onClick={handleLogout} className={css.button}>
+      <button type="button" onClick={() => setConfirm(true)} className={css.button}>
         <Icon id={"icon-log-out"} className={css.icon} />
         Log out
       </button>
     </div>
-  );
+    
+    {confirm && (
+        <div className={css.backdrop}>
+          <div className={css.modal}>
+            <p>Are you sure you want to log out?</p>
+
+            <button
+              className={css.confirm}
+              onClick={handleLogout}
+            >
+              Log out
+            </button>
+
+            <button
+              className={css.cancel}
+              onClick={() => setConfirm(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+  </>);
 };
 export default UserPanel;
