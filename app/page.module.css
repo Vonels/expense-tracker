@@ -195,7 +195,11 @@
     }
   }
 }
-
+/* @media (max-width: 768px) {
+  .authLayout .backgroundphoto {
+    display: none;
+  }
+} */
 @media (min-width: 1440px) {
   .wrapper {
     display: flex;
