@@ -27,12 +27,12 @@
 
 ## 🧱 Tech Stack
 
-- **Next.js 15 (App Router)**
+- **Next.js 16 (App Router)**
 - **TypeScript**
 - **Zustand** — глобальное состояние
 - **React Query (TanStack Query)** — работа с API
 - **Formik + Yup** — формы и валидация
-- **CSS Modules / Tailwind**
+- **CSS Modules**
 - **Axios**
 - **ESLint + Prettier**
 ---
