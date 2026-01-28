@@ -55,6 +55,22 @@ const FormikSync = () => {
   return null;
 };
 
+const FormikAutoSave = () => {
+  const { values, dirty } = useFormikContext<TransactionFormValues>();
+  const setDraftData = useTransactionStore((state) => state.setDraftData);
+
+  useEffect(() => {
+    if (dirty) {
+      const timeout = setTimeout(() => {
+        setDraftData(values);
+      }, 300);
+      return () => clearTimeout(timeout);
+    }
+  }, [values, setDraftData, dirty]);
+
+  return null;
+};
+
 const validationSchema = Yup.object().shape({
   type: Yup.string().oneOf(["incomes", "expenses"]).required(),
   date: Yup.string().required("Date is required"),
@@ -68,7 +84,8 @@ const validationSchema = Yup.object().shape({
   comment: Yup.string()
     .min(3, "Minimum 3 characters")
     .max(48, "Maximum 48 characters")
-    .optional(),
+    .optional()
+    .required("Comment is required"),
 });
 
 const TransactionForm: React.FC<TransactionFormProps> = ({
@@ -78,17 +95,23 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   selectedCategoryName,
 }) => {
   const router = useRouter();
+
   const queryClient = useQueryClient();
 
-  const {
-    setTransactionType,
-    setCategory,
-    resetCategory,
-    transactionType,
-    selectedCategory,
-  } = useTransactionStore();
+  const setTransactionType = useTransactionStore(
+    (state) => state.setTransactionType
+  );
+  const resetCategory = useTransactionStore((state) => state.resetCategory);
+  const setCategory = useTransactionStore((state) => state.setCategory);
+  const transactionType = useTransactionStore((state) => state.transactionType);
+  const selectedCategory = useTransactionStore(
+    (state) => state.selectedCategory
+  );
+  const draftData = useTransactionStore((state) => state.draftData);
+  const resetDraft = useTransactionStore((state) => state.resetDraft);
 
   const { transactionsTotal, updateTotals } = useUserStore();
+
   const user = useAuthStore((state) => state.user);
   const currentCurrency = user?.currency || "UAH";
 
@@ -140,26 +163,41 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     selectedCategoryName,
   ]);
 
-  const initialValues: TransactionFormValues = {
-    type: isEditing
-      ? (currentTransaction?.transaction?.type as TransactionType) || "expenses"
-      : (transactionType as TransactionType) || "expenses",
-    date: isEditing
-      ? dayjs(
-          currentTransaction?.transaction?.date ||
-            currentTransaction?.transaction?.date
-        ).format("YYYY-MM-DD")
-      : new Date().toISOString().split("T")[0],
-    time: isEditing
-      ? currentTransaction?.transaction?.time || ""
-      : new Date().toTimeString().slice(0, 8),
-    category:
-      selectedCategory?.id || // Пріоритет вибору зі стору (після модалки категорій)
-      currentTransaction?.transaction?.category || // Потім значення з транзакції (ID як рядок)
-      "",
-    sum: isEditing ? currentTransaction?.transaction?.sum || "" : "",
-    comment: (isEditing ? currentTransaction?.transaction?.comment : "") || "",
-  };
+  const initialValues: TransactionFormValues = useMemo(() => {
+    let type =
+      draftData?.type || (transactionType as TransactionType) || "expenses";
+    let date = draftData?.date || new Date().toISOString().split("T")[0];
+    let time = draftData?.time || new Date().toTimeString().slice(0, 8);
+    let category = selectedCategory?.id || draftData?.category || "";
+    let sum = draftData?.sum || "";
+    let comment = draftData?.comment || "";
+
+    if (isEditing && currentTransaction?.transaction) {
+      const data = currentTransaction.transaction;
+
+      type = (data.type as TransactionType) || "expenses";
+      date = dayjs(data.date).format("YYYY-MM-DD");
+      time = data.time || "";
+      category = selectedCategory?.id || data.category || "";
+      sum = data.sum || "";
+      comment = data.comment || "";
+    }
+
+    return {
+      type,
+      date,
+      time,
+      category,
+      sum,
+      comment,
+    };
+  }, [
+    isEditing,
+    currentTransaction,
+    transactionType,
+    selectedCategory,
+    draftData,
+  ]);
 
   const handleSubmit = async (
     values: TransactionFormValues,
@@ -185,6 +223,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         updateTotals({ [values.type]: currentTotal + formattedPayload.sum });
         toast.success("Added successfully!");
         resetForm();
+        resetDraft();
         resetCategory();
         queryClient.invalidateQueries({ queryKey: ["categories"] });
       } catch (error: unknown) {
@@ -207,7 +246,9 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   };
 
   return (
-    <div className={css.formContainer}>
+    <div
+      className={`${css.formContainer} ${isEditing ? css.formModalContainer : ""}`}
+    >
       {onClose && (
         <button type="button" className={css.closeBtn} onClick={onClose}>
           <Icon id="icon-Close" className={css.closeBtnIcon} />
@@ -223,6 +264,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         {({ values, setFieldValue, errors, touched }) => (
           <Form className={css.form}>
             <FormikSync />
+            <FormikAutoSave />
 
             <div className={css.radioGroup}>
               <label className={css.radioLabel}>
