@@ -67,7 +67,7 @@ npm run dev
 
 ---
 
-📜 Available Scripts
+##📜 Available Scripts
 
 -Command	Description
 -npm run dev	Development mode
@@ -77,7 +77,7 @@ npm run dev
 
 ---
 
-🧩 Future Improvements
+##🧩 Future Improvements
 
 -📈 Графики статистики (Recharts / Chart.js)
 -💱 Мультивалютность
