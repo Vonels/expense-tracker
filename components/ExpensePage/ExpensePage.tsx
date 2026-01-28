@@ -130,7 +130,7 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
           {data &&
             data.map((item) => (
               <li className={css.row} key={item._id}>
-                <p>{item.category?.categoryName || "Other"}</p>
+                <p>{item.category?.categoryName}</p>
                 <p className={css.ellipsis}>{item.comment}</p>
                 <p>{item.date}</p>
                 <p>{item.time}</p>
