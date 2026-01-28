@@ -73,7 +73,7 @@ const validationSchema = Yup.object({
 });
 
 export const UserSetsModal = ({ onClose }: { onClose: () => void }) => {
-  const { user, updateUser, _hasHydrated } = useAuthStore();
+  const { user, updateUser, setAuthData, token, _hasHydrated } = useAuthStore();
 
   const formik = useFormik({
     initialValues: {
@@ -112,13 +112,20 @@ export const UserSetsModal = ({ onClose }: { onClose: () => void }) => {
       try {
         const userData = await getMe();
         const formattedData = {
-          ...userData,
           name: userData.name || "",
+          email: userData.email,
           avatarUrl: userData.avatarUrl || null,
           currency: (userData.currency || "UAH").toUpperCase(),
         };
 
-        updateUser(formattedData);
+        // Якщо user в сторі null, використовуємо setAuthData, інакше updateUser
+        if (!user) {
+          // Якщо user null, створюємо нового користувача
+          setAuthData(formattedData, token || "");
+        } else {
+          // Якщо user існує, оновлюємо його
+          updateUser(formattedData);
+        }
 
         formik.setValues({
           name: formattedData.name,
@@ -152,7 +159,7 @@ export const UserSetsModal = ({ onClose }: { onClose: () => void }) => {
         <h2 className={styles.title}>Profile settings</h2>
 
         <AvatarField
-          key={user?.avatarUrl || "default"}
+          key={`avatar-${user?.avatarUrl || "default"}`}
           avatarUrl={user?.avatarUrl || null}
           userName={user?.name || "User"}
           onAvatarChange={(newUrl) => {

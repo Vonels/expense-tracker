@@ -300,15 +300,32 @@ export const AvatarField = ({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (propsAvatarUrl) {
-      setPreviewUrl(null);
-    }
-  }, [propsAvatarUrl]);
+    return () => {
+      if (previewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
 
   const avatarSrc = useMemo(() => {
     if (previewUrl) return previewUrl;
+    
+    // Використовуємо значення зі стору (пріоритет), якщо воно є, інакше з пропсів
+    // Це забезпечує, що коли стор оновлюється, компонент відразу бачить зміни
     const finalUrl = user?.avatarUrl || propsAvatarUrl;
-    return finalUrl || null;
+    
+    // Перевіряємо на null, undefined та порожній рядок
+    if (!finalUrl || (typeof finalUrl === "string" && finalUrl.trim() === "")) {
+      return null;
+    }
+    
+    // Додаємо timestamp для уникнення кешування, якщо URL не містить вже параметрів
+    if (typeof finalUrl === "string" && !finalUrl.includes("?")) {
+      return `${finalUrl}?t=${Date.now()}`;
+    }
+    
+    return finalUrl;
   }, [previewUrl, user?.avatarUrl, propsAvatarUrl]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
