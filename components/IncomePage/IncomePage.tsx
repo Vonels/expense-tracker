@@ -11,14 +11,11 @@ import {
   deleteTransactionById,
   getTransactionCategories,
 } from "@/lib/api/clientApi";
-import {
-  TransactionType,
-  TransactionData,
-  ITransactionListItem, // Припускаю наявність цього типу або заміни на потрібний
-} from "@/types/transactions";
+import { TransactionType, TransactionTypeData } from "@/types/transactions";
 import { useUserStore } from "@/lib/store/userStore";
 import { Modal } from "../Modal/Modal";
 import TransactionForm from "../TransactionForm/TransactionForm";
+import { format } from "date-fns";
 
 interface ExpensePageProps {
   type: TransactionType;
@@ -26,26 +23,33 @@ interface ExpensePageProps {
 
 const ExpensePage = ({ type }: ExpensePageProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  // Використовуємо TransactionData для типізації вибраної транзакції
-  const [selectedTransaction, setSelectedTransaction] =
-    useState<TransactionData | null>(null);
+  const [selectedTransaction, setSelectedTransaction] = useState<{
+    transaction: TransactionTypeData;
+    total: number;
+  } | null>(null);
 
   const currency = useUserStore((s) => s.currency);
   const upperCurrency = currency.toUpperCase();
   const queryClient = useQueryClient();
 
-  // Отримання даних
-  const { data } = useQuery<ITransactionListItem[]>({
-    queryKey: ["categories", type],
-    queryFn: () => getTransactionCategories({ type }),
+  const { data } = useQuery<TransactionTypeData[]>({
+    queryKey: ["categories", type, selectedDate, searchQuery],
+    queryFn: () =>
+      getTransactionCategories({
+        type,
+        date: selectedDate,
+        search: searchQuery,
+      }),
   });
 
-  // Мутація видалення
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteTransactionById(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories", type] });
+      queryClient.invalidateQueries({ queryKey: ["user", "current"] });
     },
   });
 
@@ -53,10 +57,23 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
     deleteMutation.mutate(id);
   };
 
-  // Функція відкриття модалки
-  const handleOpenEditModal = (item: ITransactionListItem) => {
-    // Формуємо структуру, яку очікує TransactionForm (об'єкт з полем transaction)
-    setSelectedTransaction({ transaction: item });
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(format(date, "yyyy-MM-dd"));
+    } else {
+      setSelectedDate("");
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.currentTarget.value);
+  };
+
+  const handleOpenEditModal = (item: TransactionTypeData) => {
+    setSelectedTransaction({
+      transaction: item,
+      total: 0,
+    });
     setIsOpen(true);
   };
 
@@ -73,8 +90,8 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
             All {type === "expenses" ? "Expense" : "Income"}
           </h3>
           <p className={css.textExpense}>
-            View and manage every transaction seamlessly! Your entire financial
-            landscape, all in one place.
+            Track and celebrate every bit of earnings effortlessly! Gain
+            insights into your total revenue in a snap.
           </p>
         </div>
         <div className={css.totals}>
@@ -93,9 +110,11 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
             id="filterSearch"
             className={css.filterInput}
             placeholder="Search for anything.."
+            value={searchQuery}
+            onChange={handleSearchChange}
           />
         </div>
-        <Calendar />
+        <Calendar onDateSelect={handleDateSelect} />
       </div>
 
       <ul className={css.list}>
@@ -139,12 +158,23 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
           ))}
       </ul>
 
-      {isOpen && (
+      {isOpen && selectedTransaction && (
         <Modal onClose={handleCloseModal}>
           <TransactionForm
             isEditing={!!selectedTransaction}
-            currentTransaction={selectedTransaction}
-            selectedCategoryName={selectedTransaction?.transaction.category}
+            currentTransaction={{
+              transaction: {
+                _id: selectedTransaction.transaction._id,
+                type: selectedTransaction.transaction.type,
+                date: selectedTransaction.transaction.date,
+                time: selectedTransaction.transaction.time,
+                category: selectedTransaction.transaction.category._id,
+                sum: selectedTransaction.transaction.sum,
+                comment: selectedTransaction.transaction.comment,
+              },
+              total: selectedTransaction.total,
+            }}
+            selectedCategoryName={selectedTransaction.transaction.category}
             onClose={handleCloseModal}
           />
         </Modal>

@@ -1,36 +1,106 @@
 "use client";
 
 import { DayPicker } from "react-day-picker";
-import { useState, useRef } from "react";
-import { format } from "date-fns";
+import { useState, useRef, useEffect } from "react";
+import { format, parse, isValid } from "date-fns";
 import { Icon } from "../Icon/Icon";
 import css from "./Calendar.module.css";
 
-const Calendar = () => {
+interface CalendarProps {
+  onDateSelect?: (date: Date | undefined) => void;
+}
+
+const Calendar = ({ onDateSelect }: CalendarProps) => {
   const [date, setDate] = useState<Date | undefined>();
   const [open, setOpen] = useState(false);
+  const [inputValue, setInputValue] = useState<string>("");
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
     setOpen(true);
   };
 
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    setInputValue(selectedDate ? format(selectedDate, "dd/MM/yyyy") : "");
+    setOpen(false);
+    if (onDateSelect) {
+      onDateSelect(selectedDate);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      const parsedDate = parse(inputValue, "dd/MM/yyyy", new Date());
+
+      if (isValid(parsedDate)) {
+        handleDateSelect(parsedDate);
+      } else {
+        setInputValue("");
+      }
+    }
+  };
+
+  const handleClearDate = () => {
+    setDate(undefined);
+    setInputValue("");
+    setOpen(false);
+    if (onDateSelect) {
+      onDateSelect(undefined);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [open]);
+
   return (
-    <div className={css.wrapper}>
+    <div className={css.wrapper} ref={wrapperRef}>
       {/* INPUT */}
       <div className={css.inputWrapper}>
         <label htmlFor="calendar-input">
           <Icon id="icon-calendar" className={css.icon} />
         </label>
         <input
+          ref={inputRef}
           id="calendar-input"
           type="text"
-          readOnly
-          value={date ? format(date, "dd/MM/yyyy") : ""}
+          value={inputValue}
           placeholder="dd/mm/yyyy"
           className={css.input}
           onClick={handleClick}
+          onChange={handleInputChange}
+          onKeyDown={handleInputKeyDown}
         />
+        {date && (
+          <button
+            type="button"
+            onClick={handleClearDate}
+            className={css.clearBtn}
+            title="Очистить дату"
+          >
+            ✕
+          </button>
+        )}
         {/* CALENDAR */}
         {open && (
           <div className={css.popover}>
@@ -38,6 +108,7 @@ const Calendar = () => {
               mode="single"
               showOutsideDays
               selected={date}
+              onDayClick={handleDateSelect}
               classNames={{
                 month_caption: css.monthCaption,
                 button_next: css.button_next,
