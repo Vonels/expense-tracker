@@ -47,23 +47,36 @@
 
 ---
 
-## 🛠 Installation
+## ⚙️ Installation & Setup
 
-### 1️⃣ Clone repository
+1.  **Clone the repository:**
 
-git clone https://github.com/Vonels/expense-tracker.git
-cd expense-tracker
+    ```bash
+    git clone https://github.com/OksanaVakuliak/09-auth.git
+    cd 09-auth
+    ```
 
-###2️⃣ Install dependencies
-npm install
-# or
-yarn install
+2.  **Install dependencies:**
 
-###3️⃣ Environment variables
-NEXT_PUBLIC_API_URL=your_api_url_here
+    ```bash
+    npm install
+    ```
 
-###4️⃣ Run locally
-npm run dev
+3.  **Environment Variables:** Create a `.env.local` file in the root directory:
+
+    ```env
+    NEXT_PUBLIC_API_URL=http://localhost:3000
+    ```
+
+4.  **Run the development server:**
+
+    ```bash
+    npm run dev
+    ```
+
+    Open [http://localhost:3000](http://localhost:3000) with your browser to see
+    the result.
+
 
 ---
 
