@@ -8,6 +8,7 @@
   padding: 12px 14px;
   font-size: 14px;
   line-height: 1.15;
+  margin-bottom: 20px;
 
   transition: border-color 250ms linear;
 }
