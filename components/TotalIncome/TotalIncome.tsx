@@ -15,7 +15,7 @@ const currencySymbols: Record<string, string> = {
 
 export const TotalIncome = () => {
   const { data: userData } = useQuery({
-    queryKey: ["user", "current"],
+    queryKey: ["user", "current", "currency"],
     queryFn: getMe,
     staleTime: 1000 * 60 * 5,
   });
