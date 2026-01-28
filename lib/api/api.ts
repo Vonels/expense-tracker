@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "@/lib/store/authStore";
 
 export const api = axios.create({
-  baseURL: "/api",
+  baseURL: t "/api",
   withCredentials: true,
 });
 
