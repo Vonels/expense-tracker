@@ -30,7 +30,7 @@ const UserPanel = ({ isOpen, onClose }: Props) => {
     console.log(e);
   }
 
-  localLogout(); // ✅ ОЦЕ ГОЛОВНЕ (очищає user/token)
+  localLogout();
 
   setConfirm(false);
   onClose();
@@ -60,7 +60,7 @@ const UserPanel = ({ isOpen, onClose }: Props) => {
         <div className={css.backdrop}>
           <div className={css.modal}>
             <p>Are you sure you want to log out?</p>
-
+            <div className={css.btnDiv}>
             <button
               className={css.confirm}
               onClick={handleLogout}
@@ -74,6 +74,7 @@ const UserPanel = ({ isOpen, onClose }: Props) => {
             >
               Cancel
             </button>
+            </div>
           </div>
         </div>
       )}

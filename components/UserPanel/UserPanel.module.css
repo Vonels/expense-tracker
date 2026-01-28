@@ -88,7 +88,7 @@
   width: 500px;
   height: 266px;
   background: #1e1f23;
-  padding: 24px;
+  padding: 80px;
   text-align: center;
 }
 
@@ -102,6 +102,9 @@
 }
 
 .confirm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 40px;
   padding: 14px 44px;
   min-width: 144px;
@@ -117,6 +120,9 @@
 }
 
 .cancel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 40px;
   padding: 14px 44px;
   width: 139px;
@@ -134,4 +140,10 @@
 
 .cancel:hover {
   opacity: 0.85;
+}
+
+.btnDiv {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 }
