@@ -67,23 +67,23 @@ npm run dev
 
 ---
 
-##📜 Available Scripts
+## 📜 Available Scripts
 
--Command	Description
--npm run dev	Development mode
--npm run build	Production build
--npm run start	Start production
--npm run lint	ESLint check
+- Command	Description
+- npm run dev	Development mode
+- npm run build	Production build
+- npm run start	Start production
+- npm run lint	ESLint check
 
 ---
 
-##🧩 Future Improvements
+## 🧩 Future Improvements
 
--📈 Графики статистики (Recharts / Chart.js)
--💱 Мультивалютность
--🏷 Категории расходов
--📦 PWA поддержка
--🌙 Dark mode
+- 📈 Графики статистики (Recharts / Chart.js)
+- 💱 Мультивалютность
+- 🏷 Категории расходов
+- 📦 PWA поддержка
+- 🌙 Dark mode
 
-⭐ Если проект был полезен — поставь звезду репозиторию!
+## ⭐ Если проект был полезен — поставь звезду репозиторию!
 
