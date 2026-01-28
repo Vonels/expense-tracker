@@ -15,14 +15,14 @@ const currencySymbols: Record<string, string> = {
 
 export const TotalExpense = () => {
   const { data: userData } = useQuery({
-    queryKey: ["user", "current"],
+    queryKey: ["user", "current", "currency"],
     queryFn: getMe,
+    staleTime: 1000 * 60 * 5,
   });
 
   const totalExpenses = useUserStore(
     (state) => state.transactionsTotal.expenses
   );
-  const currency = useUserStore((state) => state.currency);
   const updateTotals = useUserStore((state) => state.updateTotals);
 
   useEffect(() => {
@@ -34,6 +34,7 @@ export const TotalExpense = () => {
     }
   }, [userData, updateTotals]);
 
+  const currency = userData?.currency || "usd";
   const symbol = currencySymbols[currency.toLowerCase()] || currency;
 
   return (

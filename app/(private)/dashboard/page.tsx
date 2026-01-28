@@ -33,7 +33,7 @@ export default async function DashboardPage() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["user", "current"],
+    queryKey: ["user", "current", "currency"],
     queryFn: () => getMe(),
   });
 
