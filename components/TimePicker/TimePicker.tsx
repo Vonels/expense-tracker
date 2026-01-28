@@ -35,7 +35,6 @@ export const CustomTimePicker = ({ name, id }: Props) => {
 
   const placeholders = useMemo(() => {
     if (!isClient) return { hr: "--", min: "--", sec: "--" };
-    if (!isClient) return { hours: "--", minutes: "--", seconds: "--" };
     const now = dayjs();
     return {
       hours: now.format("HH"),
