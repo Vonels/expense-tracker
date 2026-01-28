@@ -302,6 +302,12 @@
   }
 }
 
+@media screen and (max-width: 1439px) {
+  .hiddenOnSmallScreens {
+    display: none !important;
+  }
+}
+
 /* .backgroundphoto {
     background-image: url(../public/HomeImage.webp);
     border-radius: 20px;
