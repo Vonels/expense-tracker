@@ -98,6 +98,10 @@
   pointer-events: none;
 }
 
+.backgroundphoto {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .title {
     font-weight: 400;
@@ -159,7 +163,8 @@
     margin-bottom: 262px;
   }
   .container {
-    padding-left: 190px;
+    width: 399px;
+    margin: 0 auto;
   }
 }
 
