@@ -132,6 +132,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     onSuccess: () => {
       toast.success("Updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "current"] });
       if (onClose) onClose();
     },
     onError: (error: unknown) => {
@@ -144,14 +145,22 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   });
 
   useEffect(() => {
+    return () => {
+      resetCategory();
+    };
+  }, [resetCategory]);
+
+  useEffect(() => {
     if (isEditing && currentTransaction) {
       const data = currentTransaction.transaction;
       setTransactionType(data.type as TransactionType);
 
       if (!selectedCategory) {
-        const catId = data._id;
+        const catId = data.category;
         const catName = selectedCategoryName?.categoryName || "";
-        setCategory(catId, catName);
+        if (catId && catName) {
+          setCategory(catId, catName);
+        }
       }
     }
   }, [
@@ -164,32 +173,26 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   ]);
 
   const initialValues: TransactionFormValues = useMemo(() => {
-    let type =
-      draftData?.type || (transactionType as TransactionType) || "expenses";
-    let date = draftData?.date || new Date().toISOString().split("T")[0];
-    let time = draftData?.time || new Date().toTimeString().slice(0, 8);
-    let category = selectedCategory?.id || draftData?.category || "";
-    let sum = draftData?.sum || "";
-    let comment = draftData?.comment || "";
-
     if (isEditing && currentTransaction?.transaction) {
       const data = currentTransaction.transaction;
-
-      type = (data.type as TransactionType) || "expenses";
-      date = dayjs(data.date).format("YYYY-MM-DD");
-      time = data.time || "";
-      category = selectedCategory?.id || data.category || "";
-      sum = data.sum || "";
-      comment = data.comment || "";
+      return {
+        type: (data.type as TransactionType) || "expenses",
+        date: dayjs(data.date).format("YYYY-MM-DD"),
+        time: data.time || "",
+        category: data.category || "",
+        sum: data.sum || "",
+        comment: data.comment || "",
+      };
     }
 
     return {
-      type,
-      date,
-      time,
-      category,
-      sum,
-      comment,
+      type:
+        draftData?.type || (transactionType as TransactionType) || "expenses",
+      date: draftData?.date || new Date().toISOString().split("T")[0],
+      time: draftData?.time || new Date().toTimeString().slice(0, 8),
+      category: selectedCategory?.id || draftData?.category || "",
+      sum: draftData?.sum || "",
+      comment: draftData?.comment || "",
     };
   }, [
     isEditing,
@@ -198,7 +201,6 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     selectedCategory,
     draftData,
   ]);
-
   const handleSubmit = async (
     values: TransactionFormValues,
     { resetForm }: FormikHelpers<TransactionFormValues>
@@ -222,9 +224,12 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         const currentTotal = transactionsTotal[values.type];
         updateTotals({ [values.type]: currentTotal + formattedPayload.sum });
         toast.success("Added successfully!");
+
         resetForm();
         resetDraft();
         resetCategory();
+        setTransactionType("expenses");
+
         queryClient.invalidateQueries({ queryKey: ["categories"] });
         queryClient.invalidateQueries({ queryKey: ["user", "current"] });
       } catch (error: unknown) {
@@ -237,11 +242,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
       router.refresh();
 
-      const targetPath =
-        values.type === "expenses"
-          ? "/transactions/history/expenses"
-          : "/transactions/history/incomes";
-      router.push(targetPath);
+      // const targetPath =
+      //   values.type === "expenses"
+      //     ? "/transactions/history/expenses"
+      //     : "/transactions/history/incomes";
+      // router.push(targetPath);
       if (onClose) onClose();
     }
   };
@@ -265,7 +270,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         {({ values, setFieldValue, errors, touched }) => (
           <Form className={css.form}>
             <FormikSync />
-            <FormikAutoSave />
+            {!isEditing && <FormikAutoSave />}
 
             <div className={css.radioGroup}>
               <label className={css.radioLabel}>

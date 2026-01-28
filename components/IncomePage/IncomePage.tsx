@@ -126,36 +126,37 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
           <p>Sum</p>
           <p>Actions</p>
         </li>
-
-        {data &&
-          data.map((item) => (
-            <li className={css.row} key={item._id}>
-              <p>{item.category?.categoryName || "Other"}</p>
-              <p className={css.ellipsis}>{item.comment}</p>
-              <p>{item.date}</p>
-              <p>{item.time}</p>
-              <p className={css.money}>
-                {item.sum} / {upperCurrency}
-              </p>
-              <div className={css.actions}>
-                <button
-                  className={css.editBtn}
-                  onClick={() => handleOpenEditModal(item)}
-                >
-                  <Icon id="icon-Pensil" className={css.iconEdit} />
-                  <span className={css.hideBtn}>Edit</span>
-                </button>
-                <button
-                  className={css.deleteBtn}
-                  onClick={() => onDeleteTransaction(item._id)}
-                  disabled={deleteMutation.isPending}
-                >
-                  <Icon id="icon-trash" className={css.iconDelete} />
-                  <span className={css.hideBtn}>Delete</span>
-                </button>
-              </div>
-            </li>
-          ))}
+        <div className={css.listTransaction}>
+          {data &&
+            data.map((item) => (
+              <li className={css.row} key={item._id}>
+                <p>{item.category?.categoryName}</p>
+                <p className={css.ellipsis}>{item.comment}</p>
+                <p>{item.date}</p>
+                <p>{item.time}</p>
+                <p className={css.money}>
+                  {item.sum} / {upperCurrency}
+                </p>
+                <div className={css.actions}>
+                  <button
+                    className={css.editBtn}
+                    onClick={() => handleOpenEditModal(item)}
+                  >
+                    <Icon id="icon-Pensil" className={css.iconEdit} />
+                    <span className={css.hideBtn}>Edit</span>
+                  </button>
+                  <button
+                    className={css.deleteBtn}
+                    onClick={() => onDeleteTransaction(item._id)}
+                    disabled={deleteMutation.isPending}
+                  >
+                    <Icon id="icon-trash" className={css.iconDelete} />
+                    <span className={css.hideBtn}>Delete</span>
+                  </button>
+                </div>
+              </li>
+            ))}
+        </div>
       </ul>
 
       {isOpen && selectedTransaction && (
