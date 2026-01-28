@@ -54,15 +54,15 @@
 git clone https://github.com/Vonels/expense-tracker.git
 cd expense-tracker
 
-2️⃣ Install dependencies
+###2️⃣ Install dependencies
 npm install
 # or
 yarn install
 
-3️⃣ Environment variables
+###3️⃣ Environment variables
 NEXT_PUBLIC_API_URL=your_api_url_here
 
-4️⃣ Run locally
+###4️⃣ Run locally
 npm run dev
 
 ---
