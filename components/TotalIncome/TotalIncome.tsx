@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useUserStore } from "@/lib/store/userStore";
+import { useAuthStore } from "@/lib/store/authStore";
 import { getMe } from "@/lib/api/clientApi";
 import { Icon } from "../Icon/Icon";
 import css from "./TotalIncome.module.css";
@@ -19,8 +20,11 @@ export const TotalIncome = () => {
     queryFn: getMe,
     staleTime: 1000 * 60 * 5,
   });
+
+  const authCurrency = useAuthStore((state) => state.user?.currency);
+
   const totalIncomes = useUserStore((state) => state.transactionsTotal.incomes);
-  const currency = userData?.currency || "usd";
+  const currency = authCurrency || userData?.currency || "usd";
   const updateTotals = useUserStore((state) => state.updateTotals);
 
   useEffect(() => {

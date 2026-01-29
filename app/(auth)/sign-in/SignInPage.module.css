@@ -178,6 +178,7 @@
     font-size: 56px;
     letter-spacing: -0.02em;
     color: #fafafa;
+    margin-top: 100px;
   }
   .description {
     font-weight: 400;
@@ -228,4 +229,13 @@
   .linkText {
     color: rgba(250, 250, 250, 0.6);
   }
+  .backgroundphoto {
+    margin-right: 54px;
+  }
+  .container {
+    margin-right: 54px;
+  }
+  /* .page {
+    margin-top: 50px;
+  } */
 }
