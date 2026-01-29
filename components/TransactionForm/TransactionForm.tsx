@@ -16,7 +16,7 @@ import css from "./TransactionForm.module.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useTransactionStore } from "@/lib/store/useTransactionStore";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { DatePicker } from "../DatePicker/DatePicker";
 import { CustomTimePicker } from "../TimePicker/TimePicker";
 import {
@@ -95,6 +95,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   selectedCategoryName,
 }) => {
   const router = useRouter();
+  const pathname = usePathname();
 
   const queryClient = useQueryClient();
 
@@ -344,6 +345,12 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 }
                 onClick={() => {
                   setTransactionType(values.type);
+                  if (typeof window !== "undefined") {
+                    window.sessionStorage.setItem(
+                      "categoriesModalFrom",
+                      pathname ?? "/dashboard"
+                    );
+                  }
                   router.push("/categoriesModal");
                 }}
               />

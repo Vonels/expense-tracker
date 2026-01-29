@@ -3,6 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/components/Modal/Modal";
+
+const CATEGORIES_MODAL_FROM = "categoriesModalFrom";
+const OPEN_CATEGORIES_MODAL = "openCategoriesModal";
+const DASHBOARD_PATH = "/dashboard";
+const EXPENSES_HISTORY_PATH = "/transactions/history/expenses";
+const INCOMES_HISTORY_PATH = "/transactions/history/incomes";
 import { useTransactionStore } from "@/lib/store/useTransactionStore";
 import axios from "axios";
 import css from "@/components/Modal/Modal.module.css";
@@ -54,6 +60,7 @@ export default function CategoriesModal() {
   const [data, setData] = useState<CategoriesResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
+  const [isRedirecting] = useState(true); // full-page /categoriesModal always redirects
 
   const categoriesToDisplay = useMemo(
     () => (data ? data[transactionType] : []),
@@ -81,6 +88,33 @@ export default function CategoriesModal() {
   useEffect(() => {
     loadCategories();
   }, []);
+
+  // On direct load/reload of /categoriesModal: redirect to source page (this page is only rendered on full load, not when shown in @modal)
+  useEffect(() => {
+    const from =
+      typeof window !== "undefined"
+        ? sessionStorage.getItem(CATEGORIES_MODAL_FROM)
+        : null;
+    if (!from) {
+      router.replace(DASHBOARD_PATH);
+      return;
+    }
+    if (from === DASHBOARD_PATH) {
+      sessionStorage.setItem(OPEN_CATEGORIES_MODAL, "1");
+      router.replace(DASHBOARD_PATH);
+      return;
+    }
+    if (from === EXPENSES_HISTORY_PATH || from === INCOMES_HISTORY_PATH) {
+      router.replace(from);
+      return;
+    }
+    router.replace(DASHBOARD_PATH);
+  }, [router]);
+
+  // While redirecting (always true when this full page loads), render nothing to avoid flash and extra requests
+  if (isRedirecting) {
+    return null;
+  }
 
   const onFormikSubmit = async (
     values: IFormValues,
@@ -136,10 +170,6 @@ export default function CategoriesModal() {
     setCategory(id, name);
     router.back();
   };
-
-  // const handleClose = () => {
-  //   router.back();
-  // };
 
   return (
     <Modal>

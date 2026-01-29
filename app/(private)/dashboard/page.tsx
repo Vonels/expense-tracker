@@ -3,6 +3,7 @@ import css from "./Dashboard.module.css";
 import { TotalExpense } from "@/components/TotalExpense/TotalExpense";
 import { ExpensesChart } from "@/components/ExpensesChart/ExpensesChart";
 import TransactionForm from "@/components/TransactionForm/TransactionForm";
+import OpenCategoriesModalOnLoad from "@/components/OpenCategoriesModalOnLoad/OpenCategoriesModalOnLoad";
 import { Metadata } from "next";
 import {
   dehydrate,
@@ -39,6 +40,7 @@ export default async function DashboardPage() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <OpenCategoriesModalOnLoad />
       <main className={css.mainContainer}>
         <div className={css.mainLayout}>
           <section className={css.statsSection}>
