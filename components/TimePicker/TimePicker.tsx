@@ -6,7 +6,6 @@ import { useFormikContext, FormikValues } from "formik";
 import dayjs from "dayjs";
 import { Icon } from "../Icon/Icon";
 import css from "./TimePicker.module.css";
-import "@mantine/dates/styles.css";
 
 interface Props {
   name: string;

@@ -3,7 +3,6 @@ import dayjs from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
 import { Icon } from "../Icon/Icon";
 import css from "./DatePicker.module.css";
-import "@mantine/dates/styles.css";
 import { useCallback, useMemo } from "react";
 
 dayjs.extend(updateLocale);
