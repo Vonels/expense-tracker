@@ -134,7 +134,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       toast.success("Updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       queryClient.invalidateQueries({ queryKey: ["user", "current"] });
-
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
       if (onClose) onClose();
     },
     onError: (error: unknown) => {
@@ -234,6 +234,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
         queryClient.invalidateQueries({ queryKey: ["categories"] });
         queryClient.invalidateQueries({ queryKey: ["user", "current"] });
+        queryClient.invalidateQueries({ queryKey: ["stats"] });
       } catch (error: unknown) {
         let errorMsg = "Request failed";
         if (axios.isAxiosError(error)) {
