@@ -87,9 +87,9 @@ const Calendar = ({ onDateSelect }: CalendarProps) => {
   }, [open]);
 
   return (
-    <div className={css.wrapper} ref={wrapperRef}>
+    <>
       {/* INPUT */}
-      <div className={css.inputWrapper}>
+      <div className={css.inputWrapper} ref={wrapperRef}>
         <label htmlFor="calendar-input">
           <Icon id="icon-calendar" className={css.icon} />
         </label>
@@ -138,7 +138,7 @@ const Calendar = ({ onDateSelect }: CalendarProps) => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

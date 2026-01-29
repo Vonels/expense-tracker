@@ -39,10 +39,12 @@
 
 .filterInputWrapper {
   position: relative;
+  max-width: 261px;
+
+
 }
 
 .filterInput {
-  max-width: 261px;
   outline: none;
   padding: 14px 50px 14px 30px;
   border: 1px solid #0c0d0d;
@@ -73,12 +75,18 @@
 .iconSearch {
   position: absolute;
   top: 50%;
-  right: 25px;
+  right: -1px;
   transform: translateY(-50%);
   width: 20px;
   height: 20px;
   fill: transparent;
   stroke: #0ef387;
+
+  @media screen and (min-width: 768px) {
+    right: 30px;
+  }
+
+  @media screen and (min-width: 1440px) {}
 }
 
 /* Таблиця з горизонтальним скролом на мобайлі */
