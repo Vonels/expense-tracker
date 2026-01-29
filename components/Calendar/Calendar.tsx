@@ -30,8 +30,21 @@ const Calendar = ({ onDateSelect }: CalendarProps) => {
     }
   };
 
+  const formatDateInput = (value: string) => {
+    const numbersOnly = value.replace(/\D/g, "").slice(0, 8);
+
+    const day = numbersOnly.slice(0, 2);
+    const month = numbersOnly.slice(2, 4);
+    const year = numbersOnly.slice(4, 8);
+
+    if (numbersOnly.length <= 2) return day;
+    if (numbersOnly.length <= 4) return `${day}/${month}`;
+    return `${day}/${month}/${year}`;
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    const formattedValue = formatDateInput(e.target.value);
+    setInputValue(formattedValue);
   };
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

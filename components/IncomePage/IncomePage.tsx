@@ -12,10 +12,11 @@ import {
   getTransactionCategories,
 } from "@/lib/api/clientApi";
 import { TransactionType, TransactionTypeData } from "@/types/transactions";
-import { useUserStore } from "@/lib/store/userStore";
 import { Modal } from "../Modal/Modal";
 import TransactionForm from "../TransactionForm/TransactionForm";
 import { format } from "date-fns";
+import { useAuthStore } from "@/lib/store/authStore";
+import { useDebounce } from "use-debounce";
 
 interface ExpensePageProps {
   type: TransactionType;
@@ -25,23 +26,24 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
-
+  const user = useAuthStore((state) => state.user);
+  const queryClient = useQueryClient();
   const [selectedTransaction, setSelectedTransaction] = useState<{
     transaction: TransactionTypeData;
     total: number;
   } | null>(null);
+  const [debouncedSearch] = useDebounce(searchQuery.trim(), 800);
 
-  const currency = useUserStore((s) => s.currency);
-  const upperCurrency = currency.toUpperCase();
-  const queryClient = useQueryClient();
+  const currentCurrency = user?.currency || "UAH";
+  const upperCurrency = currentCurrency.toUpperCase();
 
   const { data } = useQuery<TransactionTypeData[]>({
-    queryKey: ["categories", type, selectedDate, searchQuery],
+    queryKey: ["categories", type, selectedDate, debouncedSearch],
     queryFn: () =>
       getTransactionCategories({
         type,
         date: selectedDate,
-        search: searchQuery,
+        search: debouncedSearch,
       }),
   });
 
@@ -86,9 +88,7 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
     <div className="container">
       <div className={css.titleWrapper}>
         <div>
-          <h3 className={css.titleExpense}>
-            All {type === "expenses" ? "Expense" : "Income"}
-          </h3>
+          <h3 className={css.titleExpense}>All Income</h3>
           <p className={css.textExpense}>
             Track and celebrate every bit of earnings effortlessly! Gain
             insights into your total revenue in a snap.
@@ -127,35 +127,42 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
           <p>Actions</p>
         </li>
 
-        {data &&
-          data.map((item) => (
-            <li className={css.row} key={item._id}>
-              <p>{item.category?.categoryName || "Other"}</p>
-              <p className={css.ellipsis}>{item.comment}</p>
-              <p>{item.date}</p>
-              <p>{item.time}</p>
-              <p className={css.money}>
-                {item.sum} / {upperCurrency}
-              </p>
-              <div className={css.actions}>
-                <button
-                  className={css.editBtn}
-                  onClick={() => handleOpenEditModal(item)}
-                >
-                  <Icon id="icon-Pensil" className={css.iconEdit} />
-                  <span className={css.hideBtn}>Edit</span>
-                </button>
-                <button
-                  className={css.deleteBtn}
-                  onClick={() => onDeleteTransaction(item._id)}
-                  disabled={deleteMutation.isPending}
-                >
-                  <Icon id="icon-trash" className={css.iconDelete} />
-                  <span className={css.hideBtn}>Delete</span>
-                </button>
-              </div>
+        <div className={css.listTransaction}>
+          {data?.length === 0 ? (
+            <li className={css.noTransaction}>
+              <p>No transactions</p>
             </li>
-          ))}
+          ) : (
+            data?.map((item) => (
+              <li className={css.row} key={item._id}>
+                <p>{item.category?.categoryName}</p>
+                <p className={css.ellipsis}>{item.comment}</p>
+                <p>{item.date}</p>
+                <p>{item.time}</p>
+                <p className={css.money}>
+                  {item.sum} / {upperCurrency}
+                </p>
+                <div className={css.actions}>
+                  <button
+                    className={css.editBtn}
+                    onClick={() => handleOpenEditModal(item)}
+                  >
+                    <Icon id="icon-Pensil" className={css.iconEdit} />
+                    <span className={css.hideBtn}>Edit</span>
+                  </button>
+                  <button
+                    className={css.deleteBtn}
+                    onClick={() => onDeleteTransaction(item._id)}
+                    disabled={deleteMutation.isPending}
+                  >
+                    <Icon id="icon-trash" className={css.iconDelete} />
+                    <span className={css.hideBtn}>Delete</span>
+                  </button>
+                </div>
+              </li>
+            ))
+          )}
+        </div>
       </ul>
 
       {isOpen && selectedTransaction && (
@@ -168,7 +175,7 @@ const ExpensePage = ({ type }: ExpensePageProps) => {
                 type: selectedTransaction.transaction.type,
                 date: selectedTransaction.transaction.date,
                 time: selectedTransaction.transaction.time,
-                category: selectedTransaction.transaction.category._id,
+                category: selectedTransaction.transaction.category?._id || "",
                 sum: selectedTransaction.transaction.sum,
                 comment: selectedTransaction.transaction.comment,
               },
