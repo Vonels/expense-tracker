@@ -137,10 +137,6 @@ export default function CategoriesModal() {
     router.back();
   };
 
-  // const handleClose = () => {
-  //   router.back();
-  // };
-
   return (
     <Modal>
       <h2 className={css.titleCategoriesModal}>{displayTitle}</h2>

@@ -69,16 +69,6 @@ export const logout = async (): Promise<void> => {
     }
   }
 };
-// export const logout = async (): Promise<void> => {
-//   try {
-//     await api.post("/auth/logout");
-//   } finally {
-//     useAuthStore.getState().logout();
-//     if (typeof window !== "undefined") {
-//       window.location.href = "/";
-//     }
-//   }
-// };
 
 export const checkSession = async () => {
   const res = await fetch("/api/auth/session", {

@@ -5,10 +5,6 @@ import { useRouter } from "next/navigation";
 
 const OPEN_CATEGORIES_MODAL = "openCategoriesModal";
 
-/**
- * When dashboard loads with openCategoriesModal in sessionStorage (e.g. after
- * reload on /categoriesModal from dashboard), opens the categories modal.
- */
 export default function OpenCategoriesModalOnLoad() {
   const router = useRouter();
 

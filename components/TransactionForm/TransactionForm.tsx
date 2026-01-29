@@ -243,11 +243,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
       router.refresh();
 
-      // const targetPath =
-      //   values.type === "expenses"
       //     ? "/transactions/history/expenses"
-      //     : "/transactions/history/incomes";
-      // router.push(targetPath);
       if (onClose) onClose();
     }
   };

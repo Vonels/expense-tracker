@@ -89,7 +89,6 @@ export default function CategoriesModal() {
     loadCategories();
   }, []);
 
-  // On direct load/reload of /categoriesModal: redirect to source page (this page is only rendered on full load, not when shown in @modal)
   useEffect(() => {
     const from =
       typeof window !== "undefined"
@@ -111,7 +110,6 @@ export default function CategoriesModal() {
     router.replace(DASHBOARD_PATH);
   }, [router]);
 
-  // While redirecting (always true when this full page loads), render nothing to avoid flash and extra requests
   if (isRedirecting) {
     return null;
   }
