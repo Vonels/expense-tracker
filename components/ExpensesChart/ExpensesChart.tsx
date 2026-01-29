@@ -1,16 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { useQuery } from "@tanstack/react-query";
 import css from "./ExpensesChart.module.css";
-import { CategoryStat } from "@/types/expense";
-import { fetchCurrentMonthStats } from "@/lib/api/clientApi";
-
-interface FormattedCategory {
-  _id: string;
-  categoryName: string;
-  sum: number;
-}
+import { fetchCurrentMonthStats, getMe } from "@/lib/api/clientApi";
 
 const generateColors = (count: number) => {
   return Array.from({ length: count }, (_, i) => {
@@ -24,63 +18,50 @@ const generateColors = (count: number) => {
 };
 
 export const ExpensesChart = () => {
-  const [stats, setStats] = useState<FormattedCategory[]>([]);
-  const [total, setTotal] = useState(0);
+  const { data: userData } = useQuery({
+    queryKey: ["user", "current"],
+    queryFn: getMe,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const data: CategoryStat[] = await fetchCurrentMonthStats();
-
-        const formatted = data.map((item) => ({
-          _id: item._id,
-          categoryName: item.category,
-          sum: item.totalAmount,
-        }));
-
-        const totalAmount = data.reduce(
-          (acc, curr) => acc + curr.totalAmount,
-          0
-        );
-
-        setStats(formatted);
-        setTotal(totalAmount);
-      } catch (error) {
-        console.error("Failed to load statistics:", error);
-      }
-    };
-
-    fetchStats();
-  }, []);
-
+  const { data: statsData, isLoading } = useQuery({
+    queryKey: ["stats", "current-month", userData?.currency],
+    queryFn: fetchCurrentMonthStats,
+    enabled: !!userData,
+  });
   const { finalChartData, isPlaceholder } = useMemo(() => {
-    if (stats.length === 0) {
+    if (!statsData || statsData.length === 0) {
       return {
         isPlaceholder: true,
         finalChartData: [
           {
-            name: "Your expenses",
+            name: "No expenses",
             value: 100,
-            percent: 100,
+            percent: 0,
             color: "rgba(255, 255, 255, 0.1)",
           },
         ],
       };
     }
 
-    const sortedData = [...stats].sort((a, b) => b.sum - a.sum);
+    const total = statsData.reduce((acc, curr) => acc + curr.totalAmount, 0);
+    const sortedData = [...statsData].sort(
+      (a, b) => b.totalAmount - a.totalAmount
+    );
     const colors = generateColors(sortedData.length);
 
     return {
       isPlaceholder: false,
       finalChartData: sortedData.map((cat, index) => ({
-        name: cat.categoryName,
-        value: cat.sum,
-        percent: total > 0 ? Math.round((cat.sum / total) * 100) : 0,
+        name: cat.category,
+        value: cat.totalAmount,
+        percent: total > 0 ? Math.round((cat.totalAmount / total) * 100) : 0,
         color: colors[index],
       })),
     };
-  }, [stats, total]);
+  }, [statsData]);
+
+  if (isLoading) return <div className={css.loader}>Loading chart...</div>;
 
   return (
     <div className={css.chartContainer}>
@@ -96,10 +77,12 @@ export const ExpensesChart = () => {
                 startAngle={180}
                 endAngle={0}
                 cornerRadius={6}
-                paddingAngle={isPlaceholder ? 0 : -5}
+                paddingAngle={isPlaceholder ? 0 : -4}
                 dataKey="value"
                 stroke="none"
                 cy="80%"
+                animationBegin={0}
+                animationDuration={800}
               >
                 {finalChartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />

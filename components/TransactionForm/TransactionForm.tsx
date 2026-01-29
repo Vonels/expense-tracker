@@ -134,6 +134,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       toast.success("Updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       queryClient.invalidateQueries({ queryKey: ["user", "current"] });
+
       if (onClose) onClose();
     },
     onError: (error: unknown) => {
