@@ -192,7 +192,7 @@
   }
 
   .container {
-    margin: auto;
+    margin: 0 auto;
     padding-left: 0px;
   }
 }
@@ -264,6 +264,8 @@
   .page {
     display: flex;
     justify-content: center;
+    padding-bottom: 0;
+    padding-left: 0;
   }
 
   .container {
