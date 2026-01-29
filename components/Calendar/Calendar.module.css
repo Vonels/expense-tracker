@@ -1,159 +1,157 @@
 .inputWrapper {
-    position: relative;
-
+  position: relative;
 }
 
 .input {
-    max-width: 187px;
-    padding: 14px 30px;
-    cursor: pointer;
-    outline: none;
-    border-radius: 30px;
-    border: 1px solid rgba(250, 250, 250, 0.2);
-    background-color: transparent;
+  max-width: 187px;
+  padding: 14px 30px;
+  cursor: pointer;
+  outline: none;
+  border-radius: 30px;
+  border: 1px solid rgba(250, 250, 250, 0.2);
+  background-color: transparent;
+  font-size: 16px;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  color: #fafafa;
+  transition: border 250ms linear;
+
+  &::placeholder {
+    font-weight: 400;
     font-size: 16px;
-    line-height: 1.25;
-    letter-spacing: 0.01em;
-    color: #fafafa;
-    transition: border 250ms linear;
+    letter-spacing: -0.02em;
+    color: rgba(250, 250, 250, 0.4);
+  }
 
-    &::placeholder {
-        font-weight: 400;
-        font-size: 16px;
-        letter-spacing: -0.02em;
-        color: rgba(250, 250, 250, 0.4);
-    }
+  &:focus {
+    border: 1px solid #0ef387;
+  }
 
-    &:focus {
-        border: 1px solid #0ef387;
-    }
-
-    &:hover {
-        border: 1px solid #0ef387;
-    }
+  &:hover {
+    border: 1px solid #0ef387;
+  }
 }
 
 .icon {
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translate(-50%, -50%);
-    cursor: pointer;
-    fill: transparent;
-    stroke: #0ef387;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  fill: transparent;
+  stroke: #0ef387;
 }
 
 .popover {
-    position: absolute;
-    z-index: 500;
-    background: #0ef387;
-    border-radius: 8px;
-    padding: 14px 14px 0 14px;
-    max-width: 222px;
-    display: flex;
-    justify-content: center;
+  position: absolute;
+  z-index: 500;
+  background: #0ef387;
+  border-radius: 8px;
+  padding: 14px 14px 0 14px;
+  max-width: 222px;
+  display: flex;
+  justify-content: center;
 }
 
 .button_next {
-    position: absolute;
-    right: 10px;
-    background-color: transparent;
-    line-height: 0;
+  position: absolute;
+  right: 10px;
+  background-color: transparent;
+  line-height: 0;
 }
 
 .button_previous {
-    position: absolute;
-    left: 10px;
-    background-color: transparent;
-    line-height: 0;
+  position: absolute;
+  left: 10px;
+  background-color: transparent;
+  line-height: 0;
 }
 
 .monthCaption {
-    text-align: center;
-    font-weight: 400;
-    font-size: 16px;
-    letter-spacing: -0.02em;
-    color: #0c0d0d;
-    margin-bottom: 14px;
+  text-align: center;
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  color: #0c0d0d;
+  margin-bottom: 14px;
 }
 
 .chevron {
-    width: 20px;
-    height: 20px;
-    fill: #0c0d0d;
+  width: 20px;
+  height: 20px;
+  fill: #0c0d0d;
 }
 
 .monthGrid {
-    padding-top: 14px;
-    width: 100%;
-    border-top: 1px solid rgba(12, 13, 13, 0.5);
-    border-collapse: separate;
-    border-spacing: 11px 11px;
+  padding-top: 14px;
+  width: 100%;
+  border-top: 1px solid rgba(12, 13, 13, 0.5);
+  border-collapse: separate;
+  border-spacing: 11px 11px;
 }
 
 .weekday {
-    font-weight: 400;
-    font-size: 14px;
-    letter-spacing: -0.02em;
-    color: rgba(12, 13, 13, 0.5);
-    width: calc((100% / 11px * 6) / 7);
-    /* text-align: center; */
-    /* vertical-align: middle; */
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+  color: rgba(12, 13, 13, 0.5);
+  width: calc((100% / 11px * 6) / 7);
+  /* text-align: center; */
+  /* vertical-align: middle; */
 }
 
 .dayButton {
-    line-height: 0;
-    width: 20px;
-    height: 20px;
-    background-color: transparent;
-    font-weight: 400;
-    font-size: 13px;
-    line-height: 0;
-    letter-spacing: -0.02em;
-    color: #0c0d0d;
-    /* text-align: center; */
-    /* vertical-align: middle; */
-
+  line-height: 0;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 0;
+  letter-spacing: -0.02em;
+  color: #0c0d0d;
+  /* text-align: center; */
+  /* vertical-align: middle; */
 }
 
 .outside button {
-    font-weight: 400;
-    font-size: 13px;
-    line-height: 0;
-    letter-spacing: -0.02em;
-    color: rgba(12, 13, 13, 0.2);
-
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 0;
+  letter-spacing: -0.02em;
+  color: rgba(12, 13, 13, 0.2);
 }
 
 .today button {
-    background-color: #0c0d0d;
-    color: #fafafa;
-    border-radius: 50%;
+  background-color: #0c0d0d;
+  color: #fafafa;
+  border-radius: 50%;
 }
 
-.day {}
+.day {
+}
 
 .clearBtn {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: #0ef387;
-    font-size: 18px;
-    cursor: pointer;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 250ms linear;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #0ef387;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 250ms linear;
 
-    &:hover {
-        color: #fafafa;
-    }
+  &:hover {
+    color: #fafafa;
+  }
 }
