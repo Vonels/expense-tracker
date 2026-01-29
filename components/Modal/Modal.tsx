@@ -7,10 +7,6 @@ import css from "./Modal.module.css";
 
 interface ModalProps {
   children: React.ReactNode;
-  /**
-   * Optional close handler.
-   * If not provided, modal will navigate back in history (router.back()).
-   */
   onClose?: () => void;
 }
 

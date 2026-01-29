@@ -195,14 +195,18 @@
     }
   }
 }
-
+/* @media (max-width: 768px) {
+  .authLayout .backgroundphoto {
+    display: none;
+  }
+} */
 @media (min-width: 1440px) {
   .wrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    padding: 100px;
+    padding: 0 100px;
     gap: 54px;
     max-width: 1440px;
     margin: 0 auto;
@@ -295,6 +299,12 @@
   }
   to {
     top: 447px;
+  }
+}
+
+@media screen and (max-width: 1439px) {
+  .hiddenOnSmallScreens {
+    display: none !important;
   }
 }
 

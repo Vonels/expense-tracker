@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useUserStore } from "@/lib/store/userStore";
+import { useAuthStore } from "@/lib/store/authStore";
 import { getMe } from "@/lib/api/clientApi";
 import { Icon } from "../Icon/Icon";
 import css from "./TotalIncome.module.css";
@@ -15,12 +16,15 @@ const currencySymbols: Record<string, string> = {
 
 export const TotalIncome = () => {
   const { data: userData } = useQuery({
-    queryKey: ["user", "current"],
+    queryKey: ["user", "current", "currency"],
     queryFn: getMe,
+    staleTime: 1000 * 60 * 5,
   });
 
+  const authCurrency = useAuthStore((state) => state.user?.currency);
+
   const totalIncomes = useUserStore((state) => state.transactionsTotal.incomes);
-  const currency = useUserStore((state) => state.currency);
+  const currency = authCurrency || userData?.currency || "usd";
   const updateTotals = useUserStore((state) => state.updateTotals);
 
   useEffect(() => {
@@ -32,7 +36,8 @@ export const TotalIncome = () => {
     }
   }, [userData, updateTotals]);
 
-  const symbol = currencySymbols[currency.toLowerCase()] || currency;
+  const symbol =
+    currencySymbols[currency.toLowerCase()] || currency.toUpperCase();
 
   return (
     <div className={css.card}>
@@ -41,13 +46,13 @@ export const TotalIncome = () => {
       </div>
       <div>
         <p className={css.label}>Total Income</p>
-        <p className={css.amount}>
-          {symbol}
+        <div className={css.amount}>
+          <span className={css.symbol}>{symbol}</span>
           {(totalIncomes || 0).toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })}
-        </p>
+        </div>
       </div>
     </div>
   );
