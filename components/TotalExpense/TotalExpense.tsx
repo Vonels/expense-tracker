@@ -6,6 +6,7 @@ import { getMe } from "@/lib/api/clientApi";
 import { Icon } from "../Icon/Icon";
 import css from "./TotalExpense.module.css";
 import { useUserStore } from "@/lib/store/userStore";
+import { useAuthStore } from "@/lib/store/authStore";
 
 const currencySymbols: Record<string, string> = {
   usd: "$",
@@ -15,10 +16,12 @@ const currencySymbols: Record<string, string> = {
 
 export const TotalExpense = () => {
   const { data: userData } = useQuery({
-    queryKey: ["user", "current", "currency"],
+    queryKey: ["user", "current"],
     queryFn: getMe,
     staleTime: 1000 * 60 * 5,
   });
+
+  const authCurrency = useAuthStore((state) => state.user?.currency);
 
   const totalExpenses = useUserStore(
     (state) => state.transactionsTotal.expenses
@@ -34,8 +37,9 @@ export const TotalExpense = () => {
     }
   }, [userData, updateTotals]);
 
-  const currency = userData?.currency || "usd";
-  const symbol = currencySymbols[currency.toLowerCase()] || currency;
+  const currency = authCurrency || userData?.currency || "usd";
+  const symbol =
+    currencySymbols[currency.toLowerCase()] || currency.toUpperCase();
 
   return (
     <div className={css.card}>
@@ -45,7 +49,7 @@ export const TotalExpense = () => {
       <div>
         <p className={css.label}>Total Expense</p>
         <p className={css.amount}>
-          {symbol}
+          <span className={css.symbol}>{symbol}</span>
           {(totalExpenses || 0).toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
